@@ -5,4 +5,4 @@
 
 Currently we are not pushing for donations, but when donations come in we find something valuable to the project to spend them on.
 
-We would prefer aid in programming, documentation or translations. But if you really want like to donate money to the Sequel Pro project, please ContactUs to discuss how your money will be used.
+We would prefer aid in programming, documentation or translations. But if you want to donate money to the Sequel Pro project, please ContactUs to discuss how your money will be used.
