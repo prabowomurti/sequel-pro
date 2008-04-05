@@ -1,0 +1,8 @@
+#summary Our donations policy
+#labels Featured
+
+= Sequel Pro Donations =
+
+Currently we are not pushing for donations, but when donations come in we find something valuable to the project to spend it on.
+
+We would prefer aid in programming, documentation or translations. But if you really want like to donate money to the Sequel Pro project, please Contact Us to discuss how your money will be used.
