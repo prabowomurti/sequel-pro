@@ -1,6 +1,6 @@
 #summary How to contact the developers of Sequel Pro
 #labels Featured
 
-The best person to contact for questions/comments about Sequel Pro is Abhi Beckert. You can reach him via http://abhibeckert.com/contact (I do not wish to publish my email address due to spammers).
+The best person to contact for questions/comments about Sequel Pro is Abhi Beckert. You can reach him via http://abhibeckert.com/contact.
 
 If you have feature requests or bug reports you can also contact Abhi, but we prefer such things are added as tickets to the [http://code.google.com/p/sequel-pro/issues/list Issues Tracker].
