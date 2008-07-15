@@ -1,0 +1,6 @@
+#summary screenshots of Sequel Pro
+#labels Featured
+
+*Sequel Pro 0.9*
+
+http://sequel-pro.googlecode.com/files/sequel-pro.png
