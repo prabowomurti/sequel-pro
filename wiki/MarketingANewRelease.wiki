@@ -11,7 +11,7 @@ With the 0.9 release of Sequel Pro we explored a few open source/social networki
 
 The following are the major referrers to the Sequel Pro website and Project page over a 4 day spread after marketing Sequel Pro:
 
-From a total of 1690 Visitors (cumulative) and including 1645 unique downloads.
+From a total of 1690 Visitors (cumulative) and including 1591 unique downloads.
 
   * 25% - Version Tracker
   * 12% - Mac Update
