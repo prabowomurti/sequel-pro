@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+  <channel>
+    <title>Sequel Pro</title>
+    <link>http://www.mjmedia.com.au/</link>
+    <description>Appcast for Sequel Pro</description>
+    <generator>Feeder 1.5.6(475) http://reinventedsoftware.com/feeder/</generator>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    <language>en</language>
+    <pubDate>Sun, 31 Aug 2008 01:58:00 +1000</pubDate>
+    <lastBuildDate>Sun, 31 Aug 2008 01:58:00 +1000</lastBuildDate>
+    <atom:link href="http://www.mjmedia.com.au/SequelPro.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Sequel Pro v0.9</title>
+      <description><![CDATA[<p>The latest stable version of Sequel Pro is v0.9, which was released on August 6, 2008.</p>
+
+<p>Sequel Pro 0.9 adds a new interface lift and a few new features. The source code has also had been cleaned up in a few areas.</p>
+
+<p>Note that the new Table Information Pane is disabled for the time being until a remaining bug has been resolved.</p>]]></description>
+      <pubDate>Wed, 06 Aug 2008 23:01:55 +1000</pubDate>
+      <enclosure url="http://sequel-pro.googlecode.com/files/sequel-pro-0.9.dmg" length="3942507" type="application/octet-stream" sparkle:version="0.9" sparkle:shortVersionString="0.9" sparkle:minimumSystemVersion="Mac OS X 10.5"/>
+      <guid isPermaLink="false">sequel-pro-v09</guid>
+      <sparkle:releaseNotesLink>http://sequelpro.com/appcast/release_0.9.html</sparkle:releaseNotesLink>
+    </item>
+  </channel>
+</rss>
