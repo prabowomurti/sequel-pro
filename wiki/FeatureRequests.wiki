@@ -1,5 +1,5 @@
 Please use this page for any feature requests. 
 
-*NOTE* - Bugs should be [http://code.google.com/p/sequel-pro/issues/entry added] to the [http://code.google.com/p/sequel-pro/issues/list issue tracker]. Please review the [http://code.google.com/p/sequel-pro/issues/list list] to ensure your bug hasn't already been reported.
+*BUG REPORTS* - Bugs should be [http://code.google.com/p/sequel-pro/issues/entry added] to the [http://code.google.com/p/sequel-pro/issues/list issue tracker]. Please review the [http://code.google.com/p/sequel-pro/issues/list list] to ensure your bug hasn't already been reported.
 
   * Example feature
