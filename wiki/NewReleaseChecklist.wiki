@@ -1,16 +1,11 @@
-#summary One-sentence summary of this page.
-
-= Introduction =
-
-This page is a checklist of items to do when creating a new release of Sequel Pro.
-
+#summary Checklist for creating a new release of Sequel Pro
 
 = Details =
 
  * Create svn tag of trunk at tags/release-4.2
  * Checkout the new tag, and do a deployment build
- * Upload to private server (eg: !DropBox) as a release candidate
  * Make sure it at least launches on PPC and Intel macs
+ * Upload to private server (eg: !DropBox) as a release candidate
  * Post the url to the download at http://twitter.com/sequelpro
  * After 7 days, if there are no blocker bugs, post the build on the main google code downloads page
  * Follow instructions at [MarketingANewRelease]
