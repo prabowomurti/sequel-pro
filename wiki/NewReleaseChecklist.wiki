@@ -1,11 +1,22 @@
 #summary Checklist for creating a new release of Sequel Pro
 
-= Details =
+= Publish a Release Candidate =
 
  * Create svn tag of trunk at tags/release-4.2
  * Checkout the new tag, and do a deployment build
  * Make sure it at least launches on PPC and Intel macs
  * Upload to private server (eg: !DropBox) as a release candidate
  * Post the url to the download at http://twitter.com/sequelpro
- * After 7 days, if there are no blocker bugs, post the build on the main google code downloads page
- * Follow instructions at [MarketingANewRelease]
+ * After 7 days, if there are no blocker bugs, publish a GM release
+
+= Publish a GM Release =
+
+ * Post the release candidate on the main google code downloads page.
+ * Update the homepage description on both the project site and the http://sequelpro.com site
+ * Post to http://digg.com, and update "Digg this" link on the homepage
+ * Post to http://twitter.com/sequelpro
+ * Post to third party download services:
+  * http://versiontracker.com
+  * http://macupdate.com
+  * http://apple.com/downloads
+  * http://iusethis.com
