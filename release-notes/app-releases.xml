@@ -2,14 +2,25 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
   <channel>
     <title>Sequel Pro</title>
-    <link>http://www.mjmedia.com.au/</link>
+    <link>http://www.sequelpro.com/</link>
     <description>Appcast for Sequel Pro</description>
     <generator>Feeder 1.5.6(475) http://reinventedsoftware.com/feeder/</generator>
     <docs>http://blogs.law.harvard.edu/tech/rss</docs>
     <language>en</language>
-    <pubDate>Sun, 31 Aug 2008 01:58:00 +1000</pubDate>
-    <lastBuildDate>Sun, 31 Aug 2008 01:58:00 +1000</lastBuildDate>
-    <atom:link href="http://www.mjmedia.com.au/SequelPro.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 17 Sep 2008 08:45:00 +1000</pubDate>
+    <lastBuildDate>Wed, 17 Sep 2008 08:45:00 +1000</lastBuildDate>
+    <atom:link href="http://sequelpro.com/appcast/app-releases.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Sequel Pro v0.9.1</title>
+      <description><![CDATA[<p>The latest stable version of Sequel Pro is v0.9.1, which was released on September 17, 2008.</p>
+
+<p>Sequel Pro 0.9.1 adds several user interface improvements and a few bugfixes, see the <a href="http://code.google.com/p/sequel-pro/wiki/ReleaseNotes">ReleaseNotes</a> for a full list of changes.</p>
+]]></description>
+      <pubDate>Wed, 17 Sep 2008 08:01:55 +1000</pubDate>
+      <enclosure url="http://sequel-pro.googlecode.com/files/sequel-pro-0.9.1.dmg" length="3942507" type="application/octet-stream" sparkle:version="0.9.1" sparkle:shortVersionString="0.9.1" sparkle:minimumSystemVersion="Mac OS X 10.5"/>
+      <guid isPermaLink="false">sequel-pro-v09</guid>
+      <sparkle:releaseNotesLink>http://sequelpro.com/appcast/release_0.9.1.html</sparkle:releaseNotesLink>
+    </item>
     <item>
       <title>Sequel Pro v0.9</title>
       <description><![CDATA[<p>The latest stable version of Sequel Pro is v0.9, which was released on August 6, 2008.</p>
@@ -22,5 +33,6 @@
       <guid isPermaLink="false">sequel-pro-v09</guid>
       <sparkle:releaseNotesLink>http://sequelpro.com/appcast/release_0.9.html</sparkle:releaseNotesLink>
     </item>
+
   </channel>
 </rss>
