@@ -1,4 +1,5 @@
 #summary Release Notes for past versions of Sequel Pro
+#labels Featured
 
 =Release 0.9.1 _September 17, 2008_=
 
