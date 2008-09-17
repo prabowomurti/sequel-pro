@@ -35,62 +35,63 @@
 @interface TableDocument : NSDocument
 {
   //IBOutlets
-	IBOutlet id keyChainInstance;
-	IBOutlet id tablesListInstance;
-	IBOutlet id tableSourceInstance;
-	IBOutlet id tableContentInstance;
-	IBOutlet id customQueryInstance;
-	IBOutlet id tableDumpInstance;
-	IBOutlet id tableStatusInstance;
-
-	IBOutlet id tableWindow;
-	IBOutlet id connectSheet;
-	IBOutlet id databaseSheet;
-	IBOutlet id variablesSheet;
-	IBOutlet id consoleDrawer;
-
-	IBOutlet id queryProgressBar;
-	IBOutlet id favoritesButton;
-	IBOutlet NSTableView *connectFavoritesTableView;
-	IBOutlet NSArrayController *favoritesController;
-	IBOutlet id hostField;
-	IBOutlet id socketField;
-	IBOutlet id userField;
-	IBOutlet id passwordField;
-	IBOutlet id portField;
-	IBOutlet id databaseField;
-
-	IBOutlet id connectProgressBar;
-	IBOutlet id connectProgressStatusText;
-	IBOutlet id databaseNameField;
-	IBOutlet id chooseDatabaseButton;
-	IBOutlet id consoleTextView;
-	IBOutlet id variablesTableView;
-	IBOutlet NSTabView *tableTabView;
+  IBOutlet id keyChainInstance;
+  IBOutlet id tablesListInstance;
+  IBOutlet id tableSourceInstance;
+  IBOutlet id tableContentInstance;
+  IBOutlet id customQueryInstance;
+  IBOutlet id tableDumpInstance;
+  IBOutlet id tableStatusInstance;
+  
+  IBOutlet id tableWindow;
+  IBOutlet id connectSheet;
+  IBOutlet id databaseSheet;
+  IBOutlet id variablesSheet;
+  IBOutlet id tableOperationsSheet;
+  IBOutlet id consoleDrawer;
+  
+  IBOutlet id queryProgressBar;
+  IBOutlet id favoritesButton;
+  IBOutlet NSTableView *connectFavoritesTableView;
+  IBOutlet NSArrayController *favoritesController;
+  IBOutlet id hostField;
+  IBOutlet id socketField;
+  IBOutlet id userField;
+  IBOutlet id passwordField;
+  IBOutlet id portField;
+  IBOutlet id databaseField;
+  
+  IBOutlet NSButton *connectAddToFavoritesCheckbox;
+  IBOutlet id connectProgressBar;
+  IBOutlet id connectProgressStatusText;
+  IBOutlet id databaseNameField;
+  IBOutlet id chooseDatabaseButton;
+  IBOutlet id consoleTextView;
+  IBOutlet id variablesTableView;
+  IBOutlet id chooseTableOperationButton;
+  IBOutlet NSTabView *tableTabView;
 	
-	IBOutlet id sidebarGrabber;
-	
-	IBOutlet NSTableView *dbTablesTableView;
-
+  IBOutlet NSTableView *dbTablesTableView;
+  
 	IBOutlet id syntaxView;
 	IBOutlet id syntaxViewContent;
-	IBOutlet NSWindow *createTableSyntaxWindow;
-
-	CMMCPConnection *mySQLConnection;
-
-	NSMutableArray *favorites;
-	NSArray *variables;
-	NSString *selectedDatabase;
-	NSString *selectedFavorite;
-	NSString *mySQLVersion;
-	NSUserDefaults *prefs;
-
-	NSMenu *selectEncodingMenu;
-	BOOL _supportsEncoding;
-	NSString *_encoding;
-
-	NSToolbar *mainToolbar;
-	NSToolbarItem *chooseDatabaseToolbarItem;
+  IBOutlet NSWindow *createTableSyntaxWindow;
+  
+  CMMCPConnection *mySQLConnection;
+	
+  NSArray *favorites;
+  NSArray *variables;
+  NSString *selectedDatabase;
+  NSString *selectedFavorite;
+  NSString *mySQLVersion;
+  NSUserDefaults *prefs;
+  
+  NSMenu *selectEncodingMenu;
+  BOOL _supportsEncoding;
+  NSString *_encoding;
+  
+  NSToolbar *mainToolbar;
+  NSToolbarItem *chooseDatabaseToolbarItem;
 }
 
 //start sheet
@@ -100,7 +101,6 @@
 - (IBAction)chooseFavorite:(id)sender;
 - (id)selectedFavorite;
 - (NSString *)selectedFavoritePassword;
-- (void)connectSheetAddToFavorites:(id)sender;
 - (void)addToFavoritesHost:(NSString *)host socket:(NSString *)socket 
                       user:(NSString *)user password:(NSString *)password
                       port:(NSString *)port database:(NSString *)database
@@ -109,7 +109,6 @@
 					         sshUser:(NSString *)sshUser // no-longer in use
 					     sshPassword:(NSString *)sshPassword // no-longer in use
                    sshPort:(NSString *)sshPort; // no-longer in use
-- (NSMutableArray *)favorites;
 
 //alert sheets method
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(NSString *)contextInfo;
@@ -148,7 +147,6 @@
 - (IBAction)optimizeTable:(id)sender;
 - (IBAction)repairTable:(id)sender;
 - (IBAction)flushTable:(id)sender;
-- (IBAction)checksumTable:(id)sender;
 
 //other methods
 - (NSString *)host;
@@ -205,8 +203,6 @@
 - (BOOL)splitView:(NSSplitView *)sender canCollapseSubview:(NSView *)subview;
 - (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMax ofSubviewAt:(int)offset;
 - (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMin ofSubviewAt:(int)offset;
-- (NSRect)splitView:(NSSplitView *)splitView additionalEffectiveRectOfDividerAtIndex:(int)dividerIndex;
-
 
 //tableView datasource methods
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView;
@@ -220,4 +216,3 @@
 @end
 
 extern NSString *TableDocumentFavoritesControllerSelectionIndexDidChange;
-extern NSString *TableDocumentFavoritesControllerFavoritesDidChange;

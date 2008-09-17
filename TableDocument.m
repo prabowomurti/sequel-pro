@@ -32,10 +32,8 @@
 #import "TableDump.h"
 #import "TableStatus.h"
 #import "ImageAndTextCell.h"
-#import <Growl/Growl.h>
 
 NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocumentFavoritesControllerSelectionIndexDidChange";
-NSString *TableDocumentFavoritesControllerFavoritesDidChange = @"TableDocumentFavoritesControllerFavoritesDidChange";
 
 @implementation TableDocument
 
@@ -55,12 +53,10 @@ NSString *TableDocumentFavoritesControllerFavoritesDidChange = @"TableDocumentFa
 {
   // register selection did change handler for favorites controller (used in connect sheet)
   [favoritesController addObserver:self forKeyPath:@"selectionIndex" options:NSKeyValueChangeInsertion context:TableDocumentFavoritesControllerSelectionIndexDidChange];
-	
-	// register value change handler for favourites, so we can save them to preferences
-	[self addObserver:self forKeyPath:@"favorites" options:0 context:TableDocumentFavoritesControllerFavoritesDidChange];
   
   // register double click for the favorites view (double click favorite to connect)
   [connectFavoritesTableView setTarget:self];
+  [connectFavoritesTableView setDoubleAction:@selector(connect:)];
   
   // find the Database -> Database Encoding menu (it's not in our nib, so we can't use interface builder)
   selectEncodingMenu = [[[[[NSApp mainMenu] itemWithTag:1] submenu] itemWithTag:1] submenu];
@@ -73,15 +69,10 @@ NSString *TableDocumentFavoritesControllerFavoritesDidChange = @"TableDocumentFa
 {
   if (context == TableDocumentFavoritesControllerSelectionIndexDidChange) {
     [self chooseFavorite:self];
-		return;
   }
-	
-	if (context == TableDocumentFavoritesControllerFavoritesDidChange) {
-		[prefs setObject:[self favorites] forKey:@"favorites"];
-		return;
-	}
-	
-	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
 }
 
 
@@ -148,18 +139,6 @@ NSString *TableDocumentFavoritesControllerFavoritesDidChange = @"TableDocumentFa
 											 [hostField stringValue], [databaseField stringValue]]];
 		[tableWindow setTitle:[NSString stringWithFormat:@"(MySQL %@) %@@%@/%@", mySQLVersion, [userField stringValue],
 													 [hostField stringValue], [databaseField stringValue]]];
-		
-		// Connected Growl Notification
-		[GrowlApplicationBridge notifyWithTitle:@"Connected"
-									description:[NSString stringWithFormat:NSLocalizedString(@"Connected to %@",@"description for connected growl notification"), [tableWindow title]]
-							   notificationName:@"Connected"
-									   iconData:nil
-									   priority:0
-									   isSticky:NO
-								   clickContext:nil
-		 ];
-		
-		
 	} else if (code == 2) {
 		//can't connect to host
 		NSBeginAlertSheet(NSLocalizedString(@"Connection failed!", @"connection failed"), NSLocalizedString(@"OK", @"OK button"), nil, nil, tableWindow, self, nil,
@@ -234,6 +213,21 @@ stops modal session with code:
       code = 1;
   }
   
+  // save to favorites?
+  if ([connectAddToFavoritesCheckbox state] == NSOnState) {
+    [self addToFavoritesHost:[hostField stringValue]
+                      socket:[socketField stringValue]
+                        user:[userField stringValue]
+                    password:[passwordField stringValue]
+                        port:[portField stringValue]
+                    database:[databaseField stringValue]
+                      useSSH:NO
+                     sshHost:nil
+                     sshUser:nil
+                 sshPassword:nil
+                     sshPort:nil];
+  }
+  
   // close sheet
   [NSApp stopModalWithCode:code];
   [connectProgressBar stopAnimation:self];
@@ -269,16 +263,16 @@ reused when user hits the close button of the variablseSheet or of the createTab
   selectedFavorite = [[favoritesButton titleOfSelectedItem] retain];
 }
 
-- (NSMutableArray *)favorites
+- (NSArray *)favorites
 {
   // if no favorites, load from user defaults
   if (!favorites) {
-    favorites = [[NSMutableArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:@"favorites"]];
+    favorites = [[NSArray alloc] initWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:@"favorites"]];
   }
 
 	// if no favorites in user defaults, load empty ones
 	if (!favorites) {
-    favorites = [[NSMutableArray array] retain];
+    favorites = [[NSArray array] retain];
   }
 	
   return favorites;
@@ -314,11 +308,6 @@ reused when user hits the close button of the variablseSheet or of the createTab
 	return [keyChainInstance getPasswordForName:keychainName account:keychainAccount];
 }
 
-- (void)connectSheetAddToFavorites:(id)sender
-{
-	[self addToFavoritesHost:[hostField stringValue] socket:[socketField stringValue] user:[userField stringValue] password:[passwordField stringValue] port:[portField stringValue] database:[databaseField stringValue] useSSH:false sshHost:@"" sshUser:@"" sshPassword:@"" sshPort:@""];
-}
-
 /**
  * add actual connection to favorites
  */
@@ -331,6 +320,8 @@ reused when user hits the close button of the variablseSheet or of the createTab
 					     sshPassword:(NSString *)sshPassword // no-longer in use
 					         sshPort:(NSString *)sshPort // no-longer in use
 {
+  NSEnumerator *enumerator = [favorites objectEnumerator];
+  id favorite;
   NSString *favoriteName = [NSString stringWithFormat:@"%@@%@", user, host];
   if (![database isEqualToString:@""])
     favoriteName = [NSString stringWithFormat:@"%@ %@", database, favoriteName];
@@ -340,19 +331,28 @@ reused when user hits the close button of the variablseSheet or of the createTab
     NSRunAlertPanel(NSLocalizedString(@"Error", @"error"), NSLocalizedString(@"Please enter at least a host or socket.", @"message of panel when host/socket are missing"), NSLocalizedString(@"OK", @"OK button"), nil, nil);
     return;
   }
+
+  // test if favorite name isn't used by another favorite
+  while (favorite = [enumerator nextObject]) {
+    if ([[favorite objectForKey:@"name"] isEqualToString:favoriteName]) {
+      NSRunAlertPanel(NSLocalizedString(@"Error", @"error"), [NSString stringWithFormat:NSLocalizedString(@"Favorite %@ has already been saved!\nOpen Preferences to change the names of the favorites.", @"message of panel when favorite name has already been used"), favoriteName], NSLocalizedString(@"OK", @"OK button"), nil, nil);
+      return;
+    }
+  }
 	
 	[self willChangeValueForKey:@"favorites"];
 
   // write favorites and password
   NSDictionary *newFavorite = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:favoriteName, host,    socket,    user,    port,    database,    nil]
                                                           forKeys:[NSArray arrayWithObjects:@"name",      @"host", @"socket", @"user", @"port", @"database", nil]];
-  [favorites addObject:newFavorite];
+  favorites = [[favorites arrayByAddingObject:newFavorite] retain];
   
   if (![password isEqualToString:@""]) {
       [keyChainInstance addPassword:password
                             forName:[NSString stringWithFormat:@"Sequel Pro : %@", favoriteName]
                             account:[NSString stringWithFormat:@"%@@%@/%@", user, host, database]];
   }
+  [prefs setObject:favorites forKey:@"favorites"];
 
   // select new favorite
   selectedFavorite = [favoriteName retain];
@@ -406,13 +406,9 @@ reused when user hits the close button of the variablseSheet or of the createTab
   if (!chooseDatabaseButton)
     return;
 
-	[chooseDatabaseButton removeAllItems];
-	[chooseDatabaseButton addItemWithTitle:NSLocalizedString(@"Choose Database...", @"menu item for choose db")];
-	[[chooseDatabaseButton menu] addItem:[NSMenuItem separatorItem]];
-	[[chooseDatabaseButton menu] addItemWithTitle:NSLocalizedString(@"Add Database...", @"menu item to add db") action:@selector(addDatabase:) keyEquivalent:@""];
-	[[chooseDatabaseButton menu] addItem:[NSMenuItem separatorItem]];
-
-	
+  [chooseDatabaseButton removeAllItems];
+  [chooseDatabaseButton addItemWithTitle:NSLocalizedString(@"Choose Database...", @"menu item for choose db")];
+  
   MCPResult *queryResult = [mySQLConnection listDBs];
   int i;
   for ( i = 0 ; i < [queryResult numOfRows] ; i++ ) {
@@ -534,13 +530,12 @@ reused when user hits the close button of the variablseSheet or of the createTab
   NSBeginAlertSheet(NSLocalizedString(@"Warning", @"warning"), NSLocalizedString(@"Delete", @"delete button"), NSLocalizedString(@"Cancel", @"cancel button"), nil, tableWindow, self, nil, @selector(sheetDidEnd:returnCode:contextInfo:), @"removedatabase", [NSString stringWithFormat:NSLocalizedString(@"Do you really want to delete the database %@?", @"message of panel asking for confirmation for deleting db"), [self database]]);
 }
 
-#pragma mark console methods
 
 //console methods
 /**
  * shows or hides the console
  */
-- (void)toggleConsole:(id)sender
+- (void)toggleConsole:(id)sender;
 {
   NSDrawerState state = [consoleDrawer state];
   if (NSDrawerOpeningState == state || NSDrawerOpenState == state) {
@@ -554,7 +549,7 @@ reused when user hits the close button of the variablseSheet or of the createTab
 /**
  * clears the console
  */
-- (void)clearConsole:(id)sender
+- (void)clearConsole:(id)sender;
 {
   [consoleTextView setString:@""];
 }
@@ -809,16 +804,6 @@ reused when user hits the close button of the variablseSheet or of the createTab
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
 	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
 	[pb setString:tableSyntax forType:NSStringPboardType];
-	
-	// Table Syntax Copied Growl Notification
-	[GrowlApplicationBridge notifyWithTitle:@"Table Syntax Copied"
-								description:[NSString stringWithFormat:NSLocalizedString(@"Syntax for %@ table copied",@"description for table syntax copied growl notification"), [self table]]
-						   notificationName:@"Table Syntax Copied"
-								   iconData:nil
-								   priority:0
-								   isSticky:NO
-							   clickContext:nil
-	 ];
 }
 
 - (IBAction)checkTable:(id)sender
@@ -839,7 +824,7 @@ reused when user hits the close button of the variablseSheet or of the createTab
 	
 	// Process result
 	theRow = [[theResult fetch2DResultAsType:MCPTypeDictionary] lastObject];
-	NSRunInformationalAlertPanel([NSString stringWithFormat:@"Check '%@' table", [self table]], [NSString stringWithFormat:@"Check: %@", [theRow objectForKey:@"Msg_text"]], @"OK", nil, nil);
+	NSRunInformationalAlertPanel(@"Check Table", [NSString stringWithFormat:@"Check: %@", [theRow objectForKey:@"Msg_text"]], @"OK", nil, nil);
 }
 
 - (IBAction)analyzeTable:(id)sender
@@ -860,7 +845,7 @@ reused when user hits the close button of the variablseSheet or of the createTab
 	
 	// Process result
 	theRow = [[theResult fetch2DResultAsType:MCPTypeDictionary] lastObject];
-	NSRunInformationalAlertPanel([NSString stringWithFormat:@"Analyze '%@' table", [self table]], [NSString stringWithFormat:@"Analyze: %@", [theRow objectForKey:@"Msg_text"]], @"OK", nil, nil);
+	NSRunInformationalAlertPanel(@"Analyze Table", [NSString stringWithFormat:@"Analyze: %@", [theRow objectForKey:@"Msg_text"]], @"OK", nil, nil);
 }
 
 - (IBAction)optimizeTable:(id)sender
@@ -880,7 +865,7 @@ reused when user hits the close button of the variablseSheet or of the createTab
 	
 	// Process result
 	theRow = [[theResult fetch2DResultAsType:MCPTypeDictionary] lastObject];
-	NSRunInformationalAlertPanel([NSString stringWithFormat:@"Optimize '%@' table", [self table]], [NSString stringWithFormat:@"Optimize: %@", [theRow objectForKey:@"Msg_text"]], @"OK", nil, nil);
+	NSRunInformationalAlertPanel(@"Optimize Table", [NSString stringWithFormat:@"Optimize: %@", [theRow objectForKey:@"Msg_text"]], @"OK", nil, nil);
 }
 
 - (IBAction)repairTable:(id)sender
@@ -900,7 +885,7 @@ reused when user hits the close button of the variablseSheet or of the createTab
 	
 	// Process result
 	theRow = [[theResult fetch2DResultAsType:MCPTypeDictionary] lastObject];
-	NSRunInformationalAlertPanel([NSString stringWithFormat:@"Repair '%@' table", [self table]], [NSString stringWithFormat:@"Repair: %@", [theRow objectForKey:@"Msg_text"]], @"OK", nil, nil);
+	NSRunInformationalAlertPanel(@"Repair Table", [NSString stringWithFormat:@"Repair: %@", [theRow objectForKey:@"Msg_text"]], @"OK", nil, nil);
 }
 
 - (IBAction)flushTable:(id)sender
@@ -919,27 +904,7 @@ reused when user hits the close button of the variablseSheet or of the createTab
 	}
 	
 	// Process result
-	NSRunInformationalAlertPanel([NSString stringWithFormat:@"Flush '%@' table", [self table]], @"Flushed", @"OK", nil, nil);
-}
-
-- (IBAction)checksumTable:(id)sender
-{
-	NSString *query;
-	CMMCPResult *theResult;
-	NSDictionary *theRow;
-	
-	//Create the query and get results
-	query = [NSString stringWithFormat:@"CHECKSUM TABLE `%@`", [self table]];
-	theResult = [mySQLConnection queryString:query];
-	
-	// Check for errors
-	if (![[mySQLConnection getLastErrorMessage] isEqualToString:@""]) {
-		NSRunAlertPanel(@"Error", [NSString stringWithFormat:@"An error occured while performming checksum on table.\n\n: %@",[mySQLConnection getLastErrorMessage]], @"OK", nil, nil);
-	}
-	
-	// Process result
-	theRow = [[theResult fetch2DResultAsType:MCPTypeDictionary] lastObject];
-	NSRunInformationalAlertPanel([NSString stringWithFormat:@"Checksum '%@' table", [self table]], [NSString stringWithFormat:@"Checksum: %@", [theRow objectForKey:@"Checksum"]], @"OK", nil, nil);
+	NSRunInformationalAlertPanel(@"Flush Table", @"Flushed", @"OK", nil, nil);
 }
 
 #pragma mark Other Methods
@@ -1011,16 +976,6 @@ shows the mysql variables
 - (void)closeConnection
 {
     [mySQLConnection disconnect];
-	
-	// Disconnected Growl Notification
-	[GrowlApplicationBridge notifyWithTitle:@"Disconnected"
-								description:[NSString stringWithFormat:NSLocalizedString(@"Disconnected from %@",@"description for disconnected growl notification"), [tableWindow title]]
-						   notificationName:@"Disconnected"
-								   iconData:nil
-								   priority:0
-								   isSticky:NO
-							   clickContext:nil
-	 ];
 }
 
 
@@ -1152,16 +1107,14 @@ passes the request to the tableDump object
 	}
 	
 	// table menu items
-	if ([menuItem action] == @selector(showCreateTableSyntax:) ||
-		[menuItem action] == @selector(copyCreateTableSyntax:) ||
+	if ([menuItem action] == @selector(createTableSyntax:) ||
 		[menuItem action] == @selector(checkTable:) || 
 		[menuItem action] == @selector(analyzeTable:) || 
 		[menuItem action] == @selector(optimizeTable:) || 
 		[menuItem action] == @selector(repairTable:) || 
-		[menuItem action] == @selector(flushTable:) ||
-		[menuItem action] == @selector(checksumTable:)) 
+		[menuItem action] == @selector(flushTable:)) 
 	{
-		return ([self table] != nil && [[self table] isNotEqualTo:@""]);
+		return ([self table] != nil);
 	}
 	return [super validateMenuItem:menuItem];
 }
@@ -1223,96 +1176,90 @@ passes the request to the tableDump object
  * toolbar delegate method
  */
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)willBeInsertedIntoToolbar
+
 {
-	NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier] autorelease];
-	
-	if ([itemIdentifier isEqualToString:@"DatabaseSelectToolbarItemIdentifier"]) {
-		[toolbarItem setLabel:NSLocalizedString(@"Select Database", @"toolbar item for selecting a db")];
-		[toolbarItem setPaletteLabel:[toolbarItem label]];
-		[toolbarItem setView:chooseDatabaseButton];
-		[toolbarItem setMinSize:NSMakeSize(200,26)];
-		[toolbarItem setMaxSize:NSMakeSize(200,32)];
-		[chooseDatabaseButton setTarget:self];
-		[chooseDatabaseButton setAction:@selector(chooseDatabase:)];
-		
-		if (willBeInsertedIntoToolbar) {
-			chooseDatabaseToolbarItem = toolbarItem;
-			[self updateChooseDatabaseToolbarItemWidth];
-		} 
-		
-	} else if ([itemIdentifier isEqualToString:@"ToggleConsoleIdentifier"]) {
-		//set the text label to be displayed in the toolbar and customization palette 
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Console", @"toolbar item for show/hide console")];
-		//set up tooltip and image
-		[toolbarItem setToolTip:NSLocalizedString(@"Show or hide the console which shows all MySQL commands performed by Sequel Pro", @"tooltip for toolbar item for show/hide console")];
-		if ( [self consoleIsOpened] ) {
-			[toolbarItem setLabel:NSLocalizedString(@"Hide Console", @"toolbar item for hide console")];
-			[toolbarItem setImage:[NSImage imageNamed:@"hideconsole"]];
-		} else {
-			[toolbarItem setLabel:NSLocalizedString(@"Show Console", @"toolbar item for showconsole")];
-			[toolbarItem setImage:[NSImage imageNamed:@"showconsole"]];
-		}
-		//set up the target action
-		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(toggleConsole:)];
-		
-	} else if ([itemIdentifier isEqualToString:@"ClearConsoleIdentifier"]) {
-		//set the text label to be displayed in the toolbar and customization palette 
-		[toolbarItem setLabel:NSLocalizedString(@"Clear Console", @"toolbar item for clear console")];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Clear Console", @"toolbar item for clear console")];
-		//set up tooltip and image
-		[toolbarItem setToolTip:NSLocalizedString(@"Clear the console which shows all MySQL commands performed by Sequel Pro", @"tooltip for toolbar item for clear console")];
-		[toolbarItem setImage:[NSImage imageNamed:@"clearconsole"]];
-		//set up the target action
-		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(clearConsole:)];
-		
-	} else if ([itemIdentifier isEqualToString:@"SwitchToTableStructureToolbarItemIdentifier"]) {
-		[toolbarItem setLabel:NSLocalizedString(@"Table", @"toolbar item label for switching to the Table Structure tab")];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Table Structure", @"toolbar item label for switching to the Table Structure tab")];
-		//set up tooltip and image
-		[toolbarItem setToolTip:NSLocalizedString(@"Switch to the Table Structure tab", @"tooltip for toolbar item for switching to the Table Structure tab")];
-		[toolbarItem setImage:[NSImage imageNamed:@"toolbar-switch-to-structure"]];
-		//set up the target action
-		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(viewStructure:)];
-		
-	} else if ([itemIdentifier isEqualToString:@"SwitchToTableContentToolbarItemIdentifier"]) {
-		[toolbarItem setLabel:NSLocalizedString(@"Browse", @"toolbar item label for switching to the Table Content tab")];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Table Content", @"toolbar item label for switching to the Table Content tab")];
-		//set up tooltip and image
-		[toolbarItem setToolTip:NSLocalizedString(@"Switch to the Table Content tab", @"tooltip for toolbar item for switching to the Table Content tab")];
-		[toolbarItem setImage:[NSImage imageNamed:@"toolbar-switch-to-browse"]];
-		//set up the target action
-		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(viewContent:)];
-		
-	} else if ([itemIdentifier isEqualToString:@"SwitchToRunQueryToolbarItemIdentifier"]) {
-		[toolbarItem setLabel:NSLocalizedString(@"SQL", @"toolbar item label for switching to the Run Query tab")];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Run Query", @"toolbar item label for switching to the Run Query tab")];
-		//set up tooltip and image
-		[toolbarItem setToolTip:NSLocalizedString(@"Switch to the Run Query tab", @"tooltip for toolbar item for switching to the Run Query tab")];
-		[toolbarItem setImage:[NSImage imageNamed:@"toolbar-switch-to-sql"]];
-		//set up the target action
-		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(viewQuery:)];
-		
-	} else if ([itemIdentifier isEqualToString:@"SwitchToTableStatusToolbarItemIdentifier"]) {
-		[toolbarItem setLabel:NSLocalizedString(@"Table Status", @"toolbar item label for switching to the Table Status tab")];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Table Status", @"toolbar item label for switching to the Table Status tab")];
-		//set up tooltip and image
-		[toolbarItem setToolTip:NSLocalizedString(@"Switch to the Table Status tab", @"tooltip for toolbar item for switching to the Table Status tab")];
-		[toolbarItem setImage:[NSImage imageNamed:@"toolbar-switch-to-table-info"]];
-		//set up the target action
-		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(viewStatus:)];
-		
-	} else {
-		//itemIdentifier refered to a toolbar item that is not provided or supported by us or cocoa 
-		toolbarItem = nil;
-	}
-	
-	return toolbarItem;
+  NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier] autorelease];
+  
+  if ([itemIdentifier isEqualToString:@"DatabaseSelectToolbarItemIdentifier"]) {
+    [toolbarItem setLabel:NSLocalizedString(@"Select Database", @"toolbar item for selecting a db")];
+    [toolbarItem setPaletteLabel:[toolbarItem label]];
+    [toolbarItem setView:chooseDatabaseButton];
+    [toolbarItem setMinSize:NSMakeSize(200,26)];
+    [toolbarItem setMaxSize:NSMakeSize(200,32)];
+    [chooseDatabaseButton setTarget:self];
+  	[chooseDatabaseButton setAction:@selector(chooseDatabase:)];
+    
+    if (willBeInsertedIntoToolbar) {
+	    chooseDatabaseToolbarItem = toolbarItem;
+  	  [self updateChooseDatabaseToolbarItemWidth];
+    } 
+  } else if ([itemIdentifier isEqualToString:@"ToggleConsoleIdentifier"]) {
+    //set the text label to be displayed in the toolbar and customization palette 
+    [toolbarItem setPaletteLabel:NSLocalizedString(@"Show/Hide Console", @"toolbar item for show/hide console")];
+    //set up tooltip and image
+    [toolbarItem setToolTip:NSLocalizedString(@"Show or hide the console which shows all MySQL commands performed by Sequel Pro", @"tooltip for toolbar item for show/hide console")];
+    if ( [self consoleIsOpened] ) {
+      [toolbarItem setLabel:NSLocalizedString(@"Hide Console", @"toolbar item for hide console")];
+      [toolbarItem setImage:[NSImage imageNamed:@"hideconsole"]];
+    } else {
+      [toolbarItem setLabel:NSLocalizedString(@"Show Console", @"toolbar item for showconsole")];
+      [toolbarItem setImage:[NSImage imageNamed:@"showconsole"]];
+    }
+    //set up the target action
+    [toolbarItem setTarget:self];
+    [toolbarItem setAction:@selector(toggleConsole)];
+  } else if ([itemIdentifier isEqualToString:@"ClearConsoleIdentifier"]) {
+    //set the text label to be displayed in the toolbar and customization palette 
+    [toolbarItem setLabel:NSLocalizedString(@"Clear Console", @"toolbar item for clear console")];
+    [toolbarItem setPaletteLabel:NSLocalizedString(@"Clear Console", @"toolbar item for clear console")];
+    //set up tooltip and image
+    [toolbarItem setToolTip:NSLocalizedString(@"Clear the console which shows all MySQL commands performed by Sequel Pro", @"tooltip for toolbar item for clear console")];
+    [toolbarItem setImage:[NSImage imageNamed:@"clearconsole"]];
+    //set up the target action
+    [toolbarItem setTarget:self];
+    [toolbarItem setAction:@selector(clearConsole)];
+  } else if ([itemIdentifier isEqualToString:@"SwitchToTableStructureToolbarItemIdentifier"]) {
+    [toolbarItem setLabel:NSLocalizedString(@"Table", @"toolbar item label for switching to the Table Structure tab")];
+    [toolbarItem setPaletteLabel:NSLocalizedString(@"Table Structure", @"toolbar item label for switching to the Table Structure tab")];
+    //set up tooltip and image
+    [toolbarItem setToolTip:NSLocalizedString(@"Switch to the Table Structure tab", @"tooltip for toolbar item for switching to the Table Structure tab")];
+    [toolbarItem setImage:[NSImage imageNamed:@"toolbar-switch-to-structure"]];
+    //set up the target action
+    [toolbarItem setTarget:self];
+    [toolbarItem setAction:@selector(viewStructure:)];
+  } else if ([itemIdentifier isEqualToString:@"SwitchToTableContentToolbarItemIdentifier"]) {
+    [toolbarItem setLabel:NSLocalizedString(@"Browse", @"toolbar item label for switching to the Table Content tab")];
+    [toolbarItem setPaletteLabel:NSLocalizedString(@"Table Content", @"toolbar item label for switching to the Table Content tab")];
+    //set up tooltip and image
+    [toolbarItem setToolTip:NSLocalizedString(@"Switch to the Table Content tab", @"tooltip for toolbar item for switching to the Table Content tab")];
+    [toolbarItem setImage:[NSImage imageNamed:@"toolbar-switch-to-browse"]];
+    //set up the target action
+    [toolbarItem setTarget:self];
+    [toolbarItem setAction:@selector(viewContent:)];
+  } else if ([itemIdentifier isEqualToString:@"SwitchToRunQueryToolbarItemIdentifier"]) {
+    [toolbarItem setLabel:NSLocalizedString(@"SQL", @"toolbar item label for switching to the Run Query tab")];
+    [toolbarItem setPaletteLabel:NSLocalizedString(@"Run Query", @"toolbar item label for switching to the Run Query tab")];
+    //set up tooltip and image
+    [toolbarItem setToolTip:NSLocalizedString(@"Switch to the Run Query tab", @"tooltip for toolbar item for switching to the Run Query tab")];
+    [toolbarItem setImage:[NSImage imageNamed:@"toolbar-switch-to-sql"]];
+    //set up the target action
+    [toolbarItem setTarget:self];
+    [toolbarItem setAction:@selector(viewQuery:)];
+  } else if ([itemIdentifier isEqualToString:@"SwitchToTableStatusToolbarItemIdentifier"]) {
+    [toolbarItem setLabel:NSLocalizedString(@"Table Status", @"toolbar item label for switching to the Table Status tab")];
+    [toolbarItem setPaletteLabel:NSLocalizedString(@"Table Status", @"toolbar item label for switching to the Table Status tab")];
+    //set up tooltip and image
+    [toolbarItem setToolTip:NSLocalizedString(@"Switch to the Table Status tab", @"tooltip for toolbar item for switching to the Table Status tab")];
+    [toolbarItem setImage:[NSImage imageNamed:@"toolbar-switch-to-table-info"]];
+    //set up the target action
+    [toolbarItem setTarget:self];
+    [toolbarItem setAction:@selector(viewStatus:)];
+  } else {
+    //itemIdentifier refered to a toolbar item that is not provided or supported by us or cocoa 
+    toolbarItem = nil;
+  }
+  
+  return toolbarItem;
 }
 
 /**
@@ -1325,14 +1272,14 @@ passes the request to the tableDump object
           @"ToggleConsoleIdentifier",
           @"ClearConsoleIdentifier",
           @"FlushPrivilegesIdentifier",
+          NSToolbarCustomizeToolbarItemIdentifier,
+          NSToolbarFlexibleSpaceItemIdentifier,
+          NSToolbarSpaceItemIdentifier,
+          NSToolbarSeparatorItemIdentifier,
           @"SwitchToTableStructureToolbarItemIdentifier",
           @"SwitchToTableContentToolbarItemIdentifier",
           @"SwitchToRunQueryToolbarItemIdentifier",
           @"SwitchToTableStatusToolbarItemIdentifier",
-			NSToolbarCustomizeToolbarItemIdentifier,
-			NSToolbarFlexibleSpaceItemIdentifier,
-			NSToolbarSpaceItemIdentifier,
-			NSToolbarSeparatorItemIdentifier,
         	nil];
 }
 
@@ -1343,11 +1290,10 @@ passes the request to the tableDump object
 {
   return [NSArray arrayWithObjects:
 		  @"DatabaseSelectToolbarItemIdentifier",
-          NSToolbarFlexibleSpaceItemIdentifier,
+          NSToolbarSpaceItemIdentifier,
           @"SwitchToTableStructureToolbarItemIdentifier",
           @"SwitchToTableContentToolbarItemIdentifier",
           @"SwitchToRunQueryToolbarItemIdentifier",
-		  NSToolbarFlexibleSpaceItemIdentifier,
           nil];
 }
 
@@ -1396,7 +1342,7 @@ code that need to be executed once the windowController has loaded the document'
 sets upt the interface (small fonts)
 */
 {
-    [aController setShouldCascadeWindows:YES];
+    [aController setShouldCascadeWindows:NO];
     [super windowControllerDidLoadNib:aController];
 
     NSEnumerator *theCols = [[variablesTableView tableColumns] objectEnumerator];
@@ -1510,15 +1456,6 @@ invoked when query gave an error
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification
 {
   [self updateChooseDatabaseToolbarItemWidth];
-}
-
-- (NSRect)splitView:(NSSplitView *)splitView additionalEffectiveRectOfDividerAtIndex:(int)dividerIndex
-{
-	if (sidebarGrabber != nil) {
-		return [sidebarGrabber convertRect:[sidebarGrabber bounds] toView:splitView];
-	} else {
-		return NSZeroRect;
-	}
 }
 
 - (void)updateChooseDatabaseToolbarItemWidth

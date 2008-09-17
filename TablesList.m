@@ -52,7 +52,6 @@ loads all table names in array tables and reload the tableView
         [theResult dataSeek:i];
         [tables addObject:[[theResult fetchRowAsArray] objectAtIndex:0]];
     }
-	
     [tablesListView reloadData];
     
     //query finished
@@ -650,22 +649,12 @@ loads structure or source if tab selected the first time
    forTableColumn:(NSTableColumn *)aTableColumn 
 			  row:(int)rowIndex
 {
-	if (rowIndex > 0 && [[aTableColumn identifier] isEqualToString:@"tables"]) {
-		[(ImageAndTextCell*)aCell setImage:[NSImage imageNamed:@"table-small"]];
+	if ((rowIndex > 0) && [[aTableColumn identifier] isEqualToString:@"tables"]) {
+		[(ImageAndTextCell*)aCell setImage:[NSImage imageNamed:@"sl-icon_table"]];
 		[(ImageAndTextCell*)aCell setIndentationLevel:1];
-		
 	} else {
 		[(ImageAndTextCell*)aCell setImage:nil];
 		[(ImageAndTextCell*)aCell setIndentationLevel:0];
-	}
-}
-
-- (float)tableView:(NSTableView *)tableView heightOfRow:(int)row
-{
-	if (row == 0) {
-		return 25;
-	} else {
-		return 17;
 	}
 }
 
@@ -677,7 +666,7 @@ loads structure or source if tab selected the first time
     tables = [[NSMutableArray alloc] init];
     structureLoaded = NO;
     contentLoaded = NO;
-	[tables addObject:NSLocalizedString(@"TABLES",@"header for table list")];
+	[tables addObject:@"TABLES"];
     return self;
 }
 
