@@ -1,3 +1,23 @@
 #summary Release Notes for past versions of Sequel Pro
 
 = Release 0.9.1 =
+
+* "Add Database..." added to Database popup button
+* "Add to Favorites" checkbox removed
+* Fixed formatting issue in Credits.rtf
+* Show/Hide Console & Clear Console Toolbar items now enable properly
+* Symlinks in MySQL Framework were damaged - file size down to 5 MB from 8 MB
+* Tables List split view now saves its width
+* Focus ring removed from Favorites Table in connect sheet
+* Turned on alternating rows
+* Turned off allow multiple selection
+* Changed Add and Remove Buttons to show standard plus and minus images instead of text.
+* Growl Support Added
+* Add, Remove, and Renaming of favorites now possible in connect sheet
+* Can now rename favourites in the connect panel
+* Added localisation for TABLES and TABLE INFORMATION
+* Fixed Credits
+* Removed small icon of table and replaced with new one
+* Added "Checksum Table" to MainMenu
+* Added extra splitter grab handles
+* Added Sparkle Software Update checking
