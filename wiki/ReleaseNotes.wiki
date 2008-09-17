@@ -1,0 +1,3 @@
+#summary Release Notes for past versions of Sequel Pro
+
+= Release 0.9.1 =
