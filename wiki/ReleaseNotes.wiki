@@ -15,7 +15,6 @@
  * Changed Add and Remove Buttons to show standard plus and minus images instead of text.
  * Growl Support Added
  * Add, Remove, and Renaming of favorites now possible in connect sheet
- * Can now rename favourites in the connect panel
  * Added localisation for TABLES and TABLE INFORMATION
  * Fixed Credits
  * Added grabber images
