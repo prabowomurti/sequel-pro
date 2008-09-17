@@ -1,6 +1,6 @@
 #summary Release Notes for past versions of Sequel Pro
 
-= Release 0.9.1 =
+=Release 0.9.1=
 
  * "Add Database..." added to Database popup button
  * "Add to Favorites" checkbox removed
@@ -22,3 +22,26 @@
  * Added "Checksum Table" to MainMenu
  * Added extra splitter grab handles
  * Add Software Update checking
+
+=Release 0.9=
+
+ * redesign user interface for connect panel
+ * code improvements for favorites system
+ * code improvements for menu validation system
+ * 256x version of icon for better quality in cover flow
+ * create new database menu and remove add/remove buttons from main window
+ * UI tweaks around table select view and it's buttons
+ * Replace tabs with toolbar buttons to make the	app feel more modern
+ * move database	select menu out	of window into toolbar
+ * more intelligent default names when creating a new favorite
+ * now using normal size	scroll bars
+ * nicer looking tables	list
+ * table information pane
+ * move	console	commands into view menu
+ * now has an x86 build	for improved performance on intel macs
+ * Misc. other user interface changes
+ * Misc. code clean-ups
+
+=Release 0.8=
+
+ * Rebrand project as Sequel Pro (name change, author changes, icon change)
