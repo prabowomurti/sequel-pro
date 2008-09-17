@@ -14,6 +14,7 @@
 
  * Post the release candidate on the main google code downloads page.
  * Update the homepage description on both the project site and the http://sequelpro.com site
+ * Update the AppCast Feed. http://sequelpro.com/appcast/ - A copy of the HTML/XML is in the Repository
  * Post to http://digg.com, and update "Digg this" link on the homepage
  * Post to http://twitter.com/sequelpro
  * Post to third party download services:
