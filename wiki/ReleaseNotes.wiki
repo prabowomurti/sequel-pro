@@ -1,6 +1,7 @@
 #summary Release Notes for past versions of Sequel Pro
 
 =Release 0.9.1=
+September 17, 2008
 
  * "Add Database..." added to Database popup button
  * "Add to Favorites" checkbox removed
@@ -24,6 +25,7 @@
  * Add Software Update checking
 
 =Release 0.9=
+August 5, 2008
 
  * redesign user interface for connect panel
  * code improvements for favorites system
@@ -43,5 +45,6 @@
  * Misc. code clean-ups
 
 =Release 0.8=
+April 12, 2008
 
  * Rebrand project as Sequel Pro (name change, author changes, icon change)
