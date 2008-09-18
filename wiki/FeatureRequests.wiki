@@ -2,5 +2,8 @@ Please use this page for any feature requests.
 
 *BUG REPORTS* - Bugs should be [http://code.google.com/p/sequel-pro/issues/entry added] to the [http://code.google.com/p/sequel-pro/issues/list issue tracker]. Please review the [http://code.google.com/p/sequel-pro/issues/list list] to ensure your bug hasn't already been reported.
 
-  * Example feature
-  * Example feature
+ * Export by right clicking a table (by joe.cairns)
+ * Copy/paste for spreadsheet data in browse mode (by joe.cairns)
+ * Support re-ordering columns when editing a table (by joe.cairns)
+ * Support re-ordering favourites in preferences window and in connect panel (by cpfusion)
+ * Import/Export support for favourites (by cpfusion)
