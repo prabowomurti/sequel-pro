@@ -1,6 +1,13 @@
 #summary Release Notes for past versions of Sequel Pro
 #labels Featured
 
+=Release 0.9.2 _Currently available as a release candidate_=
+
+ * Fix bug where data will be truncated if you edit a varchar containing more than 100 characters
+ * Fix bug where export of decimal value is exported as hexadecimal when decimal would be better
+ * Added show/hide toolbar and customize toolbar menu items
+ * Misc other changes
+
 =Release 0.9.1 _September 17, 2008_=
 
  * "Add Database..." added to Database popup button
