@@ -5,7 +5,6 @@
 
  * Fix bug where data will be truncated if you edit a varchar containing more than 100 characters
  * Fix bug decimal value are sometimes treated in hexadecimal (causing data corruption)
- * Fix a common redraw issue in the browse mode when first opening a new connection
  * Default value for "limit rows" preference is now 1000 rows instead of unlimited
  * Added show/hide toolbar and customize toolbar menu items
  * Clean up some menu items in the File menu
