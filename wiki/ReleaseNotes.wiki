@@ -1,7 +1,7 @@
 #summary Release Notes for past versions of Sequel Pro
 #labels Featured
 
-=Release 0.9.2 _Currently available as a release candidate [http://dl.getdropbox.com/u/147461/sequel-pro-0.9.2-release-candidate-2.dmg download]_=
+=Release 0.9.2 _October 21, 2008_=
 
  * Fix bug where data will be truncated if you edit a varchar containing more than 100 characters
  * Fix bug decimal value are sometimes treated in hexadecimal (causing data corruption)
