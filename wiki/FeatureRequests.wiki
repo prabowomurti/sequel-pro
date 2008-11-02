@@ -10,4 +10,4 @@ Please use this page for any feature requests. Simply use the comment feature at
  * Support re-ordering columns when editing a table (by joe.cairns)
  * Support re-ordering favourites in preferences window and in connect panel (by cpfusion)
  * Import/Export support for favourites (by cpfusion)
- * Connect via SSH
+ * Connect via SSH (by fam.vandeneijnden and others)
