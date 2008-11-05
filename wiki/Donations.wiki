@@ -6,3 +6,5 @@
 Currently we are not pushing for donations, but when donations come in we find something valuable to the project to spend them on.
 
 We would prefer aid in programming, documentation or translations. But if you want to donate money to the Sequel Pro project, please ContactUs to discuss how your money will be used.
+
+Donations can be sent to us via our paypal account: [https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=917261 Send Donations]
