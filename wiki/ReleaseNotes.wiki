@@ -1,6 +1,27 @@
 #summary Release Notes for past versions of Sequel Pro
 #labels Featured
 
+=Release 0.9.3 _Release Candidate expected in the next few days_=
+
+ * We welcome three new programmers to the team: Mark Townsend, Rowan Beentje, and Stuart Connolly. Thanks guys!
+ * Fixed a data corruption issue with TEXT and BLOB data types.
+ * Improved csv import system.
+ * Searching in browse mode is no-longer “real time”, to improve usability over slow connections.
+ * Reloading the view in browse mode will now preserve sorting and filters.
+ * Table information pane is now functional.
+ * Console is now more space efficient.
+ * Now have a shortcut key to show/hide the console.
+ * Improved growl support.
+ * Improved keychain password storage.
+ * Can now quit sequel pro when a connection sheet is open.
+ * Improvements to favorite query system (more to come).
+ * Fixed a bug when renaming a connection favorite.
+ * No-longer show busy animation in all connection windows when only one connection is actually active.
+ * Fix issue where favorites are not selected when they're created.
+ * Canceling a connection is now more reliable.
+ * Other clean-ups and improvements.
+
+
 =Release 0.9.2 _October 21, 2008_=
 
  * Fix bug where data will be truncated if you edit a varchar containing more than 100 characters
