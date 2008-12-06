@@ -4,21 +4,27 @@
 =Release 0.9.3 _Release Candidate expected in the next few days_=
 
  * We welcome three new programmers to the team: Mark Townsend, Rowan Beentje, and Stuart Connolly. Thanks guys!
+ * Sequel Pro is now much faster when working with large data sets.
  * Fixed a data corruption issue with TEXT and BLOB data types.
- * Improved csv import system.
+ * Table fields can now be reordered in the structure view.
+ * Enhanced the import interface including an improved CSV field mapping interface.
  * Searching in browse mode is no-longer “real time”, to improve usability over slow connections.
- * Reloading the view in browse mode will now preserve sorting and filters.
+ * Reloading the view in browse mode will now preserve view position, sorting and filters.
  * Table information pane is now functional.
  * Console is now more space efficient.
  * Now have a shortcut key to show/hide the console.
  * Improved growl support.
  * Improved keychain password storage.
- * Can now quit sequel pro when a connection sheet is open.
+ * Can now quit Sequel Pro when a connection sheet is open.
  * Improvements to favorite query system (more to come).
  * Fixed a bug when renaming a connection favorite.
  * No-longer show busy animation in all connection windows when only one connection is actually active.
  * Fix issue where favorites are not selected when they're created.
- * Canceling a connection is now more reliable.
+ * Cancelling a connection is now more reliable.
+ * All export modes are now faster, use less memory, and show progress more accurately.
+ * CSV exports are now neater and no longer export NULL strings, exporting a blank cell instead.
+ * Can now export all data in the current table regardless of limit settings via a new export menu item.
+ * SQL exports now export TEXT and BLOB types correctly and are much faster to import.
  * Other clean-ups and improvements.
 
 
