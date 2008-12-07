@@ -2,12 +2,14 @@
 
 = Publish a Release Candidate =
 
+ * Update the release notes wiki page
  * Create svn tag of trunk at tags/release-4.2
  * Checkout the new tag, and do a deployment build
  * Make sure it at least launches on PPC and Intel macs
  * Upload to private server (eg: !DropBox) as a release candidate
- * Post the url to the download at http://twitter.com/sequelpro
- * Update the ReleaseNotes wiki page
+ * Post the update at http://twitter.com/sequelpro
+ * Post the update in the discussion list
+ * Update the ReleaseNotes wiki page to have the release date and download link
  * After 7 days, if there are no blocker bugs, publish a GM release
 
 = Publish a GM Release =
