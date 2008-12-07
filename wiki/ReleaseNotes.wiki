@@ -1,7 +1,9 @@
 #summary Release Notes for past versions of Sequel Pro
 #labels Featured
 
-=Release 0.9.3 _Release Candidate expected in the next few days_=
+=Release 0.9.3 _Release Candidate available as of December 17, 2008_=
+
+[http://dl.getdropbox.com/u/147461/sequel-pro-0.9.3-release-candidate.dmg Download Release candidate]
 
  * We welcome three new programmers to the team: Mark Townsend, Rowan Beentje, and Stuart Connolly. Thanks guys!
  * Sequel Pro is now much faster when working with large data sets.
