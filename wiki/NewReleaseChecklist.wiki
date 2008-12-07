@@ -19,6 +19,7 @@
  * Update the AppCast Feed. http://sequelpro.com/appcast/ - A copy of the HTML/XML is in the Repository
  * Post to http://digg.com, and update "Digg this" link on the homepage
  * Post to http://twitter.com/sequelpro
+ * Post to discussion list
  * Post to third party download services:
   * http://versiontracker.com
   * http://macupdate.com
