@@ -9,9 +9,11 @@
  * We welcome three new programmers to the team: Mark Townsend, Rowan Beentje, and Stuart Connolly. Thanks guys!
  * Sequel Pro is now much faster when working with large data sets.
  * Fixed a data corruption issue with TEXT and BLOB data types.
+ * Encoding autodetection now uses table encoding instead of the underlying database encoding.
  * Table fields can now be reordered in the structure view.
  * Enhanced the import interface including an improved CSV field mapping interface.
  * Searching in browse mode is no-longer “real time”, to improve usability over slow connections.
+ * It is now possible to filter by NULL and NOT NULL.
  * Reloading the view in browse mode will now preserve view position, sorting and filters.
  * Table information pane is now functional.
  * Console is now more space efficient.
