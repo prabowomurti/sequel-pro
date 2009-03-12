@@ -68,9 +68,7 @@ static void forcePingTimeout(int signalNumber);
 	connectionSocket = nil;
 	keepAliveTimer = nil;
 	lastKeepAliveSuccess = nil;
-	if (![NSBundle loadNibNamed:@"ConnectionErrorDialog" owner:self]) {
-		NSLog(@"Connection error dialog could not be loaded; connection failure handling will not function correctly.");
-	}
+	[NSBundle loadNibNamed:@"ConnectionErrorDialog" owner:self];
 }
 
 
@@ -569,28 +567,11 @@ static void forcePingTimeout(int signalNumber)
 	longjmp(pingTimeoutJumpLocation, 1);
 }
 
-
-/*
- * Returns the keepalive interval, or 0 if keepalive should be disabled.
- * Sequel Pro draws this from the preferences with a default of 60 secs.
- */
-- (double) keepAliveInterval
-{
-	double interval;
-
-	interval = [[[NSUserDefaults standardUserDefaults] objectForKey:@"keepAliveInterval"] doubleValue];
-	if (!interval) interval = 0;
-	
-	return interval;
-}
-
 /*
  * Restarts a keepalive to fire in the future.
  */
 - (void) startKeepAliveTimerResettingState:(BOOL)resetState
 {
-	double interval;
-
 	if (keepAliveTimer) [self stopKeepAliveTimer];
 	if (!mConnected) return;
 
@@ -598,17 +579,14 @@ static void forcePingTimeout(int signalNumber)
 		[lastKeepAliveSuccess release];
 		lastKeepAliveSuccess = nil;
 	}
-
-	interval = [self keepAliveInterval];
-	if (interval) {
-		keepAliveTimer = [NSTimer
-							scheduledTimerWithTimeInterval:interval
-							target:self
-							selector:@selector(keepAlive:)
-							userInfo:nil
-							repeats:NO];
-		[keepAliveTimer retain];
-	}
+	
+	keepAliveTimer = [NSTimer
+						scheduledTimerWithTimeInterval:[[[NSUserDefaults standardUserDefaults] objectForKey:@"keepAliveInterval"] doubleValue]
+						target:self
+						selector:@selector(keepAlive:)
+						userInfo:nil
+						repeats:NO];
+	[keepAliveTimer retain];
 }
 
 /*
@@ -634,7 +612,7 @@ static void forcePingTimeout(int signalNumber)
 	// cut but mysql doesn't pick up on the fact - see comment for pingConnection above.  The same
 	// forced-timeout approach cannot be used here on a background thread.
 	// When the connection is disconnected in code, these 5 "hanging" threads are automatically cleaned.
-	if (lastKeepAliveSuccess && [lastKeepAliveSuccess timeIntervalSinceNow] < -5 * [self keepAliveInterval]) return;
+	if (lastKeepAliveSuccess && [lastKeepAliveSuccess timeIntervalSinceNow] < -5 * [[[NSUserDefaults standardUserDefaults] objectForKey:@"keepAliveInterval"] doubleValue]) return;
 
 	[NSThread detachNewThreadSelector:@selector(threadedKeepAlive) toTarget:self withObject:nil];
 	[self startKeepAliveTimerResettingState:NO];

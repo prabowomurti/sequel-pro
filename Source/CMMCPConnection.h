@@ -71,7 +71,6 @@
 - (void) setDelegate:(id)object;
 - (NSTimeZone *) timeZone;
 - (BOOL) pingConnection;
-- (double) keepAliveInterval;
 - (void) startKeepAliveTimerResettingState:(BOOL)resetState;
 - (void) stopKeepAliveTimer;
 - (void) keepAlive:(NSTimer *)theTimer;
