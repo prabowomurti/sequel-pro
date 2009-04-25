@@ -1,0 +1,178 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {copy = id; }; 
+            CLASS = CMCopyTable; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTableView; 
+        }, 
+        {
+            ACTIONS = {
+                addDatabase = id; 
+                analyzeTable = id; 
+                checkTable = id; 
+                checksumTable = id; 
+                chooseEncoding = id; 
+                clearConsole = id; 
+                copyCreateTableSyntax = id; 
+                copyTable = id; 
+                export = id; 
+                exportMultipleTables = id; 
+                exportTable = id; 
+                flushPrivileges = id; 
+                flushTable = id; 
+                import = id; 
+                importCSV = id; 
+                optimizeTable = id; 
+                removeDatabase = id; 
+                repairTable = id; 
+                setDatabases = id; 
+                showCreateTableSyntax = id; 
+                showVariables = id; 
+                toggleConsole = id; 
+                viewContent = id; 
+                viewQuery = id; 
+                viewStatus = id; 
+                viewStructure = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {donate = id; openPreferences = id; visitHelpWebsite = id; visitWebsite = id; }; 
+            CLASS = MainController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = NSMenu; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {
+            ACTIONS = {
+                doDecomposedStringWithCanonicalMapping = id; 
+                doDecomposedStringWithCompatibilityMapping = id; 
+                doPrecomposedStringWithCanonicalMapping = id; 
+                doPrecomposedStringWithCompatibilityMapping = id; 
+                doRemoveDiacritics = id; 
+                doSelectionLowerCase = id; 
+                doSelectionTitleCase = id; 
+                doSelectionUpperCase = id; 
+                doTranspose = id; 
+                selectCurrentLine = id; 
+                selectCurrentWord = id; 
+            }; 
+            CLASS = NSTextView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSText; 
+        }, 
+        {CLASS = NSWindow; LANGUAGE = ObjC; SUPERCLASS = NSResponder; }, 
+        {
+            ACTIONS = {
+                clearConsole = id; 
+                copy = id; 
+                saveConsoleAs = id; 
+                toggleShowSelectShowStatements = id; 
+                toggleShowTimeStamps = id; 
+            }; 
+            CLASS = SPQueryConsole; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                clearConsoleButton = NSButton; 
+                consoleSearchField = NSSearchField; 
+                consoleTableView = NSTableView; 
+                includeTimeStampsButton = NSButton; 
+                progressIndicator = NSProgressIndicator; 
+                saveConsoleButton = NSButton; 
+                saveLogView = NSView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {checkForUpdates = id; }; 
+            CLASS = SUUpdater; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {delegate = id; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                addConnectionToFavorites = id; 
+                addDatabase = id; 
+                analyzeTable = id; 
+                cancelConnectSheet = id; 
+                checkTable = id; 
+                checksumTable = id; 
+                chooseDatabase = id; 
+                chooseEncoding = id; 
+                chooseFavorite = id; 
+                closeDatabaseSheet = id; 
+                closeSheet = id; 
+                connect = id; 
+                connectSheetAddToFavorites = id; 
+                connectToDB = id; 
+                copyCreateTableSyntax = id; 
+                editFavorites = id; 
+                export = id; 
+                exportMultipleTables = id; 
+                exportTable = id; 
+                flushPrivileges = id; 
+                flushTable = id; 
+                import = id; 
+                optimizeTable = id; 
+                removeDatabase = id; 
+                repairTable = id; 
+                setDatabases = id; 
+                showCreateTableSyntax = id; 
+                showVariables = id; 
+                viewContent = id; 
+                viewQuery = id; 
+                viewStatus = id; 
+                viewStructure = id; 
+            }; 
+            CLASS = TableDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addDatabaseButton = id; 
+                chooseDatabaseButton = id; 
+                connectFavoritesTableView = NSTableView; 
+                connectProgressBar = id; 
+                connectProgressStatusText = id; 
+                connectSheet = id; 
+                createTableSyntaxWindow = NSWindow; 
+                customQueryInstance = id; 
+                customQueryTextView = NSTextView; 
+                databaseEncodingButton = id; 
+                databaseField = id; 
+                databaseNameField = id; 
+                databaseSheet = id; 
+                dbTablesTableView = NSTableView; 
+                favoritesButton = id; 
+                favoritesController = NSArrayController; 
+                hostField = id; 
+                keyChainInstance = id; 
+                nameField = id; 
+                passwordField = id; 
+                portField = id; 
+                queryProgressBar = id; 
+                sidebarGrabber = id; 
+                socketField = id; 
+                spExportControllerInstance = id; 
+                syntaxView = id; 
+                syntaxViewContent = id; 
+                tableContentInstance = id; 
+                tableDataInstance = id; 
+                tableDumpInstance = id; 
+                tableSourceInstance = id; 
+                tableStatusInstance = id; 
+                tableTabView = NSTabView; 
+                tableWindow = id; 
+                tablesListInstance = id; 
+                userField = id; 
+                variablesSheet = id; 
+                variablesTableView = id; 
+            }; 
+            SUPERCLASS = NSDocument; 
+        }
+    ); 
+    IBVersion = 1; 
+}
