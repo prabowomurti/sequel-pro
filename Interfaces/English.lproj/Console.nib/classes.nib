@@ -1,0 +1,30 @@
+{
+    IBClasses = (
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {CLASS = NSWindow; LANGUAGE = ObjC; SUPERCLASS = NSResponder; }, 
+        {
+            ACTIONS = {
+                clearConsole = id; 
+                copy = id; 
+                saveConsoleAs = id; 
+                toggleShowSelectShowStatements = id; 
+                toggleShowTimeStamps = id; 
+            }; 
+            CLASS = SPQueryConsole; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                clearConsoleButton = NSButton; 
+                consoleSearchField = NSSearchField; 
+                consoleTableView = NSTableView; 
+                includeTimeStampsButton = NSButton; 
+                progressIndicator = NSProgressIndicator; 
+                saveConsoleButton = NSButton; 
+                saveLogView = NSView; 
+                showSelectShowStatementsMenuItem = NSMenuItem; 
+                showTimeStampsMenuItem = NSMenuItem; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

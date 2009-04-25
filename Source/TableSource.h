@@ -96,7 +96,6 @@
 - (NSString *)defaultValueForField:(NSString *)field;
 - (NSArray *)fieldNames;
 - (NSDictionary *)enumFields;
-- (NSArray *)tableStructureForPrint;
 
 //tableView datasource methods
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView;

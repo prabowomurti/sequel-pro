@@ -128,12 +128,12 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 #pragma mark -
 #pragma mark Table View Delegate methods
 
-- (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(NSInteger)rowIndex
+- (BOOL)tableView:(NSTableView *)aTableView shouldSelectRow:(int)rowIndex
 {
 	return (aTableView != exportTableList);
 }
 
-- (BOOL)tableView:(NSTableView *)aTableView shouldTrackCell:(NSCell *)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+- (BOOL)tableView:(NSTableView *)aTableView shouldTrackCell:(NSCell *)cell forTableColumn:(NSTableColumn *)tableColumn row:(int)row
 {
 	return (aTableView == exportTableList);
 }
@@ -153,9 +153,10 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 {
 	NSArray *array = [toolbar items];
 	NSMutableArray *items = [NSMutableArray arrayWithCapacity:6];
+	int i;
 	
-	for (NSToolbarItem *item in array)
-	{
+	for (i = 0; i < [array count]; i++) {
+		NSToolbarItem *item = [array objectAtIndex:i];
 		[items addObject:[item itemIdentifier]];
 	}
 	

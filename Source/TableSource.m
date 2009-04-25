@@ -832,23 +832,6 @@ returns a dictionary containing enum/set field names as key and possible values 
 	return [NSDictionary dictionaryWithDictionary:enumFields];
 }
 
-- (NSArray *)tableStructureForPrint
-{
-	CMMCPResult *queryResult;
-	NSMutableArray *tempResult = [NSMutableArray array];
-	int i;
-	
-	queryResult = [mySQLConnection queryString:[NSString stringWithFormat:@"SHOW COLUMNS FROM %@", [selectedTable backtickQuotedString]]];
-	
-	if ([queryResult numOfRows]) [queryResult dataSeek:0];
-	[tempResult addObject:[queryResult fetchFieldNames]];
-	for ( i = 0 ; i < [queryResult numOfRows] ; i++ ) {
-		[tempResult addObject:[queryResult fetchRowAsArray]];
-	}
-	
-	return tempResult;
-}
-
 #pragma mark TableView datasource methods
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView

@@ -30,15 +30,15 @@
 	IBOutlet NSProgressIndicator *progressIndicator;
 	IBOutlet NSButton *includeTimeStampsButton, *saveConsoleButton, *clearConsoleButton;
 	IBOutlet NSMenuItem *showTimeStampsMenuItem, *showSelectShowStatementsMenuItem;
-	
+
 	NSFont *consoleFont;
 	NSMutableArray *messagesFullSet, *messagesFilteredSet, *messagesVisibleSet;
 	BOOL showSelectStatementsAreDisabled;
 	BOOL filterIsActive;
 	NSMutableString *activeFilterString;
+	
+	float uncollapsedDateColumnWidth;
 }
-
-@property (readwrite, retain) NSFont *consoleFont;
 
 + (SPQueryConsole *)sharedQueryConsole;
 
@@ -51,6 +51,7 @@
 - (void)showMessageInConsole:(NSString *)message;
 - (void)showErrorInConsole:(NSString *)error;
 
-- (NSUInteger)consoleMessageCount;
-
+- (int)consoleMessageCount;
+- (NSFont *)consoleFont;
+- (void)setConsoleFont:(NSFont *)theFont;
 @end

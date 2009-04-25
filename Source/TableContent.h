@@ -58,7 +58,7 @@
 	CMMCPConnection *mySQLConnection;
 	
 	id editData;
-	NSString *selectedTable, *usedQuery;
+	NSString *selectedTable;
 	NSMutableArray *fullResult, *filteredResult, *keys;
 	NSMutableDictionary *oldRow;
 	NSString *compareType, *sortField;
@@ -75,8 +75,6 @@
 - (IBAction)filterTable:(id)sender;
 - (IBAction)showAll:(id)sender;
 - (IBAction)toggleFilterField:(id)sender;
-- (NSString *)usedQuery;
-- (void)setUsedQuery:(NSString *)query;
 
 //edit methods
 - (IBAction)addRow:(id)sender;

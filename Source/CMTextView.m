@@ -22,7 +22,6 @@
 //  Or mail to <lorenz@textor.ch>
 
 #import "CMTextView.h"
-#import "CustomQuery.h"
 #import "TableDocument.h"
 #import "SPStringAdditions.h"
 #import "SPTextViewAdditions.h"
@@ -49,14 +48,6 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 @implementation CMTextView
 
 /*
- * Returns the associated line number for a character position inside of the CMTextView
- */
-- (unsigned int) getLineNumberForCharacterIndex:(unsigned int)anIndex
-{
-	return [lineNumberView lineNumberForCharacterIndex:anIndex inText:[self string]]+1;
-}
-
-/*
  * Add a menu item to context menu for looking up mysql documentation.
  */
 - (NSMenu *)menuForEvent:(NSEvent *)event 
@@ -77,7 +68,7 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 }
 
 /*
- * pen the refman if available or a search for the current selection or current word on mysql.com 
+ * Open the refman if available or a search for the current selection or current word on mysql.com 
  */
 - (void)lookupSelectionInDocumentation 
 {	
@@ -91,8 +82,11 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 	keyword = [keyword stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	
 	// Remove whitespace and newlines within the keyword
-	keyword = [keyword stringByReplacingOccurrencesOfString:@" " withString:@""];
-	keyword = [keyword stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+	NSMutableString *mutableKeyword = [keyword mutableCopy];
+	[mutableKeyword replaceOccurrencesOfString:@" " withString:@"" options:0 range:NSMakeRange(0, [mutableKeyword length])];
+	[mutableKeyword replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:NSMakeRange(0, [mutableKeyword length])];
+	keyword = [NSString stringWithString:mutableKeyword];
+	[mutableKeyword release];
 
 	// Open MySQL Documentation search in browser using the terms
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:MYSQL_DOC_SEARCH_URL, version, [keyword stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]]];
@@ -203,7 +197,6 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 	}
 }
 
-
 /*
  * Selects the line lineNumber relatively to a selection (if given) and scrolls to it
  */
@@ -264,13 +257,6 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 		if(curFlags==(NSControlKeyMask))
 		{
 			[self copyAsRTF];
-			return;
-		}
-	if([charactersIgnMod isEqualToString:@"h"]) // ^C copy as RTF
-		if(curFlags==(NSControlKeyMask))
-		{
-			
-			[[[[self window] delegate] valueForKeyPath:@"customQueryInstance"] getHelpForCurrentWord:self];
 			return;
 		}
 
@@ -599,7 +585,7 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 	if([[self textStorage] attribute:kQuote atIndex:charRange.location effectiveRange:nil])
 		return [[NSSpellChecker sharedSpellChecker] completionsForPartialWordRange:NSMakeRange(0,charRange.length) inString:[[self string] substringWithRange:charRange] language:nil inSpellDocumentWithTag:0];
 
-	NSCharacterSet *separators = [NSCharacterSet characterSetWithCharactersInString:@" \t\r\n,()\"'`-!;=+|?:~"];
+	NSCharacterSet *separators = [NSCharacterSet characterSetWithCharactersInString:@" \t\r\n,()\"'`-!"];
 	NSArray *textViewWords     = [[self string] componentsSeparatedByCharactersInSet:separators];
 	NSString *partialString    = [[self string] substringWithRange:charRange];
 	unsigned int partialLength = [partialString length];
@@ -1056,7 +1042,6 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 	@"PRIMARY",
 	@"PRIVILEGES",
 	@"PROCEDURE",
-	@"PROCEDURE ANALYSE",
 	@"PROCESS",
 	@"PROCESSLIST",
 	@"PURGE",
@@ -1188,23 +1173,15 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 	@"SOUNDS",
 	@"SPATIAL",
 	@"SPECIFIC",
-	@"SQL_AUTO_IS_NULL",
+	@"SQL",
+	@"SQLEXCEPTION",
+	@"SQLSTATE",
+	@"SQLWARNING",
 	@"SQL_BIG_RESULT",
-	@"SQL_BIG_SELECTS",
-	@"SQL_BIG_TABLES",
 	@"SQL_BUFFER_RESULT",
 	@"SQL_CACHE",
 	@"SQL_CALC_FOUND_ROWS",
-	@"SQL_LOG_BIN",
-	@"SQL_LOG_OFF",
-	@"SQL_LOG_UPDATE",
-	@"SQL_LOW_PRIORITY_UPDATES",
-	@"SQL_MAX_JOIN_SIZE",
 	@"SQL_NO_CACHE",
-	@"SQL_QUOTE_SHOW_CREATE",
-	@"SQL_SAFE_UPDATES",
-	@"SQL_SELECT_LIMIT",
-	@"SQL_SLAVE_SKIP_COUNTER",
 	@"SQL_SMALL_RESULT",
 	@"SQL_THREAD",
 	@"SQL_TSI_DAY",
@@ -1216,7 +1193,6 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 	@"SQL_TSI_SECOND",
 	@"SQL_TSI_WEEK",
 	@"SQL_TSI_YEAR",
-	@"SQL_WARNINGS",
 	@"SSL",
 	@"START",
 	@"START TRANSACTION",
@@ -1306,308 +1282,6 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 	@"YEAR",
 	@"YEAR_MONTH",
 	@"ZEROFILL",
-	//functions
-	
-	@"ABS",
-	@"ACOS",
-	@"ADDDATE",
-	@"ADDTIME",
-	@"AES_DECRYPT",
-	@"AES_ENCRYPT",
-	@"AREA",
-	@"ASBINARY",
-	@"ASCII",
-	@"ASIN",
-	@"ASTEXT",
-	@"ATAN",
-	@"ATAN2",
-	@"AVG",
-	@"BDMPOLYFROMTEXT",
-	@"BDMPOLYFROMWKB",
-	@"BDPOLYFROMTEXT",
-	@"BDPOLYFROMWKB",
-	@"BENCHMARK",
-	@"BIN",
-	@"BIT_AND",
-	@"BIT_COUNT",
-	@"BIT_LENGTH",
-	@"BIT_OR",
-	@"BIT_XOR",
-	@"BOUNDARY",
-	@"BUFFER",
-	@"CAST",
-	@"CEIL",
-	@"CEILING",
-	@"CENTROID",
-	@"CHAR",
-	@"CHARACTER_LENGTH",
-	@"CHARSET",
-	@"CHAR_LENGTH",
-	@"COALESCE",
-	@"COERCIBILITY",
-	@"COLLATION",
-	@"COMPRESS",
-	@"CONCAT",
-	@"CONCAT_WS",
-	@"CONNECTION_ID",
-	@"CONTAINS",
-	@"CONV",
-	@"CONVERT",
-	@"CONVERT_TZ",
-	@"CONVEXHULL",
-	@"COS",
-	@"COT",
-	@"COUNT",
-	@"COUNT(*)",
-	@"CRC32",
-	@"CROSSES",
-	@"CURDATE",
-	@"CURRENT_DATE",
-	@"CURRENT_TIME",
-	@"CURRENT_TIMESTAMP",
-	@"CURRENT_USER",
-	@"CURTIME",
-	@"DATABASE",
-	@"DATE",
-	@"DATEDIFF",
-	@"DATE_ADD",
-	@"DATE_DIFF",
-	@"DATE_FORMAT",
-	@"DATE_SUB",
-	@"DAY",
-	@"DAYNAME",
-	@"DAYOFMONTH",
-	@"DAYOFWEEK",
-	@"DAYOFYEAR",
-	@"DECODE",
-	@"DEFAULT",
-	@"DEGREES",
-	@"DES_DECRYPT",
-	@"DES_ENCRYPT",
-	@"DIFFERENCE",
-	@"DIMENSION",
-	@"DISJOINT",
-	@"DISTANCE",
-	@"ELT",
-	@"ENCODE",
-	@"ENCRYPT",
-	@"ENDPOINT",
-	@"ENVELOPE",
-	@"EQUALS",
-	@"EXP",
-	@"EXPORT_SET",
-	@"EXTERIORRING",
-	@"EXTRACT",
-	@"EXTRACTVALUE",
-	@"FIELD",
-	@"FIND_IN_SET",
-	@"FLOOR",
-	@"FORMAT",
-	@"FOUND_ROWS",
-	@"FROM_DAYS",
-	@"FROM_UNIXTIME",
-	@"GEOMCOLLFROMTEXT",
-	@"GEOMCOLLFROMWKB",
-	@"GEOMETRYCOLLECTION",
-	@"GEOMETRYCOLLECTIONFROMTEXT",
-	@"GEOMETRYCOLLECTIONFROMWKB",
-	@"GEOMETRYFROMTEXT",
-	@"GEOMETRYFROMWKB",
-	@"GEOMETRYN",
-	@"GEOMETRYTYPE",
-	@"GEOMFROMTEXT",
-	@"GEOMFROMWKB",
-	@"GET_FORMAT",
-	@"GET_LOCK",
-	@"GLENGTH",
-	@"GREATEST",
-	@"GROUP_CONCAT",
-	@"GROUP_UNIQUE_USERS",
-	@"HEX",
-	@"HOUR",
-	@"IF",
-	@"IFNULL",
-	@"INET_ATON",
-	@"INET_NTOA",
-	@"INSERT",
-	@"INSERT_ID",
-	@"INSTR",
-	@"INTERIORRINGN",
-	@"INTERSECTION",
-	@"INTERSECTS",
-	@"INTERVAL",
-	@"ISCLOSED",
-	@"ISEMPTY",
-	@"ISNULL",
-	@"ISRING",
-	@"ISSIMPLE",
-	@"IS_FREE_LOCK",
-	@"IS_USED_LOCK",
-	@"LAST_DAY",
-	@"LAST_INSERT_ID",
-	@"LCASE",
-	@"LEAST",
-	@"LEFT",
-	@"LENGTH",
-	@"LINEFROMTEXT",
-	@"LINEFROMWKB",
-	@"LINESTRING",
-	@"LINESTRINGFROMTEXT",
-	@"LINESTRINGFROMWKB",
-	@"LN",
-	@"LOAD_FILE",
-	@"LOCALTIME",
-	@"LOCALTIMESTAMP",
-	@"LOCATE",
-	@"LOG",
-	@"LOG10",
-	@"LOG2",
-	@"LOWER",
-	@"LPAD",
-	@"LTRIM",
-	@"MAKEDATE",
-	@"MAKETIME",
-	@"MAKE_SET",
-	@"MASTER_POS_WAIT",
-	@"MAX",
-	@"MBRCONTAINS",
-	@"MBRDISJOINT",
-	@"MBREQUAL",
-	@"MBRINTERSECTS",
-	@"MBROVERLAPS",
-	@"MBRTOUCHES",
-	@"MBRWITHIN",
-	@"MD5",
-	@"MICROSECOND",
-	@"MID",
-	@"MIN",
-	@"MINUTE",
-	@"MLINEFROMTEXT",
-	@"MLINEFROMWKB",
-	@"MOD",
-	@"MONTH",
-	@"MONTHNAME",
-	@"NOW",
-	@"MPOINTFROMTEXT",
-	@"MPOINTFROMWKB",
-	@"MPOLYFROMTEXT",
-	@"MPOLYFROMWKB",
-	@"MULTILINESTRING",
-	@"MULTILINESTRINGFROMTEXT",
-	@"MULTILINESTRINGFROMWKB",
-	@"MULTIPOINT",
-	@"MULTIPOINTFROMTEXT",
-	@"MULTIPOINTFROMWKB",
-	@"MULTIPOLYGON",
-	@"MULTIPOLYGONFROMTEXT",
-	@"MULTIPOLYGONFROMWKB",
-	@"NAME_CONST",
-	@"NOW",
-	@"NULLIF",
-	@"NUMGEOMETRIES",
-	@"NUMINTERIORRINGS",
-	@"NUMPOINTS",
-	@"OCT",
-	@"OCTET_LENGTH",
-	@"OLD_PASSWORD",
-	@"ORD",
-	@"OVERLAPS",
-	@"PASSWORD",
-	@"PERIOD_ADD",
-	@"PERIOD_DIFF",
-	@"PI",
-	@"POINT",
-	@"POINTFROMTEXT",
-	@"POINTFROMWKB",
-	@"POINTN",
-	@"POINTONSURFACE",
-	@"POLYFROMTEXT",
-	@"POLYFROMWKB",
-	@"POLYGON",
-	@"POLYGONFROMTEXT",
-	@"POLYGONFROMWKB",
-	@"POSITION",
-	@"POW",
-	@"POWER",
-	@"QUARTER",
-	@"QUOTE",
-	@"RADIANS",
-	@"RAND",
-	@"RELATED",
-	@"RELEASE_LOCK",
-	@"REPEAT",
-	@"REPLACE",
-	@"REVERSE",
-	@"RIGHT",
-	@"ROUND",
-	@"ROW_COUNT",
-	@"RPAD",
-	@"RTRIM",
-	@"SCHEMA",
-	@"SECOND",
-	@"SEC_TO_TIME",
-	@"SESSION_USER",
-	@"SHA",
-	@"SHA1",
-	@"SIGN",
-	@"SIN",
-	@"SLEEP",
-	@"SOUNDEX",
-	@"SPACE",
-	@"SQRT",
-	@"SRID",
-	@"STARTPOINT",
-	@"STD",
-	@"STDDEV",
-	@"STDDEV_POP",
-	@"STDDEV_SAMP",
-	@"STRCMP",
-	@"STR_TO_DATE",
-	@"SUBDATE",
-	@"SUBSTR",
-	@"SUBSTRING",
-	@"SUBSTRING_INDEX",
-	@"SUBTIME",
-	@"SUM",
-	@"SYMDIFFERENCE",
-	@"SYSDATE",
-	@"SYSTEM_USER",
-	@"TAN",
-	@"TIME",
-	@"TIMEDIFF",
-	@"TIMESTAMP",
-	@"TIMESTAMPADD",
-	@"TIMESTAMPDIFF",
-	@"TIME_FORMAT",
-	@"TIME_TO_SEC",
-	@"TOUCHES",
-	@"TO_DAYS",
-	@"TRIM",
-	@"TRUNCATE",
-	@"UCASE",
-	@"UNCOMPRESS",
-	@"UNCOMPRESSED_LENGTH",
-	@"UNHEX",
-	@"UNIQUE_USERS",
-	@"UNIX_TIMESTAMP",
-	@"UPDATEXML",
-	@"UPPER",
-	@"USER",
-	@"UTC_DATE",
-	@"UTC_TIME",
-	@"UTC_TIMESTAMP",
-	@"UUID",
-	@"VARIANCE",
-	@"VAR_POP",
-	@"VAR_SAMP",
-	@"VERSION",
-	@"WEEK",
-	@"WEEKDAY",
-	@"WEEKOFYEAR",
-	@"WITHIN",
-	@"YEAR",
-	@"YEARWEEK",
-
 	nil];
 }
 
@@ -1677,7 +1351,6 @@ YY_BUFFER_STATE yy_scan_string (const char *);
 	return autouppercaseKeywordsEnabled;
 }
 
-
 /*******************
 SYNTAX HIGHLIGHTING!
 *******************/
@@ -1700,7 +1373,6 @@ SYNTAX HIGHLIGHTING!
     [scrollView setHasHorizontalRuler:NO];
     [scrollView setHasVerticalRuler:YES];
     [scrollView setRulersVisible:YES];
-
 }
 
 - (void)textStorageDidProcessEditing:(NSNotification *)notification
@@ -1718,6 +1390,7 @@ SYNTAX HIGHLIGHTING!
 
 	//make sure that the notification is from the correct textStorage object
 	if (textStore!=[self textStorage]) return;
+
 
 	NSColor *commentColor   = [NSColor colorWithDeviceRed:0.000 green:0.455 blue:0.000 alpha:1.000];
 	NSColor *quoteColor     = [NSColor colorWithDeviceRed:0.769 green:0.102 blue:0.086 alpha:1.000];

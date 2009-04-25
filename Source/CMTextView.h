@@ -2,7 +2,7 @@
 //  CMTextView.h
 //  sequel-pro
 //
-//  Created by Carsten Bl√ºm.
+//  Created by Carsten Blüm.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -53,6 +53,5 @@
 - (void) setAutouppercaseKeywords:(BOOL)enableAutouppercaseKeywords;
 - (BOOL) autouppercaseKeywords;
 - (void) selectLineNumber:(unsigned int)lineNumber ignoreLeadingNewLines:(BOOL)ignLeadingNewLines;
-- (unsigned int) getLineNumberForCharacterIndex:(unsigned int)anIndex;
 
 @end

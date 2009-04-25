@@ -25,7 +25,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <MCPKit_bundled/MCPKit_bundled.h>
-#import <WebKit/WebKit.h>
 
 @class CMMCPConnection, CMMCPResult;
 
@@ -96,8 +95,6 @@
 
 	NSToolbar *mainToolbar;
 	NSToolbarItem *chooseDatabaseToolbarItem;
-	
-	WebView *printWebView;
 }
 
 //start sheet
@@ -119,8 +116,6 @@
 				   sshUser:(NSString *)sshUser // no-longer in use
 			   sshPassword:(NSString *)sshPassword // no-longer in use
 				   sshPort:(NSString *)sshPort; // no-longer in use
-
-- (NSString *)getHTMLforPrint;
 
 //alert sheets method
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(NSString *)contextInfo;

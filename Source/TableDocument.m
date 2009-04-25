@@ -44,10 +44,6 @@
 #import "MainController.h"
 #import "SPPreferenceController.h"
 
-//used for printing
-#import "MGTemplateEngine.h"
-#import "ICUTemplateMatcher.h"
-
 NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocumentFavoritesControllerSelectionIndexDidChange";
 
 @interface TableDocument (PrivateAPI)
@@ -65,8 +61,7 @@ NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocum
 		chooseDatabaseButton = nil;
 		chooseDatabaseToolbarItem = nil;
 	}
-	printWebView = [[WebView alloc] init];
-	[printWebView setFrameLoadDelegate:self];	
+
 	return self;
 }
 
@@ -96,116 +91,13 @@ NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocum
 	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame 
+- (NSPrintOperation *)printOperationWithSettings:(NSDictionary *)ps error:(NSError **)e
 {	
-	//because I need the webFrame loaded (for preview), I've moved the actuall printing here.
 	NSPrintInfo *printInfo = [self printInfo];
 	[printInfo setHorizontalPagination:NSFitPagination];
 	[printInfo setVerticalPagination:NSAutoPagination];
-	[printInfo setVerticallyCentered:NO];
-	[printInfo setTopMargin:30];
-	[printInfo setBottomMargin:30];
-	[printInfo setLeftMargin:10];
-	[printInfo setRightMargin:10];
-	
-	NSPrintOperation *op = [NSPrintOperation
-							printOperationWithView:[[[printWebView mainFrame] frameView] documentView]
-							printInfo:printInfo];
-	
-	//add ability to select orientation to print panel
-	NSPrintPanel *printPanel = [op printPanel];
-	[printPanel setOptions:[printPanel options] + NSPrintPanelShowsOrientation + NSPrintPanelShowsScaling];
-	[op setPrintPanel:printPanel];
-	
-    [op runOperationModalForWindow:tableWindow
-						  delegate:self
-					didRunSelector:
-	 @selector(printOperationDidRun:success:contextInfo:)
-					   contextInfo:NULL];
-
-}
-
-- (IBAction)printDocument:(id)sender
-{
-	//here load the printing document. The actual printing is done in the doneLoading delegate.
-	[[printWebView mainFrame] loadHTMLString:[self getHTMLforPrint] baseURL:nil];
-}
-
-- (void)printOperationDidRun:(NSPrintOperation *)printOperation
-					 success:(BOOL)success
-				 contextInfo:(void *)info
-{
-	//selector for print... maybe we can get rid of this?
-}
-
-- (NSString *)getHTMLforPrint
-{
-	// Set up template engine with your chosen matcher.
-	MGTemplateEngine *engine = [MGTemplateEngine templateEngine];
-	[engine setMatcher:[ICUTemplateMatcher matcherWithTemplateEngine:engine]];
-	
-	NSString *versionForPrint = [NSString stringWithFormat:@"%@ %@ (build %@)",
-		[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"],
-		[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],
-		[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
-	];
-	
-	NSMutableDictionary *connection = [[NSMutableDictionary alloc] init];
-	if([[self user] length])
-		[connection setValue:[self user] forKey:@"username"];
-	[connection setValue:[self host] forKey:@"hostname"];
-	if([[portField stringValue] length])
-		[connection setValue:[portField stringValue] forKey:@"port"];
-	[connection setValue:selectedDatabase forKey:@"database"];
-	[connection setValue:versionForPrint forKey:@"version"];
-	
-	NSArray *columns, *rows;
-	columns = rows = [[NSArray alloc] init];
-
-	if ( [tableTabView indexOfTabViewItem:[tableTabView selectedTabViewItem]] == 0 ){
-		if([[tableSourceInstance tableStructureForPrint] count] > 0)
-			columns = [[NSArray alloc] initWithArray:[[tableSourceInstance tableStructureForPrint] objectAtIndex:0] copyItems:YES];
-		if([[tableSourceInstance tableStructureForPrint] count] > 1)
-			rows = [[NSArray alloc] initWithArray:
-					[[tableSourceInstance tableStructureForPrint] objectsAtIndexes:
-					 [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, [[tableSourceInstance tableStructureForPrint] count]-1)]
-					 ]
-					];
-	}
-	else if ( [tableTabView indexOfTabViewItem:[tableTabView selectedTabViewItem]] == 1 ){
-		if([[tableContentInstance currentResult] count] > 0)
-			columns = [[NSArray alloc] initWithArray:[[tableContentInstance currentResult] objectAtIndex:0] copyItems:YES];
-		if([[tableContentInstance currentResult] count] > 1)
-			rows = [[NSArray alloc] initWithArray:
-					[[tableContentInstance currentResult] objectsAtIndexes:
-					 [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, [[tableContentInstance currentResult] count]-1)]
-					 ]
-					];
-		[connection setValue:[tableContentInstance usedQuery] forKey:@"query"];
-	}
-	else if ( [tableTabView indexOfTabViewItem:[tableTabView selectedTabViewItem]] == 2 ){
-		if([[customQueryInstance currentResult] count] > 0)
-			columns = [[NSArray alloc] initWithArray:[[customQueryInstance currentResult] objectAtIndex:0] copyItems:YES];
-		if([[customQueryInstance currentResult] count] > 1)
-			rows = [[NSArray alloc] initWithArray:
-					[[customQueryInstance currentResult] objectsAtIndexes:
-					 [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, [[customQueryInstance currentResult] count]-1)]
-					 ]
-					];
-		[connection setValue:[customQueryInstance usedQuery] forKey:@"query"];
-	}
-	
-	[engine setObject:connection forKey:@"c"];
-	// Get path to template.
-	NSString *templatePath = [[NSBundle mainBundle] pathForResource:@"sequel-pro-print-template" ofType:@"html"];
-	NSDictionary *print_data = [NSDictionary dictionaryWithObjectsAndKeys: 
-			columns, @"columns",
-			rows, @"rows",
-			nil];
-
-	// Process the template and display the results.
-	NSString *result = [engine processTemplateInFileAtPath:templatePath withVariables:print_data];
-	return result;
+	NSPrintOperation *printOp = [NSPrintOperation printOperationWithView:[[tableTabView selectedTabViewItem] view] printInfo:printInfo];
+	return printOp;
 }
 
 - (CMMCPConnection *)sharedConnection
@@ -936,12 +828,8 @@ NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocum
 	
 	if ([tableSyntax isKindOfClass:[NSData class]])
 		tableSyntax = [[NSString alloc] initWithData:tableSyntax encoding:[mySQLConnection encoding]];
-
-	if([tablesListInstance tableType] == SP_TABLETYPE_VIEW)
-		[syntaxViewContent setString:[tableSyntax createViewSyntaxPrettifier]];
-	else
-		[syntaxViewContent setString:tableSyntax];
-
+	
+	[syntaxViewContent setString:tableSyntax];
 	[createTableSyntaxWindow makeKeyAndOrderFront:self];
 }
 
@@ -970,13 +858,10 @@ NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocum
 	// copy to the clipboard
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
 	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
-	if([tablesListInstance tableType] == SP_TABLETYPE_VIEW)
-		[pb setString:[tableSyntax createViewSyntaxPrettifier] forType:NSStringPboardType];
-	else
-		[pb setString:tableSyntax forType:NSStringPboardType];
-
-	// Table syntax copied Growl notification
-	[[SPGrowlController sharedGrowlController] notifyWithTitle:@"Table Syntax Copied"
+	[pb setString:tableSyntax forType:NSStringPboardType];
+    
+    // Table syntax copied Growl notification
+    [[SPGrowlController sharedGrowlController] notifyWithTitle:@"Table Syntax Copied"
                                                    description:[NSString stringWithFormat:NSLocalizedString(@"Syntax for %@ table copied",@"description for table syntax copied growl notification"), [self table]] 
                                               notificationName:@"Table Syntax Copied"];
 }
@@ -1832,7 +1717,10 @@ NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocum
  * Invoked when the document window is about to close
  */
 - (void)windowWillClose:(NSNotification *)aNotification
-{	
+{
+	//reset print settings, so we're not prompted about saving them
+	[self setPrintInfo:[NSPrintInfo sharedPrintInfo]];
+
 	if ([mySQLConnection isConnected]) [self closeConnection];
 	if ([[[SPQueryConsole sharedQueryConsole] window] isVisible]) [self toggleConsole:self];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -2004,6 +1892,7 @@ NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocum
 - (BOOL)_favoriteAlreadyExists:(NSString *)database host:(NSString *)host user:(NSString *)user
 {
 	NSArray *favorites = [favoritesController arrangedObjects];
+	int i;
 
 	// Ensure database, host, and user match prefs format
 	if (!database) database = @"";
@@ -2011,8 +1900,8 @@ NSString *TableDocumentFavoritesControllerSelectionIndexDidChange = @"TableDocum
 	if (!user) user = @"";
 
 	// Loop the favorites and check their details
-	for (NSDictionary *favorite in favorites)
-	{
+	for (i = 0; i < [favorites count]; i++) {
+		NSDictionary *favorite = [favorites objectAtIndex:i];
 		if ([[favorite objectForKey:@"database"] isEqualToString:database] &&
 			[[favorite objectForKey:@"host"] isEqualToString:host] &&
 			[[favorite objectForKey:@"user"] isEqualToString:user]) {

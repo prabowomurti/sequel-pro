@@ -391,14 +391,9 @@
 
 	// Load file into string.  For SQL imports, try UTF8 file encoding before the current encoding.
 	if ([fileType isEqualToString:@"SQL"]) {
-		NSLog(@"Attempting to read as utf8");
 		dumpFile = [SPSQLParser stringWithContentsOfFile:filename
 											 encoding:NSUTF8StringEncoding
 												error:&errorStr];
-
-		// This will crash if dumpFile is big.
-		DLog(dumpFile);
-	
 		if (errorStr) {
 			importSQLAsUTF8 = NO;
 			errorStr = nil;
@@ -407,7 +402,6 @@
 
 	// If the SQL-as-UTF8 read failed, and for CSVs, use the current connection encoding.
 	if (!importSQLAsUTF8 || [fileType isEqualToString:@"CSV"]) {
-		NSLog(@"Reading using connection encoding");
 		dumpFile = [SPSQLParser stringWithContentsOfFile:filename
 											 encoding:[CMMCPConnection encodingForMySQLEncoding:[[tableDocumentInstance connectionEncoding] UTF8String]]
 												error:&errorStr];
@@ -882,7 +876,7 @@
 		if ( [queryResult numOfRows] ) {
 			tableDetails = [[NSDictionary alloc] initWithDictionary:[queryResult fetchRowAsDictionary]];
 			if ([tableDetails objectForKey:@"Create View"]) {
-				createTableSyntax = [[[[tableDetails objectForKey:@"Create View"] copy] autorelease] createViewSyntaxPrettifier];
+				createTableSyntax = [[[tableDetails objectForKey:@"Create View"] copy] autorelease];
 				tableType = SP_TABLETYPE_VIEW;
 			} else {
 				createTableSyntax = [[[tableDetails objectForKey:@"Create Table"] copy] autorelease];
@@ -2065,9 +2059,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 {
 	NSArray *array = [toolbar items];
 	NSMutableArray *items = [NSMutableArray arrayWithCapacity:6];
-	
-	for (NSToolbarItem *item in array)
+	int i;
+
+	for (i = 0; i < [array count]; i++)
 	{
+		NSToolbarItem *item = [array objectAtIndex:i];
 		[items addObject:[item itemIdentifier]];
 	}
 	

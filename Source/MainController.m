@@ -56,6 +56,41 @@
 	[[NSScriptExecutionContext sharedScriptExecutionContext] setTopLevelObject:self];
 	
 	isNewFavorite = NO;
+
+	// Ensure we're not being run on Leopard
+	int systemPrefix = 10, systemMajor = 0, systemMinor = 0;
+	NSString *systemVersion = [[NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"];    
+    NSArray *systemVersionArray = [systemVersion componentsSeparatedByString:@"."];
+	if ([systemVersionArray count]) systemPrefix = [[systemVersionArray objectAtIndex:0] intValue];
+	if ([systemVersionArray count] > 1) systemMajor = [[systemVersionArray objectAtIndex:1] intValue];
+	if ([systemVersionArray count] > 2) systemMinor = [[systemVersionArray objectAtIndex:2] intValue];
+	if (systemPrefix == 10 && systemMajor > 4) {
+		NSAlert *alert = [NSAlert alertWithMessageText:@"This is the Tiger (10.4) version of Sequel Pro" defaultButton:@"Quit and open website" alternateButton:@"Run anyway" otherButton:@"Quit" informativeTextWithFormat:@"This version of Sequel Pro is only intended for use with Mac OS X Tiger (10.4.x).  When run on your system, the interface will show incorrectly and buttons will be out of place.  We recommend you visit the website to download a current version of Sequel Pro."];
+		int returncode = [alert runModal];
+		
+		// Quit and open website button selected
+		if (returncode == NSAlertDefaultReturn) {
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.sequelpro.com/"]];
+			[NSApp terminate:self];
+
+		// Quit
+		} else if (returncode == NSAlertOtherReturn) {
+			[[NSApplication sharedApplication] terminate:self];
+
+		// Run normally, opening a window manually
+		} else {
+			TableDocument *tableDocument;
+
+			if (tableDocument = [[NSDocumentController sharedDocumentController] makeUntitledDocumentOfType:@"DocumentType" error:nil]) {
+				if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AutoConnectToDefault"]) {
+					[tableDocument setShouldAutomaticallyConnect:YES];
+				}
+				[[NSDocumentController sharedDocumentController] addDocument:tableDocument];
+				[tableDocument makeWindowControllers];
+				[tableDocument showWindows];
+			}
+		}
+	}
 }
 
 #pragma mark -

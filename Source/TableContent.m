@@ -50,8 +50,7 @@
 	sortField = nil;
 	areShowingAllRows = false;
 	currentlyEditingRow = -1;
-	usedQuery = [[NSString stringWithString:@""] retain];
-		
+
 	return self;
 }
 
@@ -297,8 +296,6 @@
 					[NSString stringWithFormat:@" LIMIT %d,%d",
 						[limitRowsField intValue]-1, [prefs integerForKey:@"LimitResultsValue"]]];
 	}
-
-	[self setUsedQuery:query];
 	
 	queryResult = [mySQLConnection queryString:query];
 	if ( queryResult == nil ) {
@@ -396,9 +393,6 @@
 						[limitRowsField intValue]-1, [prefs integerForKey:@"LimitResultsValue"]]];
 		[limitRowsField selectText:self];
 	}
-	
-	[self setUsedQuery:queryString];
-	
 	queryResult = [mySQLConnection queryString:queryString];
 	//	[fullResult setArray:[[self fetchResultAsArray:queryResult] retain]];
 	[fullResult setArray:[self fetchResultAsArray:queryResult]];
@@ -610,8 +604,6 @@
 		queryString = [NSString stringWithFormat:@"%@ LIMIT %d,%d", queryString,
 						[limitRowsField intValue]-1, [prefs integerForKey:@"LimitResultsValue"]];
 	}
-
-	[self setUsedQuery:queryString];
 	
 	theResult = [mySQLConnection queryString:queryString];
 	[filteredResult setArray:[self fetchResultAsArray:theResult]];
@@ -660,18 +652,6 @@
 {
 	// If the user is filtering for NULLs then disabled the filter field, otherwise enable it.
 	[argumentField setEnabled:(![[[compareField selectedItem] title] hasSuffix:@"NULL"])];
-}
-
-- (NSString *)usedQuery
-{
-	return usedQuery;
-}
-
-- (void)setUsedQuery:(NSString *)query
-{
-	if(usedQuery)
-		[usedQuery release];
-	usedQuery = [[NSString stringWithString:query] retain];
 }
 
 
@@ -1679,7 +1659,6 @@
 										[limitRowsField intValue]-1, [prefs integerForKey:@"LimitResultsValue"]]];
 					}
 					
-					[self setUsedQuery:queryString];
 					queryResult = [mySQLConnection queryString:queryString];
 					//						[fullResult setArray:[[self fetchResultAsArray:queryResult] retain]];
 					[fullResult setArray:[self fetchResultAsArray:queryResult]];
@@ -1768,7 +1747,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
             NSArray    *columns             = [tableDataInstance columns];
             NSArray    *columnNames         = [tableDataInstance columnNames];
             NSString   *columnTypeGrouping;
-            NSUInteger  indexOfColumn;
+            int  indexOfColumn;
             
             // We have to find the index of the current column
             // Make sure we find it, otherwise return (We might decide in the future
@@ -2210,7 +2189,6 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[compareType release];
 	if (sortField) [sortField release];
 	[prefs release];
-	[usedQuery release];
 	
 	[super dealloc];
 }

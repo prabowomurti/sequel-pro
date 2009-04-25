@@ -24,10 +24,6 @@
 
 @implementation SPConsoleMessage
 
-@synthesize isError;
-@synthesize messageDate;
-@synthesize message;
-
 + (SPConsoleMessage *)consoleMessageWithMessage:(NSString *)message date:(NSDate *)date
 {
 	return [[[SPConsoleMessage alloc] initWithMessage:message date:date] autorelease];
@@ -36,11 +32,45 @@
 - (id)initWithMessage:(NSString *)consoleMessage date:(NSDate *)date
 {
 	if ((self = [super init])) {
-		[self setMessage:consoleMessage];
-		[self setMessageDate:date];
+		isError = NO;
+		messageDate = [date copy];
+		message = [[NSString alloc] initWithString:consoleMessage];
 	}
 	
 	return self;
+}
+
+
+- (BOOL)isError
+{
+	return isError;
+}
+
+- (NSDate *)messageDate
+{
+	return messageDate;
+}
+
+- (NSString *)message
+{
+	return message;
+}
+
+- (void)setIsError:(BOOL)error
+{
+	isError = error;
+}
+
+- (void)setMessageDate:(NSDate *)theDate
+{
+	if (messageDate) [messageDate release];
+	messageDate = [theDate copy];
+}
+
+- (void)setMessage:(NSString *)theMessage
+{
+	if (message) [message release];
+	message = [[NSString alloc] initWithString:theMessage];
 }
 
 - (void)dealloc

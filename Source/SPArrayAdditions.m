@@ -32,8 +32,10 @@
  */
 {
     NSString *result = [NSString string];
-    for (NSString *component in self)
-    {
+	int i;
+    for (i = 0; i < [self count]; i++)
+	{
+		NSString *component = [self objectAtIndex:i];
         if ([result length]) result = [result stringByAppendingString: @","];
         result = [result stringByAppendingString: [component backtickQuotedString] ];
     }

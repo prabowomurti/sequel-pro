@@ -502,6 +502,7 @@
 	return YES;
 }
 
+
 #pragma mark -
 #pragma mark TableView delegate methods
 	
@@ -613,6 +614,7 @@
 {
 	return (proposedMin + 100);
 }
+
 
 #pragma mark -
 #pragma mark TextField delegate methods
@@ -739,6 +741,8 @@
 }
 
 @end
+
+
 
 #pragma mark -
 

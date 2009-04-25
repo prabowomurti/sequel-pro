@@ -27,7 +27,7 @@
 #define MESSAGE_TIME_STAMP_FORMAT @"%H:%M:%S"
 
 #define DEFAULT_CONSOLE_LOG_FILENAME @"untitled"
-#define DEFAULT_CONSOLE_LOG_FILE_EXTENSION @"sql"
+#define DEFAULT_CONSOLE_LOG_FILE_EXTENSION @"log"
 
 #define CONSOLE_WINDOW_AUTO_SAVE_NAME @"QueryConsole"
 
@@ -48,8 +48,6 @@
 static SPQueryConsole *sharedQueryConsole = nil;
 
 @implementation SPQueryConsole
-
-@synthesize consoleFont;
 
 /*
  * Returns the shared query console.
@@ -83,6 +81,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
 	if ((self = [super initWithWindowNibName:@"Console"])) {
 		messagesFullSet		= [[NSMutableArray alloc] init];
 		messagesFilteredSet	= [[NSMutableArray alloc] init];
+		consoleFont			= [[NSFont systemFontOfSize:[NSFont smallSystemFontSize]] retain];
 
 		showSelectStatementsAreDisabled = NO;
 		filterIsActive = NO;
@@ -90,6 +89,8 @@ static SPQueryConsole *sharedQueryConsole = nil;
 
 		// Weak reference to active messages set - starts off as full set
 		messagesVisibleSet = messagesFullSet;
+
+		uncollapsedDateColumnWidth = [[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] width];
 	}
 
 	return self;
@@ -115,7 +116,11 @@ static SPQueryConsole *sharedQueryConsole = nil;
 - (void)awakeFromNib
 {
 	[self setWindowFrameAutosaveName:CONSOLE_WINDOW_AUTO_SAVE_NAME];
-	[[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] setHidden:![[NSUserDefaults standardUserDefaults] boolForKey:@"ConsoleShowTimestamps"]];
+	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"ConsoleShowTimestamps"]) {
+		uncollapsedDateColumnWidth = [[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] width];
+		[[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] setMinWidth:0.0];
+		[[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] setWidth: 0.0];	
+	}
 	showSelectStatementsAreDisabled = ![[NSUserDefaults standardUserDefaults] boolForKey:@"ConsoleShowSelectsAndShows"];
 	[self _updateFilterState];
 }
@@ -132,7 +137,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
 		NSString *string = @"";
 		NSIndexSet *rows = [consoleTableView selectedRowIndexes];
 
-		NSUInteger i = [rows firstIndex];
+		int i = [rows firstIndex];
 
 		while (i != NSNotFound) 
 		{
@@ -142,7 +147,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
 				NSString *consoleMessage = [message message];
 
 				// If the timestamp column is not hidden we need to include them in the copy
-				if (![[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] isHidden]) {
+				if ([[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] width] > 0) {
 
 					NSString *dateString = [[message messageDate] descriptionWithCalendarFormat:MESSAGE_TIME_STAMP_FORMAT timeZone:nil locale:nil];
 
@@ -203,17 +208,25 @@ static SPQueryConsole *sharedQueryConsole = nil;
  */
 - (IBAction)toggleShowTimeStamps:(id)sender
 {
-	[[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] setHidden:([sender state])];
+	if ([sender state]) {
+		[[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] setMinWidth:50.0];
+		[[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] setWidth:uncollapsedDateColumnWidth];
+	} else {
+		uncollapsedDateColumnWidth = [[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] width];
+		[[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] setMinWidth:0.0];
+		[[consoleTableView tableColumnWithIdentifier:TABLEVIEW_DATE_COLUMN_IDENTIFIER] setWidth: 0.0];
+	}
 }
 
 /**
  * Toggles the hiding of messages containing SELECT and SHOW statements
  */
 - (IBAction)toggleShowSelectShowStatements:(id)sender
-{	
+{
+
 	// Store the state of the toggle for later quick reference
-	showSelectStatementsAreDisabled = [sender state];
-	
+	showSelectStatementsAreDisabled = ![sender state];
+
 	[self _updateFilterState];
 }
 
@@ -236,7 +249,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
 /**
  * Returns the number of messages currently in the console.
  */
-- (NSUInteger)consoleMessageCount
+- (int)consoleMessageCount
 {
 	return [messagesFullSet count];
 }
@@ -265,7 +278,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
 /**
  * Table view delegate method. Returns the specific object for the request column and row.
  */
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSUInteger)row
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row
 {
 	NSString *returnValue = nil;
 
@@ -340,6 +353,17 @@ static SPQueryConsole *sharedQueryConsole = nil;
 	return [[self window] validateMenuItem:menuItem];
 }
 
+- (NSFont *)consoleFont
+{
+	return consoleFont;
+}
+
+- (void)setConsoleFont:(NSFont *)theFont
+{
+	if (consoleFont) [consoleFont release];
+	consoleFont = [theFont copy];
+}
+
 /**
  * Standard dealloc.
  */
@@ -350,6 +374,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
 	[messagesFullSet release], messagesFullSet = nil;
 	[messagesFilteredSet release], messagesFilteredSet = nil;
 	[activeFilterString release], activeFilterString = nil;
+	[consoleFont release], consoleFont = nil;
 
 	[super dealloc];
 }
@@ -365,9 +390,10 @@ static SPQueryConsole *sharedQueryConsole = nil;
 - (NSString *)_getConsoleStringWithTimeStamps:(BOOL)timeStamps
 {
 	NSMutableString *consoleString = [[[NSMutableString alloc] init] autorelease];
+	int i;
 
-	for (SPConsoleMessage *message in messagesVisibleSet) 
-	{
+	for (i = 0; i < [messagesVisibleSet count]; i++) {
+		SPConsoleMessage *message = [messagesVisibleSet objectAtIndex:i];
 		if (timeStamps) {
 			NSString *dateString = [[message messageDate] descriptionWithCalendarFormat:MESSAGE_TIME_STAMP_FORMAT timeZone:nil locale:nil];
 
@@ -387,6 +413,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
  */
 - (void)_updateFilterState
 {
+	int i;
 
 	// Display start progress spinner
 	[progressIndicator setHidden:NO];
@@ -422,7 +449,8 @@ static SPQueryConsole *sharedQueryConsole = nil;
 
 	// Loop through all the messages in the full set to determine which should be
 	// added to the filtered set.
-	for (SPConsoleMessage *message in messagesFullSet) { 
+	for (i = 0; i < [messagesFullSet count]; i++) {
+		SPConsoleMessage *message = [messagesFullSet objectAtIndex:i]; 
 
 		// Add a reference to the message to the filtered set if filters are active and the
 		// current message matches them
@@ -454,7 +482,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
  */
 - (void)_addMessageToConsole:(NSString *)message isError:(BOOL)error
 {
-	SPConsoleMessage *consoleMessage = [SPConsoleMessage consoleMessageWithMessage:[[[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByReplacingOccurrencesOfString:@"\n" withString:@" "] stringByAppendingString:@";"] date:[NSDate date]];
+	SPConsoleMessage *consoleMessage = [SPConsoleMessage consoleMessageWithMessage:[[message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] stringByAppendingString:@";"] date:[NSDate date]];
 
 	[consoleMessage setIsError:error];
 
@@ -479,7 +507,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
  * and whether it should be hidden if the SELECT/SHOW toggle is off.
  */
 - (BOOL)_messageMatchesCurrentFilters:(NSString *)message
-{	
+{
 	BOOL messageMatchesCurrentFilters = YES;
 
 	// Check whether to hide the message based on the current filter text, if any
@@ -492,7 +520,7 @@ static SPQueryConsole *sharedQueryConsole = nil;
 	// If hiding SELECTs and SHOWs is toggled to on, check whether the message is a SELECT or SHOW
 	if (messageMatchesCurrentFilters
 		&& showSelectStatementsAreDisabled
-		&& ([[message uppercaseString] hasPrefix:@"SELECT"] || [[message uppercaseString] hasPrefix:@"SHOW"]))
+		&& ([message hasPrefix:@"SELECT"] || [message hasPrefix:@"SHOW"]))
 	{
 		messageMatchesCurrentFilters = NO;
 	}

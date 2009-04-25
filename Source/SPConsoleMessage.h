@@ -29,12 +29,16 @@
 	NSString *message;
 }
 
-@property (readwrite, assign) BOOL isError;
-@property (readwrite, retain) NSDate *messageDate;
-@property (readwrite, retain) NSString *message;
-
 + (SPConsoleMessage *)consoleMessageWithMessage:(NSString *)consoleMessage date:(NSDate *)date;
 
 - (id)initWithMessage:(NSString *)message date:(NSDate *)date;
+
+- (BOOL)isError;
+- (NSDate *)messageDate;
+- (NSString *)message;
+
+- (void)setIsError:(BOOL)error;
+- (void)setMessageDate:(NSDate *)theDate;
+- (void)setMessage:(NSString *)theMessage;
 
 @end

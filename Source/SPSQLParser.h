@@ -225,7 +225,7 @@ typedef enum _SPCommentTypes {
 - (unichar) charAtIndex:(long)index;
 - (void) clearCharCache;
 - (void) deleteCharactersInRange:(NSRange)aRange;
-- (void) insertString:(NSString *)aString atIndex:(NSUInteger)anIndex;
+- (void) insertString:(NSString *)aString atIndex:(int)anIndex;
 
 
 

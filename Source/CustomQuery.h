@@ -23,7 +23,6 @@
 //  Or mail to <lorenz@textor.ch>
 
 #import <Cocoa/Cocoa.h>
-#import <WebKit/WebKit.h>
 #import <MCPKit_bundled/MCPKit_bundled.h>
 #import "CMCopyTable.h"
 #import "CMTextView.h"
@@ -58,18 +57,11 @@
 	IBOutlet NSMenuItem *autopairMenuItem;
 	IBOutlet NSMenuItem *autouppercaseKeywordsMenuItem;
 
-	IBOutlet NSWindow *helpWebViewWindow;
-	IBOutlet id helpWebView;
-
 	NSArray *queryResult;
 	NSUserDefaults *prefs;
 	NSMutableArray *queryFavorites;
 	
 	CMMCPConnection *mySQLConnection;
-	
-	NSString *usedQuery;
-	
-	int queryStartPosition;
 }
 
 // IBAction methods
@@ -79,7 +71,6 @@
 - (IBAction)chooseQueryHistory:(id)sender;
 - (IBAction)closeSheet:(id)sender;
 - (IBAction)gearMenuItemSelected:(id)sender;
-- (IBAction)getHelpForCurrentWord:(id)sender;
 
 // queryFavoritesSheet methods
 - (IBAction)addQueryFavorite:(id)sender;
@@ -90,8 +81,6 @@
 // Query actions
 - (void)performQueries:(NSArray *)queries;
 - (NSString *)queryAtPosition:(long)position lookBehind:(BOOL *)doLookBehind;
-- (NSRange)queryTextRangeAtPosition:(long)position lookBehind:(BOOL *)doLookBehind;
-- (NSRange)queryTextRangeForQuery:(int)anIndex startPosition:(long)position;
 
 // Accessors
 - (NSArray *)currentResult;
@@ -100,6 +89,5 @@
 - (void)setConnection:(CMMCPConnection *)theConnection;
 - (void)setFavorites;
 - (void)doPerformQueryService:(NSString *)query;
-- (NSString *)usedQuery;
 
 @end

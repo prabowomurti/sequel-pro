@@ -601,7 +601,7 @@
 }
 
 /*
- * Provide a method to cleat the cache, and use it when updating the string.
+ * Provide a method to clear the cache, and use it when updating the string.
  */
 - (void) clearCharCache
 {
@@ -616,7 +616,7 @@
 	[super deleteCharactersInRange:aRange];
 	[self clearCharCache];
 }
-- (void) insertString:(NSString *)aString atIndex:(NSUInteger)anIndex
+- (void) insertString:(NSString *)aString atIndex:(int)anIndex
 {
 	[super insertString:aString atIndex:anIndex];
 	[self clearCharCache];
