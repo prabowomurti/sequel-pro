@@ -8,6 +8,10 @@ Please use this page for any feature requests. Simply use the comment feature at
  * Export by right clicking a table (by joe.cairns)
  * Copy/paste for spreadsheet data in browse mode (by joe.cairns)
  * Support re-ordering columns when editing a table (by joe.cairns)
- * Support re-ordering favourites in preferences window and in connect panel (by cpfusion)
  * Import/Export support for favourites (by cpfusion)
- * Connect via SSH (by fam.vandeneijnden and others)
+ * Edit Users/Permissions (In the nightlies since r1132 - due in 0.9.7)
+ * Tab based Interface
+ * SQLite Support
+ * Postgres Support
+ * Localisation (Waiting for GUI to become stable first)
+ * Content Filtering with stackable filters. (NSRuleEditor)
