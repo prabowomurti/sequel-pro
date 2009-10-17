@@ -1,4 +1,0 @@
-#summary Release Notes for past versions of Sequel Pro
-#labels Featured
-
-This page has been made redundant by the Sequel Pro [http://www.sequelpro.com/release-notes.html Release Notes] page. It will be deleted in due course.
