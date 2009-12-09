@@ -1,5 +1,5 @@
 #summary Our donations policy
-#labels Featured
+#labels Featured,Deprecated
 
 = Sequel Pro Donations =
 
