@@ -9,7 +9,7 @@ Please use this page for any feature requests. Simply use the comment feature at
  * Copy/paste for spreadsheet data in browse mode (by joe.cairns)
  * Support re-ordering columns when editing a table (by joe.cairns)
  * Import/Export support for favourites (by cpfusion)
- * Edit Users/Permissions (In the nightlies since r1132 - due in 0.9.7)
+ * Edit Users/Permissions (In the nightlies since r1132 - due in 0.9.8)
  * Tab based Interface
  * SQLite Support
  * Postgres Support
