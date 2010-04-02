@@ -1,6 +1,6 @@
 #summary of Sequel Pro
 #labels Featured
 
-*Sequel Pro 0.9*
+*Sequel Pro 0.9.8*
 
-http://sequel-pro.googlecode.com/files/sequel-pro.png
+http://sequel-pro.googlecode.com/files/Sequel%20Pro%200.9.8.png
