@@ -5,27 +5,33 @@
 Sequel Pro is an ideal tool for working with a MySQL Database on Mac OS X Server.
 
 === Setup MySQL on Mac OS X Server 10.6 ===
-  * Open Server Preferences
-  * Select the server from the list.
-  * Click Settings in the toolbar
-  * Under the Services tab, tick MySQL and save your changes
-  * In the list of servers, click the triangle to show the list of active services
-  * Select MySQL
-  * If MySQL is running, click Stop MySQL
-  * Set a Root password
-  * Click Start MySQL
+  # Open Server Admin
+  # Select the server from the list.
+  # Click Settings in the toolbar
+  # Under the Services tab, tick MySQL and save your changes
+  # In the list of servers, click the triangle to show the list of active services
+  # Select MySQL
+  # If MySQL is running, click Stop MySQL
+  # Set a Root password
+  # Click Start MySQL
 
 === Connecting to MySQL on with Sequel Pro running on the server ===
-  * [http://code.google.com/p/sequel-pro/downloads/list Download] and install Sequel Pro
-  * Open Sequel Pro
-  * Select the Socket tab
-  * Enter "root" as the username
-  * Enter the root password
-  * Enter `/var/mysql/mysql.sock` as the socket
-  * Click the Connect button
+  # [http://code.google.com/p/sequel-pro/downloads/list Download] and install Sequel Pro
+  # Open Sequel Pro
+  # Select the Socket tab
+  # Enter `root` as the username
+  # Enter the root password
+  # Enter `/var/mysql/mysql.sock` as the socket
+  # Click the Connect button
 
 === Connecting to MySQL on a remote machine running Mac OS X Server ===
 
 _The default MySQL configuration for MacOS X Server does not allow remote access to MySQL._
 
 _See the Mac OS X Server documentation for instructions on how to enable remote access._
+
+_Draft steps to enable remote access:_
+  # _In Server Admin in the MySQL service tick "Allow network connections"_
+  # _Connect to MySQL server locally or via SSH_
+  # _Grant users with access privileges from external hosts/IPs_
+  # _Connect from external host/IP_
