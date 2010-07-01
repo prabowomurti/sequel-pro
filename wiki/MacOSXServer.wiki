@@ -16,7 +16,7 @@ Sequel Pro is an ideal tool for working with a MySQL Database on Mac OS X Server
   * Click Start MySQL
 
 === Connecting to MySQL on with Sequel Pro running on the server ===
-  * [downloads/list Download] and install Sequel Pro
+  * [http://code.google.com/p/sequel-pro/downloads/list Download] and install Sequel Pro
   * Open Sequel Pro
   * Select the Socket tab
   * Enter "root" as the username
