@@ -26,4 +26,6 @@ Sequel Pro is an ideal tool for working with a MySQL Database on Mac OS X Server
 
 === Connecting to MySQL on a remote machine running Mac OS X Server ===
 
-_The default MySQL configuration for MacOS X Server does not allow remote access to MySQL. See the Mac OS X Server documentation for instructions on how to enable remote access_
+_The default MySQL configuration for MacOS X Server does not allow remote access to MySQL._
+
+_See the Mac OS X Server documentation for instructions on how to enable remote access._
