@@ -16,13 +16,13 @@ Sequel Pro is an ideal tool for working with a MySQL Database on Mac OS X Server
   * Click Start MySQL
 
 === Connecting to MySQL on with Sequel Pro running on the server ===
+  * [downloads/list Download] and install Sequel Pro
   * Open Sequel Pro
-  * If you are connecting to localhost
-  ** Select the Socket tab
-  ** Enter "root" as the username
-  ** Enter the root password
-  ** Enter `/var/mysql/mysql.sock` as the socket
-  ** Click the Connect button
+  * Select the Socket tab
+  * Enter "root" as the username
+  * Enter the root password
+  * Enter `/var/mysql/mysql.sock` as the socket
+  * Click the Connect button
 
 === Connecting to MySQL on a remote machine running Mac OS X Server ===
 
