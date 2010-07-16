@@ -1,6 +1,0 @@
-#summary Our donations policy
-#labels Deprecated
-
-= Sequel Pro Donations =
-
-This page is no longer current. Please refer to [http://www.sequelpro.com/donate.html sequelpro.com/donate.html] for more information about donations.
