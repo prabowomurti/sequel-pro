@@ -25,7 +25,7 @@
 
 #import "SPServerVariablesController.h"
 #import "SPArrayAdditions.h"
-#import "SPDatabaseDocument.h"
+#import "TableDocument.h"
 #import "SPConstants.h"
 
 @interface SPServerVariablesController (PrivateAPI)
@@ -165,7 +165,7 @@
 {
 	if (returnCode == NSOKButton) {
 		if ([variablesFiltered count] > 0) {
-			NSMutableString *variablesString = [NSMutableString stringWithFormat:@"# MySQL server variables for %@\n\n", [[[NSApp delegate] frontDocument] host]];
+			NSMutableString *variablesString = [NSMutableString stringWithFormat:@"# MySQL server variables for %@\n\n", [(TableDocument *)[[NSApp mainWindow] delegate] host]];
 			
 			for (NSDictionary *variable in variablesFiltered) 
 			{

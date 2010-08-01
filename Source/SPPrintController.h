@@ -23,9 +23,9 @@
 //
 //  More info at <http://code.google.com/p/sequel-pro/>
 
-#import "SPDatabaseDocument.h"
+#import "TableDocument.h"
 
-@interface SPDatabaseDocument (SPPrintController)
+@interface TableDocument (SPPrintController)
 
 - (void)startPrintDocumentOperation;
 - (void)generateHTMLForPrinting;

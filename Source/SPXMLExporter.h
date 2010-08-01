@@ -23,53 +23,10 @@
 //
 //  More info at <http://code.google.com/p/sequel-pro/>
 
+#import <Cocoa/Cocoa.h>
+
 #import "SPExporter.h"
-#import "SPXMLExporterProtocol.h"
 
-/**
- * @class SPXMLExporter SPXMLExporter.m
- *
- * @author Stuart Connolly http://stuconnolly.com/
- *
- * XML exporter class.
- */
 @interface SPXMLExporter : SPExporter 
-{
-	/**
-	 * Exporter delegate
-	 */
-	NSObject <SPXMLExporterProtocol> *delegate;
-	
-	/**
-	 * Data array
-	 */
-	NSArray *xmlDataArray;
-	
-	/**
-	 * Table name
-	 */
-	NSString *xmlTableName;
-	
-	/**
-	 * XML NULL string
-	 */
-	NSString *xmlNULLString;
-}
-
-@property(readwrite, assign) NSObject *delegate;
-
-@property(readwrite, retain) NSArray *xmlDataArray;
-@property(readwrite, retain) NSString *xmlTableName;
-
-@property(readwrite, retain) NSString *xmlNULLString;
-
-/**
- * Initialise an instance of SPXMLExporter using the supplied delegate.
- *
- * @param exportDelegate The exporter delegate
- *
- * @return The initialised instance
- */
-- (id)initWithDelegate:(NSObject *)exportDelegate;
 
 @end

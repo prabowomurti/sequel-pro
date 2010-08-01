@@ -27,8 +27,8 @@
 #import "SPNavigatorOutlineView.h"
 #import "SPConstants.h"
 #import "ImageAndTextCell.h"
-#import "SPDatabaseDocument.h"
-#import "SPTablesList.h"
+#import "TableDocument.h"
+#import "TablesList.h"
 #import "SPArrayAdditions.h"
 #import "SPLogger.h"
 #import "SPTooltip.h"
@@ -326,8 +326,8 @@ static SPNavigatorController *sharedNavigatorController = nil;
 
 		// Detect if more than one connection windows with the connectionID are open.
 		// If so, don't remove it.
-		if ([[NSApp delegate] frontDocument]) {
-			for(id doc in [[NSApp delegate] orderedDocuments]) {
+		if ([[[NSDocumentController sharedDocumentController] documents] count]) {
+			for(id doc in [[NSDocumentController sharedDocumentController] documents]) {
 				if(![[doc valueForKeyPath:@"mySQLConnection"] isConnected]) continue;
 				if([[doc connectionID] isEqualToString:connectionID])
 					docCounter++;
@@ -384,7 +384,7 @@ static SPNavigatorController *sharedNavigatorController = nil;
 		NSArray *pathArray = [[[parentKeys objectAtIndex:0] description] componentsSeparatedByString:SPUniqueSchemaDelimiter];
 		if([pathArray count] > 1) {
 
-			SPDatabaseDocument *doc = [[NSApp delegate] frontDocument];
+			TableDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
 			if([doc isWorking]) {
 				[SPTooltip showWithObject:NSLocalizedString(@"Active connection window is busy. Please wait and try again.", @"active connection window is busy. please wait and try again. tooltip") 
 						atLocation:pos 
@@ -412,7 +412,7 @@ static SPNavigatorController *sharedNavigatorController = nil;
 
 	id object = [aNotification object];
 
-	if([object isKindOfClass:[SPDatabaseDocument class]])
+	if([object isKindOfClass:[TableDocument class]])
 		[self performSelectorOnMainThread:@selector(updateEntriesForConnection:) withObject:object waitUntilDone:NO];
 	else
 		[self performSelectorOnMainThread:@selector(updateEntriesForConnection:) withObject:nil waitUntilDone:NO];
@@ -432,7 +432,7 @@ static SPNavigatorController *sharedNavigatorController = nil;
 	}
 
 
-	if (doc && [doc isKindOfClass:[SPDatabaseDocument class]]) {
+	if (doc && [doc isKindOfClass:[TableDocument class]] && [[[NSDocumentController sharedDocumentController] documents] count]) {
 
 		id theConnection = [doc valueForKeyPath:@"mySQLConnection"];
 
@@ -585,7 +585,8 @@ static SPNavigatorController *sharedNavigatorController = nil;
 {
 
 	// Reset everything for current active doc connection
-	id doc = [[NSApp delegate] frontDocument];
+	if (![[[NSDocumentController sharedDocumentController] documents] count]) return;
+	id doc = [[NSDocumentController sharedDocumentController] currentDocument];
 	if(!doc) return;
 	NSString *connectionID = [doc connectionID];
 	if(!connectionID || [connectionID length] < 2) return;
@@ -742,8 +743,8 @@ static SPNavigatorController *sharedNavigatorController = nil;
 			[searchField setStringValue:@""];
 		}
 
-		SPDatabaseDocument *doc = [[NSApp delegate] frontDocument];
-		if (doc) {
+		if ([[[NSDocumentController sharedDocumentController] documents] count]) {
+			TableDocument *doc = [[NSDocumentController sharedDocumentController] currentDocument];
 			NSMutableString *key = [NSMutableString string];
 			[key setString:[doc connectionID]];
 			if([doc database] && [(NSString*)[doc database] length]){

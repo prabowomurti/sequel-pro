@@ -33,6 +33,7 @@
 	IBOutlet id tableDataInstance;
 	
 	IBOutlet id tableList;
+	IBOutlet id tableWindow;
 	
 	IBOutlet NSButton    *addRelationButton;
 	IBOutlet NSButton    *removeRelationButton;	

@@ -22,9 +22,9 @@
 //
 //  More info at <http://code.google.com/p/sequel-pro/>
 
-#import "SPDatabaseDocument.h"
-#import "SPTableContent.h"
-#import "SPTablesList.h"
+#import "TableDocument.h"
+#import "TableContent.h"
+#import "TablesList.h"
 #import "SPConstants.h"
 #import "SPHistoryController.h"
 #import "SPStringAdditions.h"
@@ -57,10 +57,10 @@
 	tableContentInstance = [theDocument valueForKey:@"tableContentInstance"];
 	tablesListInstance = [theDocument valueForKey:@"tablesListInstance"];
 	toolbarItemVisible = NO;
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toolbarWillAddItem:) name:NSToolbarWillAddItemNotification object:[theDocument valueForKey:@"mainToolbar"]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toolbarDidRemoveItem:) name:NSToolbarDidRemoveItemNotification object:[theDocument valueForKey:@"mainToolbar"]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startDocumentTask:) name:SPDocumentTaskStartNotification object:theDocument];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endDocumentTask:) name:SPDocumentTaskEndNotification object:theDocument];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toolbarWillAddItem:) name:NSToolbarWillAddItemNotification object:[theDocument valueForKey:@"mainToolbar"]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toolbarDidRemoveItem:) name:NSToolbarDidRemoveItemNotification object:[theDocument valueForKey:@"mainToolbar"]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startDocumentTask:) name:SPDocumentTaskStartNotification object:theDocument];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endDocumentTask:) name:SPDocumentTaskEndNotification object:theDocument];
 }
 
 - (void) dealloc
@@ -80,9 +80,9 @@
 - (void) updateToolbarItem
 {
 
-	// If the toolbar item isn't visible, don't perform any actions - as manipulating
-	// items not on the toolbar can cause crashes.
-	if (!toolbarItemVisible) return;
+    // If the toolbar item isn't visible, don't perform any actions - as manipulating
+    // items not on the toolbar can cause crashes.
+    if (!toolbarItemVisible) return;
 
 	BOOL backEnabled = NO;
 	BOOL forwardEnabled = NO;
@@ -93,7 +93,7 @@
 	if ([history count] && historyPosition > 0) backEnabled = YES;
 	if ([history count] && historyPosition + 1 < [history count]) forwardEnabled = YES;
 
-	if(!historyControl) return;
+	if (!historyControl) return;
 
 	[historyControl setEnabled:backEnabled forSegment:0];
 	[historyControl setEnabled:forwardEnabled forSegment:1];
@@ -174,18 +174,18 @@
 	NSString *viewName = [[[theDocument valueForKey:@"tableTabView"] selectedTabViewItem] identifier];
 	
 	if ([viewName isEqualToString:@"source"]) {
-		theView = SPTableViewStructure;
+		theView = SPHistoryViewStructure;
 	} else if ([viewName isEqualToString:@"content"]) {
-		theView = SPTableViewContent;
+		theView = SPHistoryViewContent;
 	} else if ([viewName isEqualToString:@"customQuery"]) {
-		theView = SPTableViewCustomQuery;
+		theView = SPHistoryViewCustomQuery;
 	} else if ([viewName isEqualToString:@"status"]) {
-		theView = SPTableViewStatus;
+		theView = SPHistoryViewStatus;
 	} else if ([viewName isEqualToString:@"relations"]) {
-		theView = SPTableViewRelations;
+		theView = SPHistoryViewRelations;
 	}
 	else if ([viewName isEqualToString:@"triggers"]) {
-		theView = SPTableViewTriggers;
+		theView = SPHistoryViewTriggers;
 	}
 
 	return theView;
@@ -198,13 +198,13 @@
  */
 - (void) setupInterface
 {
-	NSArray *toolbarItems = [[theDocument valueForKey:@"mainToolbar"] items];
-	for (NSToolbarItem *toolbarItem in toolbarItems) {
-		if ([[toolbarItem itemIdentifier] isEqualToString:SPMainToolbarHistoryNavigation]) {
-			toolbarItemVisible = YES;
-			break;
-		}
-	}
+    NSArray *toolbarItems = [[theDocument valueForKey:@"mainToolbar"] items];
+    for (NSToolbarItem *toolbarItem in toolbarItems) {
+    	if ([[toolbarItem itemIdentifier] isEqualToString:SPMainToolbarHistoryNavigation]) {
+    		toolbarItemVisible = YES;
+    		break;
+    	}
+    }
 }
 
 /**
@@ -212,7 +212,7 @@
  */
 - (void) startDocumentTask:(NSNotification *)aNotification
 {
-	if (toolbarItemVisible) [historyControl setEnabled:NO];
+    if (toolbarItemVisible) [historyControl setEnabled:NO];
 }
 
 /**
@@ -220,7 +220,7 @@
  */
 - (void) endDocumentTask:(NSNotification *)aNotification
 {
-	if (toolbarItemVisible) [historyControl setEnabled:YES];
+    if (toolbarItemVisible) [historyControl setEnabled:YES];
 }
 
 /**
@@ -229,10 +229,10 @@
  * can cause crashes.
  */
 - (void) toolbarWillAddItem:(NSNotification *)aNotification {
-	if ([[[[aNotification userInfo] objectForKey:@"item"] itemIdentifier] isEqualToString:SPMainToolbarHistoryNavigation]) {
-		toolbarItemVisible = YES;
-		[self performSelectorOnMainThread:@selector(updateToolbarItem) withObject:nil waitUntilDone:YES];
-	}
+    if ([[[[aNotification userInfo] objectForKey:@"item"] itemIdentifier] isEqualToString:SPMainToolbarHistoryNavigation]) {
+    	toolbarItemVisible = YES;
+    	[self performSelectorOnMainThread:@selector(updateToolbarItem) withObject:nil waitUntilDone:YES];
+    }
 }
 
 /**
@@ -241,9 +241,9 @@
  * can cause crashes.
  */
 - (void) toolbarDidRemoveItem:(NSNotification *)aNotification {
-	if ([[[[aNotification userInfo] objectForKey:@"item"] itemIdentifier] isEqualToString:SPMainToolbarHistoryNavigation]) {
-		toolbarItemVisible = NO;
-	}
+    if ([[[[aNotification userInfo] objectForKey:@"item"] itemIdentifier] isEqualToString:SPMainToolbarHistoryNavigation]) {
+    	toolbarItemVisible = NO;
+    }
 }
 
 #pragma mark -
@@ -404,7 +404,7 @@
 	// If the database, table, and view are the same and content - just trigger a table reload (filters)
 	if ([[theDocument database] isEqualToString:[historyEntry objectForKey:@"database"]]
 		&& [historyEntry objectForKey:@"table"] && [[theDocument table] isEqualToString:[historyEntry objectForKey:@"table"]]
-		&& [[historyEntry objectForKey:@"view"] integerValue] == [self currentlySelectedView] == SPTableViewContent)
+		&& [[historyEntry objectForKey:@"view"] integerValue] == [self currentlySelectedView] == SPHistoryViewContent)
 	{
 		[tableContentInstance loadTable:[historyEntry objectForKey:@"table"]];
 		modifyingState = NO;
@@ -435,22 +435,22 @@
 	// Check and set the view
 	if ([self currentlySelectedView] != [[historyEntry objectForKey:@"view"] integerValue]) {
 		switch ([[historyEntry objectForKey:@"view"] integerValue]) {
-			case SPTableViewStructure:
+			case SPHistoryViewStructure:
 				[theDocument viewStructure:self];
 				break;
-			case SPTableViewContent:
+			case SPHistoryViewContent:
 				[theDocument viewContent:self];
 				break;
-			case SPTableViewCustomQuery:
+			case SPHistoryViewCustomQuery:
 				[theDocument viewQuery:self];
 				break;
-			case SPTableViewStatus:
+			case SPHistoryViewStatus:
 				[theDocument viewStatus:self];
 				break;
-			case SPTableViewRelations:
+			case SPHistoryViewRelations:
 				[theDocument viewRelations:self];
 				break;
-			case SPTableViewTriggers:
+			case SPTriggersViewMode:
 				[theDocument viewTriggers:self];
 				break;
 		}

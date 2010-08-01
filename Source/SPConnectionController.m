@@ -34,9 +34,6 @@
 @interface SPConnectionController (PrivateAPI)
 
 - (void)_sortFavorites;
-- (void)_restoreConnectionInterface;
-- (void)_mySQLConnectionEstablished;
-- (void)_initiateMySQLConnectionInBackground;
 
 @end
 
@@ -61,20 +58,18 @@
 @synthesize connectionSSHKeychainItemName;
 @synthesize connectionSSHKeychainItemAccount;
 
-@synthesize isConnecting;
-
 #pragma mark -
 
 /**
  * Initialise the connection controller, linking it to the
  * parent document and setting up the parent window.
  */
-- (id) initWithDocument:(SPDatabaseDocument *)theTableDocument
+- (id) initWithDocument:(TableDocument *)theTableDocument
 {
 	if (self = [super init]) {
 		tableDocument = theTableDocument;
-		databaseConnectionSuperview = [tableDocument parentView];
-		databaseConnectionView = [tableDocument valueForKey:@"contentViewSplitter"];
+		documentWindow = [tableDocument valueForKey:@"tableWindow"];
+		contentView = [tableDocument valueForKey:@"contentViewSplitter"];
 		connectionKeychainItemName = nil;
 		connectionKeychainItemAccount = nil;
 		connectionSSHKeychainItemName = nil;
@@ -82,24 +77,21 @@
 		mySQLConnection = nil;
 		sshTunnel = nil;
 		cancellingConnection = NO;
-		isConnecting = NO;
-		mySQLConnectionCancelled = NO;
         favoritesPBoardType = @"FavoritesPBoardType";
 
-		// Load the connection nib, keeping references to the top-level objects for later release
-		nibObjectsToRelease = [[NSMutableArray alloc] init];
-		NSArray *connectionViewTopLevelObjects = nil;
-		NSNib *nibLoader = [[NSNib alloc] initWithNibNamed:@"ConnectionView" bundle:[NSBundle mainBundle]];
-		[nibLoader instantiateNibWithOwner:self topLevelObjects:&connectionViewTopLevelObjects];
-		[nibObjectsToRelease addObjectsFromArray:connectionViewTopLevelObjects];
-		[nibLoader release];
+		// Load the connection nib
+		[NSBundle loadNibNamed:@"ConnectionView" owner:self];
 		
 		// Hide the main view and position and display the connection view
-		[databaseConnectionView setHidden:YES];
-		[connectionView setFrame:[databaseConnectionView frame]];
-		[databaseConnectionSuperview addSubview:connectionView];
-		[connectionSplitView setPosition:[[tableDocument valueForKey:@"dbTablesTableView"] frame].size.width-6 ofDividerAtIndex:0];
+		[contentView setHidden:YES];
+		[connectionView setFrame:[contentView frame]];
+		[[documentWindow contentView] addSubview:connectionView];
+		[connectionSplitView setPosition:[[tableDocument valueForKey:@"dbTablesTableView"] frame].size.width ofDividerAtIndex:0];
 		[connectionSplitViewButtonBar setSplitViewDelegate:self];
+		
+		// Disable the toolbar icons
+		NSArray *toolbarItems = [[documentWindow toolbar] items];
+		for (NSInteger i = 0; i < [toolbarItems count]; i++) [[toolbarItems objectAtIndex:i] setEnabled:NO];
 		
 		// Set up a keychain instance and preferences reference, and create the initial favorites list
 		keychain = [[SPKeychain alloc] init];
@@ -120,11 +112,12 @@
         [favoritesTable registerForDraggedTypes:[NSArray arrayWithObject:favoritesPBoardType]];
         [favoritesTable setDraggingSourceOperationMask:NSDragOperationMove forLocal:YES];
 
-		// Sort the favourites to match prefs and select the appropriate row
+		// Sort the favourites to match prefs, set the focus to the favorites table and select the appropriate row
 		if (currentSortItem > -1) [self _sortFavorites];
-		
+		[documentWindow setInitialFirstResponder:favoritesTable];
+
 		NSInteger tableRow = ([prefs integerForKey:[prefs boolForKey:SPSelectLastFavoriteUsed] ? SPLastFavoriteIndex : SPDefaultFavorite] + 1);
-		
+
 		if (tableRow < [favorites count]) {
 			previousType = [[[favorites objectAtIndex:tableRow] objectForKey:@"type"] integerValue];
 			[self resizeTabViewToConnectionType:[[[favorites objectAtIndex:tableRow] objectForKey:@"type"] integerValue] animating:NO];
@@ -133,6 +126,11 @@
 		} else {
 			previousType = SPTCPIPConnection;
 			[self resizeTabViewToConnectionType:SPTCPIPConnection animating:NO];
+		}
+
+		// If the document is set to automatically connect, do so.
+		if ([tableDocument shouldAutomaticallyConnect]) {
+			[self performSelector:@selector(initiateConnection:) withObject:self afterDelay:0.0];
 		}
 	}
 	return self;
@@ -143,10 +141,6 @@
     [prefs removeObserver:self forKeyPath:SPFavorites];
     [keychain release];
     [prefs release];
-
-	for (id retainedObject in nibObjectsToRelease) [retainedObject release];
-	[nibObjectsToRelease release];
-
 	if (favorites) [favorites release];
 	if (mySQLConnection) [mySQLConnection release];
 	if (sshTunnel) [sshTunnel setConnectionStateChangeSelector:nil delegate:nil], [sshTunnel disconnect], [sshTunnel release];
@@ -171,13 +165,13 @@
 {	
 	// Ensure that host is not empty if this is a TCP/IP or SSH connection
 	if (([self type] == SPTCPIPConnection || [self type] == SPSSHTunnelConnection) && ![[self host] length]) {
-		SPBeginAlertSheet(NSLocalizedString(@"Insufficient connection details", @"insufficient details message"), NSLocalizedString(@"OK", @"OK button"), nil, nil, [tableDocument parentWindow], self, nil, nil, NSLocalizedString(@"Insufficient details provided to establish a connection. Please enter at least the hostname.", @"insufficient details informative message"));		
+		SPBeginAlertSheet(NSLocalizedString(@"Insufficient connection details", @"insufficient details message"), NSLocalizedString(@"OK", @"OK button"), nil, nil, documentWindow, self, nil, nil, NSLocalizedString(@"Insufficient details provided to establish a connection. Please enter at least the hostname.", @"insufficient details informative message"));		
 		return;
 	}
 	
 	// If SSH is enabled, ensure that the SSH host is not nil
 	if ([self type] == SPSSHTunnelConnection && ![[self sshHost] length]) {
-		SPBeginAlertSheet(NSLocalizedString(@"Insufficient connection details", @"insufficient details message"), NSLocalizedString(@"OK", @"OK button"), nil, nil, [tableDocument parentWindow], self, nil, nil, NSLocalizedString(@"Insufficient details provided to establish a connection. Please enter the hostname for the SSH Tunnel, or disable the SSH Tunnel.", @"insufficient SSH tunnel details informative message"));
+		SPBeginAlertSheet(NSLocalizedString(@"Insufficient connection details", @"insufficient details message"), NSLocalizedString(@"OK", @"OK button"), nil, nil, documentWindow, self, nil, nil, NSLocalizedString(@"Insufficient details provided to establish a connection. Please enter the hostname for the SSH Tunnel, or disable the SSH Tunnel.", @"insufficient SSH tunnel details informative message"));
 		return;
 	}
 
@@ -185,9 +179,7 @@
 	if (![self checkHost]) return;
 	
 	// Basic details have validated - start the connection process animating
-	isConnecting = YES;
 	cancellingConnection = NO;
-	
 	[addToFavoritesButton setHidden:YES];
 	[addToFavoritesButton display];
 	[helpButton setHidden:YES];
@@ -198,9 +190,6 @@
 	[progressIndicator display];
 	[progressIndicatorText setHidden:NO];
 	[progressIndicatorText display];
-	
-	// Start the current tab's progress indicator
-	[tableDocument setIsProcessing:YES];
 
 	// If the password(s) are marked as having been originally sourced from a keychain, check whether they
 	// have been changed or not; if not, leave the mark in place and remove the password from the field
@@ -208,9 +197,9 @@
 	if (connectionKeychainItemName) {
 		if ([[keychain getPasswordForName:connectionKeychainItemName account:connectionKeychainItemAccount] isEqualToString:[self password]]) {
 			[self setPassword:[[NSString string] stringByPaddingToLength:[[self password] length] withString:@"sp" startingAtIndex:0]];
-			[[standardPasswordField undoManager] removeAllActionsWithTarget:standardPasswordField];
-			[[socketPasswordField undoManager] removeAllActionsWithTarget:socketPasswordField];
-			[[sshPasswordField undoManager] removeAllActionsWithTarget:sshPasswordField];
+			[[tableDocument undoManager] removeAllActionsWithTarget:standardPasswordField];
+			[[tableDocument undoManager] removeAllActionsWithTarget:socketPasswordField];
+			[[tableDocument undoManager] removeAllActionsWithTarget:sshPasswordField];
 		} else {
 			[connectionKeychainItemName release], connectionKeychainItemName = nil;
 			[connectionKeychainItemAccount release], connectionKeychainItemAccount = nil;
@@ -219,7 +208,7 @@
 	if (connectionSSHKeychainItemName) {
 		if ([[keychain getPasswordForName:connectionSSHKeychainItemName account:connectionSSHKeychainItemAccount] isEqualToString:[self sshPassword]]) {
 			[self setSshPassword:[[NSString string] stringByPaddingToLength:[[self sshPassword] length] withString:@"sp" startingAtIndex:0]];
-			[[sshSSHPasswordField undoManager] removeAllActionsWithTarget:sshSSHPasswordField];
+			[[tableDocument undoManager] removeAllActionsWithTarget:sshSSHPasswordField];
 		} else {
 			[connectionSSHKeychainItemName release], connectionSSHKeychainItemName = nil;
 			[connectionSSHKeychainItemAccount release], connectionSSHKeychainItemAccount = nil;
@@ -233,30 +222,15 @@
 	
 	// Trim whitespace and newlines from the host field before attempting to connect
 	[self setHost:[[self host] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
-	
+
 	// Initiate the SSH connection process for tunnels
 	if ([self type] == SPSSHTunnelConnection) {
 		[self performSelector:@selector(initiateSSHTunnelConnection) withObject:nil afterDelay:0.0];
 		return;
 	}
-	
+
 	// ...or start the MySQL connection process directly	
 	[self performSelector:@selector(initiateMySQLConnection) withObject:nil afterDelay:0.0];
-}
-
-/**
- * Cancels (or rather marks) the current connection is to be cancelled once established.
- *
- * Note, that once called this method does not mark the connection attempt to be immediately cancelled as
- * there is no reliable way to actually cancel connection attempts via the MySQL client libs. Once the
- * connection is established it will be immediately killed.
- */
-- (IBAction)cancelMySQLConnection:(id)sender
-{
-	[progressIndicatorText setStringValue:NSLocalizedString(@"Cancelling...", @"cancelling task status message")];
-	[progressIndicatorText display];
-	
-	mySQLConnectionCancelled = YES;
 }
 
 /*
@@ -274,7 +248,7 @@
 
 	// Set up the tunnel details
 	sshTunnel = [[SPSSHTunnel alloc] initToHost:[self sshHost] port:([[self sshPort] length]?[[self sshPort] integerValue]:22) login:[self sshUser] tunnellingToPort:([[self port] length]?[[self port] integerValue]:3306) onHost:[self host]];
-	[sshTunnel setParentWindow:[tableDocument parentWindow]];
+	[sshTunnel setParentWindow:documentWindow];
 	
 	// Add keychain or plaintext password as appropriate - note the checks in initiateConnection.
 	if (connectionSSHKeychainItemName) {
@@ -318,21 +292,18 @@
 		[tableDocument setTitlebarStatus:@"SSH Disconnected"];
 		[self failConnectionWithTitle:NSLocalizedString(@"SSH connection failed!", @"SSH connection failed title") errorMessage:[theTunnel lastError] detail:[sshTunnel debugMessages]];
 	} else if (newState == PROXY_STATE_CONNECTED) {
-		[tableDocument setTitlebarStatus:NSLocalizedString(@"SSH Connected", @"SSH connected titlebar marker")];
+		[tableDocument setTitlebarStatus:@"SSH Connected"];
 		[self initiateMySQLConnection];
 	} else {
-		[tableDocument setTitlebarStatus:NSLocalizedString(@"SSH Connecting…", @"SSH connecting titlebar marker")];
+		[tableDocument setTitlebarStatus:@"SSH Connecting…"];
 	}
 }
 
 /*
- * Set up the MySQL connection, either through a successful tunnel or directly in the background.
+ * Set up the MySQL connection, either through a successful tunnel or directly.
  */
 - (void)initiateMySQLConnection
 {
-	// Disable the favorites table view to prevent further connections attempts
-	[favoritesTable setEnabled:NO];
-	
 	if (sshTunnel)
 		[progressIndicatorText setStringValue:NSLocalizedString(@"MySQL connecting...", @"MySQL connecting very short status message")];
 	else
@@ -340,12 +311,105 @@
 	
 	[progressIndicatorText display];
 
-	[connectButton setTitle:NSLocalizedString(@"Cancel", @"cancel button")];
-	[connectButton setAction:@selector(cancelMySQLConnection:)];
-	[connectButton setEnabled:YES];
-	[connectButton display];
+	// Initialise to socket if appropriate.
+	if ([self type] == SPSocketConnection) {
+		mySQLConnection = [[MCPConnection alloc] initToSocket:[self socket] withLogin:[self user]];
+
+	// Otherwise, initialise to host, using tunnel if appropriate
+	} else {
+		if ([self type] == SPSSHTunnelConnection) {
+			mySQLConnection = [[MCPConnection alloc] initToHost:@"127.0.0.1"
+														withLogin:[self user]
+														usingPort:[sshTunnel localPort]];
+			[mySQLConnection setConnectionProxy:sshTunnel];
+		} else {
+			mySQLConnection = [[MCPConnection alloc] initToHost:[self host]
+														withLogin:[self user]
+														usingPort:([[self port] length]?[[self port] integerValue]:3306)];
+		}
+	}
+
+	// Only set the password if there is no Keychain item set. The connection will ask the delegate for passwords in the Keychain.	
+	if (!connectionKeychainItemName && [self password]) {
+		[mySQLConnection setPassword:[self password]];
+	}
 	
-	[NSThread detachNewThreadSelector:@selector(_initiateMySQLConnectionInBackground) toTarget:self withObject:nil];
+	// Connection delegate must be set before actual connection attempt is made
+	[mySQLConnection setDelegate:tableDocument];
+	
+	// Set whether or not we should enable delegate logging according to the prefs
+	[mySQLConnection setDelegateQueryLogging:[prefs boolForKey:SPConsoleEnableLogging]];
+
+	// Set options from preferences
+	[mySQLConnection setConnectionTimeout:[[prefs objectForKey:SPConnectionTimeoutValue] integerValue]];
+	[mySQLConnection setUseKeepAlive:[[prefs objectForKey:SPUseKeepAlive] boolValue]];
+	[mySQLConnection setKeepAliveInterval:[[prefs objectForKey:SPKeepAliveInterval] doubleValue]];
+
+	// Connect
+	[mySQLConnection connect];
+
+	if (![mySQLConnection isConnected]) {
+		if (sshTunnel) {
+
+			// If an SSH tunnel is running, temporarily block to allow the tunnel to register changes in state
+			[[NSRunLoop currentRunLoop] runMode:NSModalPanelRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+
+			// If the state is connection refused, attempt the MySQL connection again with the host using the hostfield value.
+			if ([sshTunnel state] == PROXY_STATE_FORWARDING_FAILED) {
+				if ([sshTunnel localPortFallback]) {
+					[mySQLConnection setPort:[sshTunnel localPortFallback]];
+					[mySQLConnection connect];
+					if (![mySQLConnection isConnected]) {
+						[[NSRunLoop currentRunLoop] runMode:NSModalPanelRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+					}
+				}
+			}
+		}
+		
+		if (![mySQLConnection isConnected]) {
+			NSString *errorMessage;
+			if (sshTunnel && [sshTunnel state] == PROXY_STATE_FORWARDING_FAILED) {
+				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Unable to connect to host %@ because the port connection via SSH was refused.\n\nPlease ensure that your MySQL host is set up to allow TCP/IP connections (no --skip-networking) and is configured to allow connections from the host you are tunnelling via.\n\nYou may also want to check the port is correct and that you have the necessary privileges.\n\nChecking the error detail will show the SSH debug log which may provide more details.\n\nMySQL said: %@", @"message of panel when SSH port forwarding failed"), [self host], [mySQLConnection getLastErrorMessage]];
+				[self failConnectionWithTitle:NSLocalizedString(@"SSH port forwarding failed", @"title when ssh tunnel port forwarding failed") errorMessage:errorMessage detail:[sshTunnel debugMessages]];
+			} else if ([mySQLConnection getLastErrorID] == 1045) { // "Access denied" error
+				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Unable to connect to host %@ because access was denied.\n\nDouble-check your username and password and ensure that access from your current location is permitted.\n\nMySQL said: %@", @"message of panel when connection to host failed due to access denied error"), [self host], [mySQLConnection getLastErrorMessage]];
+				[self failConnectionWithTitle:NSLocalizedString(@"Access denied!", @"connection failed due to access denied title") errorMessage:errorMessage detail:nil];
+			} else if ([self type] == SPSocketConnection && (![self socket] || ![[self socket] length]) && ![mySQLConnection findSocketPath]) {
+				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"The socket file could not be found in any common location. Please supply the correct socket location.\n\nMySQL said: %@", @"message of panel when connection to socket failed because optional socket could not be found"), [mySQLConnection getLastErrorMessage]];
+				[self failConnectionWithTitle:NSLocalizedString(@"Socket not found!", @"socket not found title") errorMessage:errorMessage detail:nil];
+			} else if ([self type] == SPSocketConnection) {
+				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Unable to connect via the socket, or the request timed out.\n\nDouble-check that the socket path is correct and that you have the necessary privileges, and that the server is running.\n\nMySQL said: %@", @"message of panel when connection to host failed"), [mySQLConnection getLastErrorMessage]];
+				[self failConnectionWithTitle:NSLocalizedString(@"Socket connection failed!", @"socket connection failed title") errorMessage:errorMessage detail:nil];
+			} else {
+				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Unable to connect to host %@, or the request timed out.\n\nBe sure that the address is correct and that you have the necessary privileges, or try increasing the connection timeout (currently %ld seconds).\n\nMySQL said: %@", @"message of panel when connection to host failed"), [self host], (long)[[prefs objectForKey:SPConnectionTimeoutValue] integerValue], [mySQLConnection getLastErrorMessage]];
+				[self failConnectionWithTitle:NSLocalizedString(@"Connection failed!", @"connection failed title") errorMessage:errorMessage detail:nil];
+			}
+			
+			if (sshTunnel) [sshTunnel release], sshTunnel = nil;
+			[mySQLConnection release], mySQLConnection = nil;
+			return;
+		}
+	}
+	if ([self database] && ![[self database] isEqualToString:@""]) {
+		if (![mySQLConnection selectDB:[self database]]) {
+			[self failConnectionWithTitle:NSLocalizedString(@"Could not select database", @"message when database selection failed") errorMessage:[NSString stringWithFormat:NSLocalizedString(@"Connected to host, but unable to connect to database %@.\n\nBe sure that the database exists and that you have the necessary privileges.\n\nMySQL said: %@", @"message of panel when connection to db failed"), [self database], [mySQLConnection getLastErrorMessage]] detail:nil];
+			if (sshTunnel) [sshTunnel release], sshTunnel = nil;
+			[mySQLConnection release], mySQLConnection = nil;
+			return;
+		}
+	}
+	
+	// Successful connection!
+	[progressIndicator stopAnimation:self];
+	[progressIndicatorText setHidden:YES];
+	[addToFavoritesButton setHidden:NO];
+	[connectButton setEnabled:YES];
+
+	// Release the tunnel if set - will now be retained by the connection
+	if (sshTunnel) [sshTunnel release], sshTunnel = nil;
+
+	// Pass the connection to the document and clean up the interface
+	[self addConnectionToDocument];
 }
 
 /*
@@ -385,8 +449,8 @@
 	}
 
 	// Only display the connection error message if there is a window visible
-	if ([[tableDocument parentWindow] isVisible]) {
-		SPBeginAlertSheet(theTitle, NSLocalizedString(@"OK", @"OK button"), (errorDetail) ? NSLocalizedString(@"Show Detail", @"Show detail button") : nil, (isSSHTunnelBindError) ? NSLocalizedString(@"Use Standard Connection", @"use standard connection button") : nil, [tableDocument parentWindow], self, @selector(connectionFailureSheetDidEnd:returnCode:contextInfo:), @"connect", theErrorMessage);
+	if ([documentWindow isVisible]) {
+		SPBeginAlertSheet(theTitle, NSLocalizedString(@"OK", @"OK button"), (errorDetail) ? NSLocalizedString(@"Show Detail", @"Show detail button") : nil, (isSSHTunnelBindError) ? NSLocalizedString(@"Use Standard Connection", @"use standard connection button") : nil, documentWindow, self, @selector(connectionFailureSheetDidEnd:returnCode:contextInfo:), @"connect", theErrorMessage);
 	}
 }
 
@@ -434,15 +498,15 @@
  * Add the connection to the parent document and restore the
  * interface, allowing the application to run as normal.
  */
-- (void)addConnectionToDocument
+- (void) addConnectionToDocument
 {
 	
 	// Hide the connection view and restore the main view
 	[connectionView removeFromSuperviewWithoutNeedingDisplay];
-	[databaseConnectionView setHidden:NO];
+	[contentView setHidden:NO];
 
 	// Restore the toolbar icons
-	NSArray *toolbarItems = [[[tableDocument parentWindow] toolbar] items];
+	NSArray *toolbarItems = [[documentWindow toolbar] items];
 	for (NSInteger i = 0; i < [toolbarItems count]; i++) [[toolbarItems objectAtIndex:i] setEnabled:YES];
 
 	// Set keychain id for saving SPF files
@@ -464,22 +528,22 @@
  * Opens the preferences window, or brings it to the front, and switch to the favorites tab.
  * If a favorite is selected in the connection sheet, it is also select in the prefs window.
  */
-- (IBAction)editFavorites:(id)sender
+- (IBAction) editFavorites:(id)sender
 {
 	SPPreferenceController *prefsController = [[NSApp delegate] preferenceController];
 	
 	[prefsController showWindow:self];
 	[prefsController displayFavoritePreferences:self];
-		
-	if ([favoritesTable numberOfSelectedRows]) [prefsController selectFavorites:[NSArray arrayWithObject:[self valueForKeyPath:@"selectedFavorite"]]];	
+	
+	if ([favoritesTable numberOfSelectedRows]) [prefsController selectFavorites:[NSArray arrayWithObject:[self valueForKeyPath:@"selectedFavorite"]]];
 }
 
 /**
  * Show connection help.
  */
-- (IBAction)showHelp:(id)sender
+- (IBAction) showHelp:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPLOCALIZEDURL_CONNECTIONHELP]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPGettingConnectedDocURL]];
 }
 
 #pragma mark -
@@ -517,7 +581,7 @@
  * this is clearer and also prevents a failed connection from being repopulated with the
  * favorite's details instead of the last used details.
  */
-- (void)controlTextDidChange:(NSNotification *)aNotification
+- (void) controlTextDidChange:(NSNotification *)aNotification
 {
 	[favoritesTable deselectAll:self];
 }
@@ -526,7 +590,7 @@
  * When a host field finishes editing, ensure that it hasn't been set to "localhost"
  * to ensure that socket connections don't inadvertently occur.
  */
-- (void)controlTextDidEndEditing:(NSNotification *)notification
+- (void) controlTextDidEndEditing:(NSNotification *)notification
 {
 	if ([notification object] == standardSQLHostField || [notification object] == sshSQLHostField) {
 		[self checkHost];
@@ -537,7 +601,7 @@
  * Control tab view resizing based on the supplied connection type,
  * with an option defining whether it should be animated or not.
  */
-- (void)resizeTabViewToConnectionType:(NSUInteger)theType animating:(BOOL)animate
+- (void) resizeTabViewToConnectionType:(NSUInteger)theType animating:(BOOL)animate
 {
 	NSRect frameRect, targetResizeRect;
 	NSInteger additionalFormHeight = 55;
@@ -569,14 +633,14 @@
  * Check the host field and ensure it isn't set to "localhost" for
  * non-socket connections.
  */
-- (BOOL)checkHost
+- (BOOL) checkHost
 {
 	if ([self type] != SPSocketConnection && [[self host] isEqualToString:@"localhost"]) {
 		SPBeginAlertSheet(NSLocalizedString(@"You have entered 'localhost' for a non-socket connection", @"title of error when using 'localhost' for a network connection"),
 							NSLocalizedString(@"Use 127.0.0.1", @"Use 127.0.0.1 button"),	// Main button
 							NSLocalizedString(@"Connect via socket", @"Connect via socket button"),	// Alternate button
 							nil,	// Other button
-							[tableDocument parentWindow],	// Window to attach to
+							documentWindow,	// Window to attach to
 							self,	// Modal delegate
 							@selector(localhostErrorSheetDidEnd:returnCode:contextInfo:),	// Did end selector
 							nil,	// Contextual info for selectors
@@ -603,9 +667,6 @@
 #pragma mark -
 #pragma mark Favorites interaction
 
-/**
- * Sorts the favorites table view based on the selected sort by item.
- */
 - (void)sortFavorites:(id)sender
 {
     previousSortItem = currentSortItem;
@@ -617,12 +678,13 @@
 	[self _sortFavorites];
 	
 	if (previousSortItem > -1) [[[sender menu] itemAtIndex:previousSortItem] setState:NSOffState];
-	
+
 	[[[sender menu] itemAtIndex:currentSortItem] setState:NSOnState];
+    
 }
 
 /**
- * Reverses the favorites table view sorting based on the selected criteria.
+ *
  */
 - (void)reverseSortFavorites:(id)sender
 {
@@ -639,7 +701,7 @@
 /**
  * Updates the local favorites array from the user defaults
  */
-- (void)updateFavorites
+- (void) updateFavorites
 {
 	[favoritesTable deselectAll:self];
 	if (favorites) [favorites release];
@@ -655,7 +717,7 @@
 /**
  * Sets fields for the chosen favorite.
  */
-- (void)updateFavoriteSelection:(id)sender
+- (void) updateFavoriteSelection:(id)sender
 {
 
 	// If nothing is selected, return without updating the interface
@@ -709,15 +771,15 @@
 	switch([self type]) {
 		case SPTCPIPConnection:
 		if(![[standardPasswordField stringValue] length])
-			[[tableDocument parentWindow] makeFirstResponder:standardPasswordField];
+			[documentWindow makeFirstResponder:standardPasswordField];
 		break;
 		case SPSocketConnection:
 		if(![[socketPasswordField stringValue] length])
-			[[tableDocument parentWindow] makeFirstResponder:socketPasswordField];
+			[documentWindow makeFirstResponder:socketPasswordField];
 		break;
 		case SPSSHTunnelConnection:
 		if(![[sshPasswordField stringValue] length])
-			[[tableDocument parentWindow] makeFirstResponder:sshPasswordField];
+			[documentWindow makeFirstResponder:sshPasswordField];
 		break;
 	}
 }
@@ -725,7 +787,7 @@
 /**
  * Returns a KVC-compliant proxy to the currently selected favorite, or nil if nothing selected.
  */
-- (id)selectedFavorite
+- (id) selectedFavorite
 {
 	if ([favoritesTable selectedRow] == -1)
 		return nil;
@@ -737,7 +799,7 @@
  * Adds the current details as a new favorite, select it, and scroll the selected
  * row to visible.
  */
-- (IBAction)addFavorite:(id)sender
+- (IBAction) addFavorite:(id)sender
 {
 	NSString *thePassword, *theSSHPassword;
 	NSNumber *favoriteid = [NSNumber numberWithInteger:[[NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]] hash]];
@@ -852,25 +914,26 @@
 - (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
     BOOL acceptedDrop = NO;
-    
+
+
 	if ((row == 0) || ([info draggingSource] != aTableView))  return acceptedDrop;
-	
+
 	// Disable all automatic sorting
 	currentSortItem = -1;
 	reverseFavoritesSort = NO;
-	
+
 	[prefs setInteger:currentSortItem forKey:SPFavoritesSortedBy];
 	[prefs setBool:NO forKey:SPFavoritesSortedInReverse];
-	
+
 	// Remove sort descriptors
 	[favorites sortUsingDescriptors:[NSArray array]];
-	
+
 	// Uncheck sort by menu items
 	for (NSMenuItem *menuItem in [[favoritesSortByMenuItem submenu] itemArray])
 	{
 		[menuItem setState:NSOffState];
 	}
-	
+
     NSPasteboard* pboard = [info draggingPasteboard];
     NSData* rowData = [pboard dataForType:favoritesPBoardType];
     NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
@@ -889,21 +952,22 @@
     [favorites insertObject:draggedFavorite atIndex:row];
     [aTableView reloadData];
     [aTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-    
+
 	// reset the prefs with the new order
     NSMutableArray *reorderedFavorites = [[NSMutableArray alloc] initWithArray:favorites];
     [reorderedFavorites removeObjectAtIndex:0];
     [prefs setObject:reorderedFavorites forKey:SPFavorites];
-	
+
 	[[[NSApp delegate] preferenceController] updateDefaultFavoritePopup];
-    
+
 	[reorderedFavorites release];
-    
+
 	[self updateFavorites];
-    
+
 	acceptedDrop = YES;
-	
-    return acceptedDrop;
+
+	return acceptedDrop;
+
 }
 
 #pragma mark -
@@ -989,14 +1053,10 @@
 /**
  * When the split view is resized, trigger a resize in the hidden table
  * width as well, to keep the connection view and connected view in synch.
- * Use this rather than splitViewDidResizeSubviews: as the latter is not
- * forwarded by the BWAnchoredButtonBar.
  */
-- (CGFloat)splitView:(NSSplitView *)splitView constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)dividerIndex
+- (void) splitViewDidResizeSubviews:(NSNotification *)aNotification
 {
-	[databaseConnectionView setPosition:[[[connectionSplitView subviews] objectAtIndex:0] frame].size.width ofDividerAtIndex:0];
-	
-	return proposedPosition;
+	[contentView setPosition:[[[connectionSplitView subviews] objectAtIndex:0] frame].size.width ofDividerAtIndex:0];
 }
 
 /**
@@ -1041,9 +1101,6 @@
 #pragma mark -
 #pragma mark Private API
 
-/**
- * Sorts the connection favorites based on the selected criteria.
- */
 - (void)_sortFavorites
 {
     NSString *sortKey = @"";
@@ -1083,205 +1140,6 @@
 	[first release];
 }
 
-/**
- * Restores the connection interface to its original state.
- */
-- (void)_restoreConnectionInterface
-{
-	// Must be performed on the main thread
-	if (![NSThread isMainThread]) return [[self onMainThread] _restoreConnectionInterface];
-	
-	// Stop the current tab's progress indicator
-	[tableDocument setIsProcessing:NO];
-	
-	// Reset the UI
-	[addToFavoritesButton setHidden:NO];
-	[addToFavoritesButton display];
-	[helpButton setHidden:NO];
-	[helpButton display];
-	[connectButton setTitle:NSLocalizedString(@"Connect", @"connect button")];
-	[connectButton setEnabled:YES];
-	[connectButton display];
-	[progressIndicator stopAnimation:self];
-	[progressIndicator display];
-	[progressIndicatorText setHidden:YES];
-	[progressIndicatorText display];
-	
-	// Re-enable favorites table view
-	[favoritesTable setEnabled:YES];
-	[favoritesTable display];
-	
-	mySQLConnectionCancelled = NO;
-	
-	// Revert the connect button back to its original selector
-	[connectButton setAction:@selector(initiateConnection:)];
-}
-
-/**
- * Called on the main thread once the MySQL connection is established on the background thread. Either the
- * connection was cancelled or it was successful. 
- */
-- (void)_mySQLConnectionEstablished
-{	
-	isConnecting = NO;
-	
-	// If the user hit cancel during the connection attempt, kill the connection once 
-	// established and reset the UI.
-	if (mySQLConnectionCancelled) {		
-		if ([mySQLConnection isConnected]) {
-			[mySQLConnection disconnect];
-			[mySQLConnection release], mySQLConnection = nil;
-		}
-		
-		// Kill the SSH connection if present
-		[self cancelConnection];
-		
-		[self _restoreConnectionInterface];
-		
-		return;
-	}
-	
-	[progressIndicatorText setStringValue:NSLocalizedString(@"Connected", @"connection established message")];
-	[progressIndicatorText display];
-	
-	// Stop the current tab's progress indicator
-	[tableDocument setIsProcessing:NO];
-	
-	// Successful connection!
-	[connectButton setEnabled:NO];
-	[connectButton display];
-	[progressIndicator stopAnimation:self];
-	[progressIndicatorText setHidden:YES];
-	[addToFavoritesButton setHidden:NO];
-	
-	// Re-enable favorites table view
-	[favoritesTable setEnabled:YES];
-	[favoritesTable display];
-	
-	// Release the tunnel if set - will now be retained by the connection
-	if (sshTunnel) [sshTunnel release], sshTunnel = nil;
-	
-	// Pass the connection to the document and clean up the interface
-	[self addConnectionToDocument];
-}
-
-/**
- * Initiates the core of the MySQL connection process on a background thread.
- */
-- (void)_initiateMySQLConnectionInBackground
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
-	// Initialise to socket if appropriate.
-	if ([self type] == SPSocketConnection) {
-		mySQLConnection = [[MCPConnection alloc] initToSocket:[self socket] withLogin:[self user]];
-		
-		// Otherwise, initialise to host, using tunnel if appropriate
-	} else {
-		if ([self type] == SPSSHTunnelConnection) {
-			mySQLConnection = [[MCPConnection alloc] initToHost:@"127.0.0.1"
-													  withLogin:[self user]
-													  usingPort:[sshTunnel localPort]];
-			[mySQLConnection setConnectionProxy:sshTunnel];
-		} else {
-			mySQLConnection = [[MCPConnection alloc] initToHost:[self host]
-													  withLogin:[self user]
-													  usingPort:([[self port] length]?[[self port] integerValue]:3306)];
-		}
-	}
-	
-	// Only set the password if there is no Keychain item set. The connection will ask the delegate for passwords in the Keychain.	
-	if (!connectionKeychainItemName && [self password]) {
-		[mySQLConnection setPassword:[self password]];
-	}
-	
-	// Connection delegate must be set before actual connection attempt is made
-	[mySQLConnection setDelegate:tableDocument];
-	
-	// Set whether or not we should enable delegate logging according to the prefs
-	[mySQLConnection setDelegateQueryLogging:[prefs boolForKey:SPConsoleEnableLogging]];
-	
-	// Set options from preferences
-	[mySQLConnection setConnectionTimeout:[[prefs objectForKey:SPConnectionTimeoutValue] integerValue]];
-	[mySQLConnection setUseKeepAlive:[[prefs objectForKey:SPUseKeepAlive] boolValue]];
-	[mySQLConnection setKeepAliveInterval:[[prefs objectForKey:SPKeepAliveInterval] doubleValue]];
-	
-	// Connect
-	[mySQLConnection connect];
-	
-	if (![mySQLConnection isConnected]) {
-		if (sshTunnel) {
-			
-			// If an SSH tunnel is running, temporarily block to allow the tunnel to register changes in state
-			[[NSRunLoop currentRunLoop] runMode:NSModalPanelRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
-			
-			// If the state is connection refused, attempt the MySQL connection again with the host using the hostfield value.
-			if ([sshTunnel state] == PROXY_STATE_FORWARDING_FAILED) {
-				if ([sshTunnel localPortFallback]) {
-					[mySQLConnection setPort:[sshTunnel localPortFallback]];
-					[mySQLConnection connect];
-					if (![mySQLConnection isConnected]) {
-						[[NSRunLoop currentRunLoop] runMode:NSModalPanelRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
-					}
-				}
-			}
-		}
-		
-		if (![mySQLConnection isConnected]) {
-			NSString *errorMessage = @"";
-			if (sshTunnel && [sshTunnel state] == PROXY_STATE_FORWARDING_FAILED) {
-				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Unable to connect to host %@ because the port connection via SSH was refused.\n\nPlease ensure that your MySQL host is set up to allow TCP/IP connections (no --skip-networking) and is configured to allow connections from the host you are tunnelling via.\n\nYou may also want to check the port is correct and that you have the necessary privileges.\n\nChecking the error detail will show the SSH debug log which may provide more details.\n\nMySQL said: %@", @"message of panel when SSH port forwarding failed"), [self host], [mySQLConnection getLastErrorMessage]];
-				[[self onMainThread] failConnectionWithTitle:NSLocalizedString(@"SSH port forwarding failed", @"title when ssh tunnel port forwarding failed") errorMessage:errorMessage detail:[sshTunnel debugMessages]];
-			} else if ([mySQLConnection getLastErrorID] == 1045) { // "Access denied" error
-				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Unable to connect to host %@ because access was denied.\n\nDouble-check your username and password and ensure that access from your current location is permitted.\n\nMySQL said: %@", @"message of panel when connection to host failed due to access denied error"), [self host], [mySQLConnection getLastErrorMessage]];
-				[[self onMainThread] failConnectionWithTitle:NSLocalizedString(@"Access denied!", @"connection failed due to access denied title") errorMessage:errorMessage detail:nil];
-			} else if ([self type] == SPSocketConnection && (![self socket] || ![[self socket] length]) && ![mySQLConnection findSocketPath]) {
-				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"The socket file could not be found in any common location. Please supply the correct socket location.\n\nMySQL said: %@", @"message of panel when connection to socket failed because optional socket could not be found"), [mySQLConnection getLastErrorMessage]];
-				[[self onMainThread] failConnectionWithTitle:NSLocalizedString(@"Socket not found!", @"socket not found title") errorMessage:errorMessage detail:nil];
-			} else if ([self type] == SPSocketConnection) {
-				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Unable to connect via the socket, or the request timed out.\n\nDouble-check that the socket path is correct and that you have the necessary privileges, and that the server is running.\n\nMySQL said: %@", @"message of panel when connection to host failed"), [mySQLConnection getLastErrorMessage]];
-				[[self onMainThread] failConnectionWithTitle:NSLocalizedString(@"Socket connection failed!", @"socket connection failed title") errorMessage:errorMessage detail:nil];
-			} else {
-				errorMessage = [NSString stringWithFormat:NSLocalizedString(@"Unable to connect to host %@, or the request timed out.\n\nBe sure that the address is correct and that you have the necessary privileges, or try increasing the connection timeout (currently %ld seconds).\n\nMySQL said: %@", @"message of panel when connection to host failed"), [self host], (long)[[prefs objectForKey:SPConnectionTimeoutValue] integerValue], [mySQLConnection getLastErrorMessage]];
-				[[self onMainThread] failConnectionWithTitle:NSLocalizedString(@"Connection failed!", @"connection failed title") errorMessage:errorMessage detail:nil];
-			}
-			
-			// Tidy up
-			isConnecting = NO;
-			
-			if (sshTunnel) [sshTunnel release], sshTunnel = nil;
-			
-			[mySQLConnection release], mySQLConnection = nil;
-			[self _restoreConnectionInterface];
-			[pool release];
-			
-			return;
-		}
-	}
-	
-	if ([self database] && ![[self database] isEqualToString:@""]) {
-		if (![mySQLConnection selectDB:[self database]]) {
-			[[self onMainThread] failConnectionWithTitle:NSLocalizedString(@"Could not select database", @"message when database selection failed") errorMessage:[NSString stringWithFormat:NSLocalizedString(@"Connected to host, but unable to connect to database %@.\n\nBe sure that the database exists and that you have the necessary privileges.\n\nMySQL said: %@", @"message of panel when connection to db failed"), [self database], [mySQLConnection getLastErrorMessage]] detail:nil];
-			
-			// Tidy up
-			isConnecting = NO;
-			
-			if (sshTunnel) [sshTunnel release], sshTunnel = nil;
-			
-			[mySQLConnection release], mySQLConnection = nil;
-			[self _restoreConnectionInterface];
-			[pool release];
-			
-			return;
-		}
-	}
-	
-	// Connection established
-	[self performSelectorOnMainThread:@selector(_mySQLConnectionEstablished) withObject:nil waitUntilDone:NO];
-		
-	[pool release];
-}
-
 @end
 
 #pragma mark -
@@ -1296,5 +1154,7 @@
 {
     return YES;
 }
+
+
 
 @end

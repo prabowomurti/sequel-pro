@@ -31,8 +31,6 @@
 
 static SPGrowlController *sharedGrowlController = nil;
 
-@class SPWindowController;
-
 @implementation SPGrowlController
 
 /**
@@ -86,21 +84,21 @@ static SPGrowlController *sharedGrowlController = nil;
  * Calls the notification after a tiny delay to allow isKeyWindow to have updated
  * after tasks.
  */
-- (void)notifyWithTitle:(NSString *)title description:(NSString *)description document:(SPDatabaseDocument *)document notificationName:(NSString *)name
+- (void)notifyWithTitle:(NSString *)title description:(NSString *)description window:(NSWindow *)window notificationName:(NSString *)name
 {
 
 	// Ensure that the delayed notification call is made on the main thread
 	if (![NSThread isMainThread]) {
-		[[self onMainThread] notifyWithTitle:title description:description document:document notificationName:name];
+		[[self onMainThread] notifyWithTitle:title description:description window:window notificationName:name];
 		return;
 	}
 
 	NSMutableDictionary *notificationDictionary = [NSMutableDictionary dictionary];
 	[notificationDictionary setObject:title forKey:@"title"];
 	[notificationDictionary setObject:description forKey:@"description"];
-	[notificationDictionary setObject:document forKey:@"document"];
+	[notificationDictionary setObject:window forKey:@"window"];
 	[notificationDictionary setObject:name forKey:@"name"];
-	[notificationDictionary setObject:[NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInteger:[document hash]] forKey:@"notificationDocumentHash"] forKey:@"clickContext"];
+	[notificationDictionary setObject:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:[window windowNumber]] forKey:@"notificationWindow"] forKey:@"clickContext"];
 
 	[self performSelector:@selector(notifyWithObject:) withObject:notificationDictionary afterDelay:0.1];
 }
@@ -114,7 +112,7 @@ static SPGrowlController *sharedGrowlController = nil;
 {
 	[self notifyWithTitle:[notificationDictionary objectForKey:@"title"]
 			  description:[notificationDictionary objectForKey:@"description"]
-				 document:[notificationDictionary objectForKey:@"document"]
+				   window:[notificationDictionary objectForKey:@"window"]
 		 notificationName:[notificationDictionary objectForKey:@"name"]
 				 iconData:nil
 				 priority:0
@@ -125,17 +123,13 @@ static SPGrowlController *sharedGrowlController = nil;
 /**
  * Posts a Growl notification using the supplied details and effectively ignoring the default values.
  */
-- (void)notifyWithTitle:(NSString *)title description:(NSString *)description document:(SPDatabaseDocument *)document notificationName:(NSString *)name iconData:(NSData *)data priority:(NSInteger)priority isSticky:(BOOL)sticky clickContext:(id)clickContext
+- (void)notifyWithTitle:(NSString *)title description:(NSString *)description window:(NSWindow *)window notificationName:(NSString *)name iconData:(NSData *)data priority:(NSInteger)priority isSticky:(BOOL)sticky clickContext:(id)clickContext
 {
 	BOOL postNotification = YES;
 
-	// Don't post the notification if the notification document is frontmost
+	// Don't post the notification if the notification window is key and order front
 	// as that suggests the user is already viewing the notification result.
-	if ([[document parentWindow] isKeyWindow]
-		&& [[[document parentTabViewItem] tabView] selectedTabViewItem] == [document parentTabViewItem])
-	{
-		postNotification = NO;
-	}
+	if ([window isKeyWindow]) postNotification = NO;
 
 	// If a timing notification name exists, check to see if it matches the notification name;
 	// if it does, and the time exceeds the threshold, display the notification even for
@@ -164,20 +158,11 @@ static SPGrowlController *sharedGrowlController = nil;
  */
 - (void)growlNotificationWasClicked:(NSDictionary *)clickContext
 {
-	if (clickContext && [clickContext objectForKey:@"notificationDocumentHash"]) {
-		NSUInteger documentHash = [[clickContext objectForKey:@"notificationDocumentHash"] unsignedIntegerValue];
-
-		// Loop through the windows, looking for the document
-		for (NSWindow *eachWindow in [NSApp orderedWindows]) {
-			if ([[eachWindow windowController] isKindOfClass:[SPWindowController class]]) {
-				for (SPDatabaseDocument *eachDocument in [[eachWindow windowController] documents]) {
-					if ([eachDocument hash] == documentHash) {
-						[NSApp activateIgnoringOtherApps:YES];
-						[eachDocument makeKeyDocument];
-						return;
-					}
-				}
-			}
+	if (clickContext && [clickContext objectForKey:@"notificationWindow"]) {
+		NSWindow *targetWindow = [NSApp windowWithWindowNumber:[[clickContext objectForKey:@"notificationWindow"] integerValue]];
+		if (targetWindow) {
+			[NSApp activateIgnoringOtherApps:YES];
+			[targetWindow makeKeyAndOrderFront:self];
 		}
 	}
 }

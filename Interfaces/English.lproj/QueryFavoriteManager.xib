@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10F569</string>
-		<string key="IBDocument.InterfaceBuilderVersion">788</string>
-		<string key="IBDocument.AppKitVersion">1038.29</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.SystemVersion">10C540</string>
+		<string key="IBDocument.InterfaceBuilderVersion">740</string>
+		<string key="IBDocument.AppKitVersion">1038.25</string>
+		<string key="IBDocument.HIToolboxVersion">458.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
@@ -15,7 +15,7 @@
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>788</string>
+				<string>740</string>
 				<string>1.2.5</string>
 			</object>
 		</object>
@@ -58,15 +58,16 @@
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSWindowContentMinSize">{529, 371}</string>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSBox" id="594420157">
 							<reference key="NSNextResponder" ref="1006"/>
 							<int key="NSvFlags">4106</int>
-							<string key="NSFrame">{{0, 358}, {529, 5}}</string>
+							<string key="NSFrame">{{0, 358}, {500, 5}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
 								<int key="NSCellFlags">67239424</int>
@@ -116,6 +117,7 @@
 													<int key="NSvFlags">292</int>
 													<string key="NSFrame">{{-1, -1}, {32, 25}}</string>
 													<reference key="NSSuperview" ref="12172024"/>
+													<reference key="NSWindow"/>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSButtonCell" key="NSCell" id="63587388">
 														<int key="NSCellFlags">67239424</int>
@@ -140,6 +142,7 @@
 													<int key="NSvFlags">292</int>
 													<string key="NSFrame">{{30, -1}, {32, 25}}</string>
 													<reference key="NSSuperview" ref="12172024"/>
+													<reference key="NSWindow"/>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSButtonCell" key="NSCell" id="1023807891">
 														<int key="NSCellFlags">67239424</int>
@@ -164,6 +167,7 @@
 													<int key="NSvFlags">292</int>
 													<string key="NSFrame">{{61, -1}, {32, 24}}</string>
 													<reference key="NSSuperview" ref="12172024"/>
+													<reference key="NSWindow"/>
 													<bool key="NSEnabled">YES</bool>
 													<object class="BWAnchoredPopUpButtonCell" key="NSCell" id="929623756">
 														<int key="NSCellFlags">71433792</int>
@@ -314,8 +318,9 @@
 													</object>
 												</object>
 											</object>
-											<string key="NSFrameSize">{177, 23}</string>
+											<string key="NSFrameSize">{209, 23}</string>
 											<reference key="NSSuperview" ref="1030932325"/>
+											<reference key="NSWindow"/>
 											<bool key="BWABBIsResizable">YES</bool>
 											<bool key="BWABBIsAtBottom">YES</bool>
 											<bool key="BWABBHandleIsRightAligned">NO</bool>
@@ -334,14 +339,16 @@
 														<object class="NSTableView" id="522643855">
 															<reference key="NSNextResponder" ref="106335880"/>
 															<int key="NSvFlags">4370</int>
-															<string key="NSFrameSize">{178, 322}</string>
+															<string key="NSFrameSize">{210, 322}</string>
 															<reference key="NSSuperview" ref="106335880"/>
+															<reference key="NSWindow"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="724842455">
 																<reference key="NSNextResponder" ref="642947098"/>
 																<int key="NSvFlags">4352</int>
-																<string key="NSFrameSize">{178, 17}</string>
+																<string key="NSFrameSize">{210, 17}</string>
 																<reference key="NSSuperview" ref="642947098"/>
+																<reference key="NSWindow"/>
 																<reference key="NSTableView" ref="522643855"/>
 															</object>
 															<object class="_NSCornerView" key="NSCornerView" id="299150059">
@@ -349,12 +356,13 @@
 																<int key="NSvFlags">-2147483392</int>
 																<string key="NSFrame">{{198, 0}, {12, 17}}</string>
 																<reference key="NSSuperview" ref="205303038"/>
+																<reference key="NSWindow"/>
 															</object>
 															<object class="NSMutableArray" key="NSTableColumns">
 																<bool key="EncodedWithXMLCoder">YES</bool>
 																<object class="NSTableColumn" id="901293108">
 																	<string key="NSIdentifier">name</string>
-																	<double key="NSWidth">120</double>
+																	<double key="NSWidth">152</double>
 																	<double key="NSMinWidth">20</double>
 																	<double key="NSMaxWidth">2000</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -472,8 +480,9 @@
 															<int key="NSTableViewDraggingDestinationStyle">1</int>
 														</object>
 													</object>
-													<string key="NSFrame">{{0, 17}, {178, 322}}</string>
+													<string key="NSFrame">{{0, 17}, {210, 322}}</string>
 													<reference key="NSSuperview" ref="205303038"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="522643855"/>
 													<reference key="NSDocView" ref="522643855"/>
 													<reference key="NSBGColor" ref="392588142"/>
@@ -484,6 +493,7 @@
 													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{198, 17}, {11, 322}}</string>
 													<reference key="NSSuperview" ref="205303038"/>
+													<reference key="NSWindow"/>
 													<int key="NSsFlags">256</int>
 													<reference key="NSTarget" ref="205303038"/>
 													<string key="NSAction">_doScroller:</string>
@@ -494,6 +504,7 @@
 													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{-100, -100}, {311, 15}}</string>
 													<reference key="NSSuperview" ref="205303038"/>
+													<reference key="NSWindow"/>
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="205303038"/>
 													<string key="NSAction">_doScroller:</string>
@@ -506,8 +517,9 @@
 														<bool key="EncodedWithXMLCoder">YES</bool>
 														<reference ref="724842455"/>
 													</object>
-													<string key="NSFrameSize">{178, 17}</string>
+													<string key="NSFrameSize">{210, 17}</string>
 													<reference key="NSSuperview" ref="205303038"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="724842455"/>
 													<reference key="NSDocView" ref="724842455"/>
 													<reference key="NSBGColor" ref="392588142"/>
@@ -515,8 +527,9 @@
 												</object>
 												<reference ref="299150059"/>
 											</object>
-											<string key="NSFrame">{{0, 22}, {178, 339}}</string>
+											<string key="NSFrame">{{0, 22}, {210, 339}}</string>
 											<reference key="NSSuperview" ref="1030932325"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="106335880"/>
 											<int key="NSsFlags">528</int>
 											<reference key="NSVScroller" ref="322405876"/>
@@ -527,8 +540,9 @@
 											<bytes key="NSScrollAmts">QSAAAEEgAABBkAAAQZAAAA</bytes>
 										</object>
 									</object>
-									<string key="NSFrameSize">{177, 361}</string>
+									<string key="NSFrameSize">{209, 361}</string>
 									<reference key="NSSuperview" ref="588484039"/>
+									<reference key="NSWindow"/>
 									<string key="NSClassName">NSView</string>
 								</object>
 								<object class="BWCustomView" id="954707656">
@@ -539,8 +553,9 @@
 										<object class="NSButton" id="638071207">
 											<reference key="NSNextResponder" ref="954707656"/>
 											<int key="NSvFlags">292</int>
-											<string key="NSFrame">{{9, 15}, {25, 25}}</string>
+											<string key="NSFrame">{{17, 15}, {25, 25}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="917409661">
 												<int key="NSCellFlags">67239424</int>
@@ -559,8 +574,9 @@
 										<object class="NSPopUpButton" id="150642739">
 											<reference key="NSNextResponder" ref="954707656"/>
 											<int key="NSvFlags">292</int>
-											<string key="NSFrame">{{40, 15}, {122, 25}}</string>
+											<string key="NSFrame">{{46, 15}, {117, 25}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSPopUpButtonCell" key="NSCell" id="1063983207">
 												<int key="NSCellFlags">-2076049856</int>
@@ -829,8 +845,9 @@
 										<object class="NSTextField" id="92903832">
 											<reference key="NSNextResponder" ref="954707656"/>
 											<int key="NSvFlags">290</int>
-											<string key="NSFrame">{{92, 54}, {239, 19}}</string>
+											<string key="NSFrame">{{92, 54}, {207, 19}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="276546601">
 												<int key="NSCellFlags">-1804468671</int>
@@ -853,6 +870,7 @@
 											<int key="NSvFlags">288</int>
 											<string key="NSFrame">{{17, 57}, {70, 14}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="497354008">
 												<int key="NSCellFlags">68288064</int>
@@ -872,12 +890,13 @@
 										<object class="NSTextField" id="350107303">
 											<reference key="NSNextResponder" ref="954707656"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{17, 331}, {60, 14}}</string>
+											<string key="NSFrame">{{17, 330}, {45, 14}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="448987091">
 												<int key="NSCellFlags">68288064</int>
-												<int key="NSCellFlags2">138544128</int>
+												<int key="NSCellFlags2">272761856</int>
 												<string key="NSContents">Name:</string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="350107303"/>
@@ -888,8 +907,9 @@
 										<object class="NSTextField" id="247897226">
 											<reference key="NSNextResponder" ref="954707656"/>
 											<int key="NSvFlags">266</int>
-											<string key="NSFrame">{{77, 328}, {254, 19}}</string>
+											<string key="NSFrame">{{56, 328}, {243, 19}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="474077606">
 												<int key="NSCellFlags">-1804468671</int>
@@ -939,8 +959,9 @@
 																	<string>public.url</string>
 																</object>
 															</object>
-															<string key="NSFrameSize">{309, 14}</string>
+															<string key="NSFrameSize">{277, 14}</string>
 															<reference key="NSSuperview" ref="221447089"/>
+															<reference key="NSWindow"/>
 															<object class="NSTextContainer" key="NSTextContainer" id="74289808">
 																<object class="NSLayoutManager" key="NSLayoutManager">
 																	<object class="NSTextStorage" key="NSTextStorage">
@@ -957,7 +978,7 @@
 																	<nil key="NSDelegate"/>
 																</object>
 																<reference key="NSTextView" ref="556251150"/>
-																<double key="NSWidth">309</double>
+																<double key="NSWidth">277</double>
 																<int key="NSTCFlags">1</int>
 															</object>
 															<object class="NSTextViewSharedData" key="NSSharedData">
@@ -1013,8 +1034,9 @@
 															<nil key="NSDelegate"/>
 														</object>
 													</object>
-													<string key="NSFrame">{{1, 1}, {309, 236}}</string>
+													<string key="NSFrame">{{1, 1}, {277, 236}}</string>
 													<reference key="NSSuperview" ref="407061848"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="556251150"/>
 													<reference key="NSDocView" ref="556251150"/>
 													<reference key="NSBGColor" ref="359131077"/>
@@ -1029,6 +1051,7 @@
 													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{-100, -100}, {11, 133}}</string>
 													<reference key="NSSuperview" ref="407061848"/>
+													<reference key="NSWindow"/>
 													<int key="NSsFlags">256</int>
 													<reference key="NSTarget" ref="407061848"/>
 													<string key="NSAction">_doScroller:</string>
@@ -1039,6 +1062,7 @@
 													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{-100, -100}, {87, 18}}</string>
 													<reference key="NSSuperview" ref="407061848"/>
+													<reference key="NSWindow"/>
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="407061848"/>
 													<string key="NSAction">_doScroller:</string>
@@ -1046,8 +1070,9 @@
 													<double key="NSPercent">0.94565218687057495</double>
 												</object>
 											</object>
-											<string key="NSFrame">{{20, 82}, {311, 238}}</string>
+											<string key="NSFrame">{{20, 82}, {279, 238}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="221447089"/>
 											<int key="NSsFlags">530</int>
 											<reference key="NSVScroller" ref="978638217"/>
@@ -1057,8 +1082,9 @@
 										<object class="NSButton" id="556514169">
 											<reference key="NSNextResponder" ref="954707656"/>
 											<int key="NSvFlags">289</int>
-											<string key="NSFrame">{{248, 13}, {88, 28}}</string>
+											<string key="NSFrame">{{234, 13}, {70, 28}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<int key="NSTag">1</int>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="908635119">
@@ -1083,8 +1109,9 @@
 										<object class="NSButton" id="602197876">
 											<reference key="NSNextResponder" ref="954707656"/>
 											<int key="NSvFlags">289</int>
-											<string key="NSFrame">{{162, 13}, {88, 28}}</string>
+											<string key="NSFrame">{{166, 13}, {70, 28}}</string>
 											<reference key="NSSuperview" ref="954707656"/>
+											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="615814080">
 												<int key="NSCellFlags">67239424</int>
@@ -1102,13 +1129,15 @@
 											</object>
 										</object>
 									</object>
-									<string key="NSFrame">{{178, 0}, {351, 361}}</string>
+									<string key="NSFrame">{{210, 0}, {319, 361}}</string>
 									<reference key="NSSuperview" ref="588484039"/>
+									<reference key="NSWindow"/>
 									<string key="NSClassName">NSView</string>
 								</object>
 							</object>
 							<string key="NSFrameSize">{529, 361}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<bool key="NSIsVertical">YES</bool>
 							<int key="NSDividerStyle">2</int>
 							<string key="NSAutosaveName">SPQueryFavoriteSplitView</string>
@@ -1127,7 +1156,7 @@
 								<object class="NSMutableArray" key="dict.values">
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<integer value="152"/>
-									<integer value="351"/>
+									<integer value="290"/>
 								</object>
 							</object>
 							<object class="NSMutableDictionary" key="BWSVMaxValues">
@@ -1174,6 +1203,8 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{529, 371}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMinSize">{529, 393}</string>
@@ -1717,12 +1748,12 @@
 							<reference ref="247897226"/>
 							<reference ref="407061848"/>
 							<reference ref="350107303"/>
+							<reference ref="556514169"/>
 							<reference ref="1033778944"/>
 							<reference ref="92903832"/>
-							<reference ref="638071207"/>
-							<reference ref="556514169"/>
-							<reference ref="150642739"/>
 							<reference ref="602197876"/>
+							<reference ref="150642739"/>
+							<reference ref="638071207"/>
 						</object>
 						<reference key="parent" ref="588484039"/>
 					</object>
@@ -2344,9 +2375,9 @@
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{191, 352}, {529, 371}}</string>
+					<string>{{896, 352}, {529, 371}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{191, 352}, {529, 371}}</string>
+					<string>{{896, 352}, {529, 371}}</string>
 					<boolean value="NO"/>
 					<string>{196, 240}</string>
 					<string>{{357, 418}, {480, 270}}</string>
@@ -2359,7 +2390,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>SPTextView</string>
+					<string>CMTextView</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2694,54 +2725,19 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
-					<string key="className">CMCopyTable</string>
-					<string key="superclassName">SPTableView</string>
+					<string key="className">CMTextView</string>
+					<string key="superclassName">NSTextView</string>
 					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">copy:</string>
+						<string key="NS.key.0">showMySQLHelpForCurrentWord:</string>
 						<string key="NS.object.0">id</string>
 					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">copy:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">copy:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
 					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>mySQLConnection</string>
-							<string>tableInstance</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>mySQLConnection</string>
-							<string>tableInstance</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">mySQLConnection</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
+						<string key="NS.key.0">scrollView</string>
+						<string key="NS.object.0">NSScrollView</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/CMCopyTable.h</string>
+						<string key="minorKey">Source/CMTextView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2750,13 +2746,6 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">Source/ImageAndTextCell.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSApplication</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Frameworks/PSMTabBar/PSMTabDragAssistant.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2777,14 +2766,7 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Frameworks/PSMTabBar/PSMTabBarCell.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Frameworks/PSMTabBar/PSMTabBarControl.h</string>
+						<string key="minorKey">Source/CMImageView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2799,20 +2781,6 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="551467038">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">Source/SPContentFilterManager.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPImageView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPMainThreadTrampoline.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2835,16 +2803,9 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 						<string key="NS.key.0">toggleCollapse:</string>
 						<string key="NS.object.0">id</string>
 					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">toggleCollapse:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">toggleCollapse:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="617951833">
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPTablesList.h</string>
+						<string key="minorKey">Source/TablesList.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -2882,80 +2843,6 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>doDecomposedStringWithCanonicalMapping:</string>
-							<string>doDecomposedStringWithCompatibilityMapping:</string>
-							<string>doPrecomposedStringWithCanonicalMapping:</string>
-							<string>doPrecomposedStringWithCompatibilityMapping:</string>
-							<string>doRemoveDiacritics:</string>
-							<string>doSelectionLowerCase:</string>
-							<string>doSelectionTitleCase:</string>
-							<string>doSelectionUpperCase:</string>
-							<string>doTranspose:</string>
-							<string>insertNULLvalue:</string>
-							<string>selectCurrentLine:</string>
-							<string>selectCurrentWord:</string>
-							<string>selectEnclosingBrackets:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">doDecomposedStringWithCanonicalMapping:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">doDecomposedStringWithCompatibilityMapping:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">doPrecomposedStringWithCanonicalMapping:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">doPrecomposedStringWithCompatibilityMapping:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">doRemoveDiacritics:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">doSelectionLowerCase:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">doSelectionTitleCase:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">doSelectionUpperCase:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">doTranspose:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">insertNULLvalue:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">selectCurrentLine:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">selectCurrentWord:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">selectEnclosingBrackets:</string>
-								<string key="candidateClassName">id</string>
-							</object>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -2998,55 +2885,6 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 							<string>id</string>
 						</object>
 					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addContentFilter:</string>
-							<string>closeContentFilterManagerSheet:</string>
-							<string>duplicateContentFilter:</string>
-							<string>exportContentFilter:</string>
-							<string>importContentFilterByAdding:</string>
-							<string>insertPlaceholder:</string>
-							<string>removeContentFilter:</string>
-							<string>suppressLeadingFiledPlaceholderWasChanged:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">addContentFilter:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">closeContentFilterManagerSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">duplicateContentFilter:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">exportContentFilter:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">importContentFilterByAdding:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">insertPlaceholder:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">removeContentFilter:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">suppressLeadingFiledPlaceholderWasChanged:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -3084,116 +2922,25 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 							<string>id</string>
 						</object>
 					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>contentFilterArrayController</string>
-							<string>contentFilterConjunctionLabel</string>
-							<string>contentFilterConjunctionTextField</string>
-							<string>contentFilterNameTextField</string>
-							<string>contentFilterTableView</string>
-							<string>contentFilterTextView</string>
-							<string>encodingPopUp</string>
-							<string>insertPlaceholderButton</string>
-							<string>numberOfArgsLabel</string>
-							<string>removeButton</string>
-							<string>resultingClauseContentLabel</string>
-							<string>resultingClauseLabel</string>
-							<string>splitViewButtonBar</string>
-							<string>suppressLeadingFiledPlaceholderCheckbox</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">contentFilterArrayController</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">contentFilterConjunctionLabel</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">contentFilterConjunctionTextField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">contentFilterNameTextField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">contentFilterTableView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">contentFilterTextView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">encodingPopUp</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">insertPlaceholderButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">numberOfArgsLabel</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">removeButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">resultingClauseContentLabel</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">resultingClauseLabel</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">splitViewButtonBar</string>
-								<string key="candidateClassName">BWAnchoredButtonBar</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">suppressLeadingFiledPlaceholderCheckbox</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
 					<reference key="sourceIdentifier" ref="551467038"/>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SPCustomQuery</string>
-					<string key="superclassName">NSObject</string>
+					<string key="className">SPQueryFavoriteManager</string>
+					<string key="superclassName">NSWindowController</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>chooseQueryFavorite:</string>
-							<string>chooseQueryHistory:</string>
-							<string>clearQueryHistory:</string>
-							<string>closeSheet:</string>
-							<string>copyQueryHistory:</string>
-							<string>filterQueryFavorites:</string>
-							<string>filterQueryHistory:</string>
-							<string>gearMenuItemSelected:</string>
-							<string>helpSearchFindNextInPage:</string>
-							<string>helpSearchFindPreviousInPage:</string>
-							<string>helpSegmentDispatcher:</string>
-							<string>helpSelectHelpTargetMySQL:</string>
-							<string>helpSelectHelpTargetPage:</string>
-							<string>helpSelectHelpTargetWeb:</string>
-							<string>helpTargetDispatcher:</string>
-							<string>runAllQueries:</string>
-							<string>runSelectedQueries:</string>
-							<string>saveQueryHistory:</string>
-							<string>showAutoHelpForCurrentWord:</string>
-							<string>showCompletionList:</string>
-							<string>showHelpForCurrentWord:</string>
-							<string>showHelpForSearchString:</string>
+							<string>addQueryFavorite:</string>
+							<string>closeQueryManagerSheet:</string>
+							<string>duplicateQueryFavorite:</string>
+							<string>exportFavorites:</string>
+							<string>importFavoritesByAdding:</string>
+							<string>importFavoritesByReplacing:</string>
+							<string>insertPlaceholder:</string>
+							<string>removeAllQueryFavorites:</string>
+							<string>removeQueryFavorite:</string>
+							<string>saveFavoriteToFile:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -3207,1445 +2954,51 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>chooseQueryFavorite:</string>
-							<string>chooseQueryHistory:</string>
-							<string>clearQueryHistory:</string>
-							<string>closeSheet:</string>
-							<string>copyQueryHistory:</string>
-							<string>filterQueryFavorites:</string>
-							<string>filterQueryHistory:</string>
-							<string>gearMenuItemSelected:</string>
-							<string>helpSearchFindNextInPage:</string>
-							<string>helpSearchFindPreviousInPage:</string>
-							<string>helpSegmentDispatcher:</string>
-							<string>helpSelectHelpTargetMySQL:</string>
-							<string>helpSelectHelpTargetPage:</string>
-							<string>helpSelectHelpTargetWeb:</string>
-							<string>helpTargetDispatcher:</string>
-							<string>runAllQueries:</string>
-							<string>runSelectedQueries:</string>
-							<string>saveQueryHistory:</string>
-							<string>showAutoHelpForCurrentWord:</string>
-							<string>showCompletionList:</string>
-							<string>showHelpForCurrentWord:</string>
-							<string>showHelpForSearchString:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">chooseQueryFavorite:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">chooseQueryHistory:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">clearQueryHistory:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">closeSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">copyQueryHistory:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">filterQueryFavorites:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">filterQueryHistory:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">gearMenuItemSelected:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">helpSearchFindNextInPage:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">helpSearchFindPreviousInPage:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">helpSegmentDispatcher:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">helpSelectHelpTargetMySQL:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">helpSelectHelpTargetPage:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">helpSelectHelpTargetWeb:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">helpTargetDispatcher:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">runAllQueries:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">runSelectedQueries:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">saveQueryHistory:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showAutoHelpForCurrentWord:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showCompletionList:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showHelpForCurrentWord:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showHelpForSearchString:</string>
-								<string key="candidateClassName">id</string>
-							</object>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>affectedRowsText</string>
-							<string>autohelpMenuItem</string>
-							<string>autoindentMenuItem</string>
-							<string>autopairMenuItem</string>
-							<string>autouppercaseKeywordsMenuItem</string>
-							<string>clearHistoryMenuItem</string>
-							<string>commentCurrentQueryMenuItem</string>
-							<string>commentLineOrSelectionMenuItem</string>
-							<string>completionListMenuItem</string>
-							<string>copyHistoryMenuItem</string>
-							<string>customQueryScrollView</string>
-							<string>customQueryView</string>
-							<string>editorFontMenuItem</string>
 							<string>encodingPopUp</string>
-							<string>errorText</string>
-							<string>helpNavigator</string>
-							<string>helpSearchField</string>
-							<string>helpSearchFieldCell</string>
-							<string>helpTargetSelector</string>
-							<string>helpWebView</string>
-							<string>helpWebViewWindow</string>
-							<string>multipleLineEditingButton</string>
-							<string>nextHistoryMenuItem</string>
-							<string>previousHistoryMenuItem</string>
-							<string>queryFavoriteNameTextField</string>
-							<string>queryFavoritesButton</string>
-							<string>queryFavoritesSaveAllMenuItem</string>
-							<string>queryFavoritesSaveAsMenuItem</string>
-							<string>queryFavoritesSearchField</string>
-							<string>queryFavoritesSearchFieldView</string>
-							<string>queryFavoritesSearchMenuItem</string>
-							<string>queryFavoritesSheet</string>
-							<string>queryHistoryButton</string>
-							<string>queryHistorySearchField</string>
-							<string>queryHistorySearchFieldView</string>
-							<string>queryHistorySearchMenuItem</string>
-							<string>runAllButton</string>
-							<string>runAllMenuItem</string>
-							<string>runSelectionButton</string>
-							<string>runSelectionMenuItem</string>
-							<string>saveHistoryMenuItem</string>
-							<string>saveQueryFavoriteButton</string>
-							<string>saveQueryFavoriteGlobal</string>
-							<string>shiftLeftMenuItem</string>
-							<string>shiftRightMenuItem</string>
-							<string>tableDocumentInstance</string>
-							<string>tablesListInstance</string>
-							<string>textView</string>
-							<string>valueSheet</string>
-							<string>valueTextField</string>
+							<string>favoriteNameTextField</string>
+							<string>favoriteQueryTextView</string>
+							<string>favoriteTabTriggerTextField</string>
+							<string>favoritesArrayController</string>
+							<string>favoritesTableView</string>
+							<string>removeButton</string>
+							<string>splitViewButtonBar</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSScrollView</string>
-							<string>CMCopyTable</string>
-							<string>NSMenuItem</string>
 							<string>NSPopUpButton</string>
-							<string>id</string>
-							<string>NSSegmentedControl</string>
-							<string>NSSearchField</string>
-							<string>NSSearchFieldCell</string>
-							<string>NSSegmentedControl</string>
-							<string>WebView</string>
-							<string>NSWindow</string>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
 							<string>NSTextField</string>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSSearchField</string>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>NSWindow</string>
-							<string>id</string>
-							<string>NSSearchField</string>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSButton</string>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>id</string>
-							<string>id</string>
-							<string>SPTextView</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>affectedRowsText</string>
-							<string>autohelpMenuItem</string>
-							<string>autoindentMenuItem</string>
-							<string>autopairMenuItem</string>
-							<string>autouppercaseKeywordsMenuItem</string>
-							<string>clearHistoryMenuItem</string>
-							<string>commentCurrentQueryMenuItem</string>
-							<string>commentLineOrSelectionMenuItem</string>
-							<string>completionListMenuItem</string>
-							<string>copyHistoryMenuItem</string>
-							<string>customQueryScrollView</string>
-							<string>customQueryView</string>
-							<string>editorFontMenuItem</string>
-							<string>encodingPopUp</string>
-							<string>errorText</string>
-							<string>helpNavigator</string>
-							<string>helpSearchField</string>
-							<string>helpSearchFieldCell</string>
-							<string>helpTargetSelector</string>
-							<string>helpWebView</string>
-							<string>helpWebViewWindow</string>
-							<string>multipleLineEditingButton</string>
-							<string>nextHistoryMenuItem</string>
-							<string>previousHistoryMenuItem</string>
-							<string>queryFavoriteNameTextField</string>
-							<string>queryFavoritesButton</string>
-							<string>queryFavoritesSaveAllMenuItem</string>
-							<string>queryFavoritesSaveAsMenuItem</string>
-							<string>queryFavoritesSearchField</string>
-							<string>queryFavoritesSearchFieldView</string>
-							<string>queryFavoritesSearchMenuItem</string>
-							<string>queryFavoritesSheet</string>
-							<string>queryHistoryButton</string>
-							<string>queryHistorySearchField</string>
-							<string>queryHistorySearchFieldView</string>
-							<string>queryHistorySearchMenuItem</string>
-							<string>runAllButton</string>
-							<string>runAllMenuItem</string>
-							<string>runSelectionButton</string>
-							<string>runSelectionMenuItem</string>
-							<string>saveHistoryMenuItem</string>
-							<string>saveQueryFavoriteButton</string>
-							<string>saveQueryFavoriteGlobal</string>
-							<string>shiftLeftMenuItem</string>
-							<string>shiftRightMenuItem</string>
-							<string>tableDocumentInstance</string>
-							<string>tablesListInstance</string>
-							<string>textView</string>
-							<string>valueSheet</string>
-							<string>valueTextField</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">affectedRowsText</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">autohelpMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">autoindentMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">autopairMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">autouppercaseKeywordsMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">clearHistoryMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">commentCurrentQueryMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">commentLineOrSelectionMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">completionListMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyHistoryMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">customQueryScrollView</string>
-								<string key="candidateClassName">NSScrollView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">customQueryView</string>
-								<string key="candidateClassName">CMCopyTable</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">editorFontMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">encodingPopUp</string>
-								<string key="candidateClassName">NSPopUpButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">errorText</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">helpNavigator</string>
-								<string key="candidateClassName">NSSegmentedControl</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">helpSearchField</string>
-								<string key="candidateClassName">NSSearchField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">helpSearchFieldCell</string>
-								<string key="candidateClassName">NSSearchFieldCell</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">helpTargetSelector</string>
-								<string key="candidateClassName">NSSegmentedControl</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">helpWebView</string>
-								<string key="candidateClassName">WebView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">helpWebViewWindow</string>
-								<string key="candidateClassName">NSWindow</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">multipleLineEditingButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">nextHistoryMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">previousHistoryMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryFavoriteNameTextField</string>
-								<string key="candidateClassName">NSTextField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryFavoritesButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryFavoritesSaveAllMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryFavoritesSaveAsMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryFavoritesSearchField</string>
-								<string key="candidateClassName">NSSearchField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryFavoritesSearchFieldView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryFavoritesSearchMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryFavoritesSheet</string>
-								<string key="candidateClassName">NSWindow</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryHistoryButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryHistorySearchField</string>
-								<string key="candidateClassName">NSSearchField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryHistorySearchFieldView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryHistorySearchMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">runAllButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">runAllMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">runSelectionButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">runSelectionMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveHistoryMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveQueryFavoriteButton</string>
-								<string key="candidateClassName">NSButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveQueryFavoriteGlobal</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">shiftLeftMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">shiftRightMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableDocumentInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tablesListInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">textView</string>
-								<string key="candidateClassName">SPTextView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">valueSheet</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">valueTextField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SPDatabaseDocument</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPConnectionDelegate.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SPDatabaseDocument</string>
-					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addConnectionToFavorites:</string>
-							<string>addDatabase:</string>
-							<string>analyzeTable:</string>
-							<string>backForwardInHistory:</string>
-							<string>cancelTask:</string>
-							<string>checkTable:</string>
-							<string>checksumTable:</string>
-							<string>chooseDatabase:</string>
-							<string>chooseEncoding:</string>
-							<string>closePanelSheet:</string>
-							<string>closePasswordSheet:</string>
-							<string>closeSheet:</string>
-							<string>copyChecksumFromSheet:</string>
-							<string>copyCreateTableSyntax:</string>
-							<string>copyCreateTableSyntaxFromSheet:</string>
-							<string>copyDatabase:</string>
-							<string>export:</string>
-							<string>exportMultipleTables:</string>
-							<string>exportSelectedTablesAs:</string>
-							<string>exportTable:</string>
-							<string>flushPrivileges:</string>
-							<string>flushTable:</string>
-							<string>focusOnTableContentFilter:</string>
-							<string>focusOnTableListFilter:</string>
-							<string>import:</string>
-							<string>importFromClipboard:</string>
-							<string>openCurrentConnectionInNewWindow:</string>
-							<string>optimizeTable:</string>
-							<string>removeDatabase:</string>
-							<string>renameDatabase:</string>
-							<string>repairTable:</string>
-							<string>saveConnectionSheet:</string>
-							<string>saveCreateSyntax:</string>
-							<string>setDatabases:</string>
-							<string>showConsole:</string>
-							<string>showCreateTableSyntax:</string>
-							<string>showMySQLHelp:</string>
-							<string>showNavigator:</string>
-							<string>showServerProcesses:</string>
-							<string>showServerVariables:</string>
-							<string>showUserManager:</string>
-							<string>toggleNavigator:</string>
-							<string>updateWindowTitle:</string>
-							<string>validateSaveConnectionAccessory:</string>
-							<string>viewContent:</string>
-							<string>viewQuery:</string>
-							<string>viewRelations:</string>
-							<string>viewStatus:</string>
-							<string>viewStructure:</string>
-							<string>viewTriggers:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addConnectionToFavorites:</string>
-							<string>addDatabase:</string>
-							<string>analyzeTable:</string>
-							<string>backForwardInHistory:</string>
-							<string>cancelTask:</string>
-							<string>checkTable:</string>
-							<string>checksumTable:</string>
-							<string>chooseDatabase:</string>
-							<string>chooseEncoding:</string>
-							<string>closePanelSheet:</string>
-							<string>closePasswordSheet:</string>
-							<string>closeSheet:</string>
-							<string>copyChecksumFromSheet:</string>
-							<string>copyCreateTableSyntax:</string>
-							<string>copyCreateTableSyntaxFromSheet:</string>
-							<string>copyDatabase:</string>
-							<string>export:</string>
-							<string>exportMultipleTables:</string>
-							<string>exportSelectedTablesAs:</string>
-							<string>exportTable:</string>
-							<string>flushPrivileges:</string>
-							<string>flushTable:</string>
-							<string>focusOnTableContentFilter:</string>
-							<string>focusOnTableListFilter:</string>
-							<string>import:</string>
-							<string>importFromClipboard:</string>
-							<string>openCurrentConnectionInNewWindow:</string>
-							<string>optimizeTable:</string>
-							<string>removeDatabase:</string>
-							<string>renameDatabase:</string>
-							<string>repairTable:</string>
-							<string>saveConnectionSheet:</string>
-							<string>saveCreateSyntax:</string>
-							<string>setDatabases:</string>
-							<string>showConsole:</string>
-							<string>showCreateTableSyntax:</string>
-							<string>showMySQLHelp:</string>
-							<string>showNavigator:</string>
-							<string>showServerProcesses:</string>
-							<string>showServerVariables:</string>
-							<string>showUserManager:</string>
-							<string>toggleNavigator:</string>
-							<string>updateWindowTitle:</string>
-							<string>validateSaveConnectionAccessory:</string>
-							<string>viewContent:</string>
-							<string>viewQuery:</string>
-							<string>viewRelations:</string>
-							<string>viewStatus:</string>
-							<string>viewStructure:</string>
-							<string>viewTriggers:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">addConnectionToFavorites:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">addDatabase:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">analyzeTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">backForwardInHistory:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">cancelTask:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">checkTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">checksumTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">chooseDatabase:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">chooseEncoding:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">closePanelSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">closePasswordSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">closeSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">copyChecksumFromSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">copyCreateTableSyntax:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">copyCreateTableSyntaxFromSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">copyDatabase:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">export:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">exportMultipleTables:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">exportSelectedTablesAs:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">exportTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">flushPrivileges:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">flushTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">focusOnTableContentFilter:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">focusOnTableListFilter:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">import:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">importFromClipboard:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">openCurrentConnectionInNewWindow:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">optimizeTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">removeDatabase:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">renameDatabase:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">repairTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">saveConnectionSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">saveCreateSyntax:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">setDatabases:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showConsole:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showCreateTableSyntax:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showMySQLHelp:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showNavigator:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showServerProcesses:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showServerVariables:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showUserManager:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">toggleNavigator:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">updateWindowTitle:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">validateSaveConnectionAccessory:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">viewContent:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">viewQuery:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">viewRelations:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">viewStatus:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">viewStructure:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">viewTriggers:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addDatabaseButton</string>
-							<string>chooseDatabaseButton</string>
-							<string>connectionErrorDialog</string>
-							<string>contentViewSplitter</string>
-							<string>copyDatabaseButton</string>
-							<string>copyDatabaseDataButton</string>
-							<string>copyDatabaseMessageField</string>
-							<string>createTableSyntaxTextField</string>
-							<string>createTableSyntaxTextView</string>
-							<string>createTableSyntaxWindow</string>
-							<string>customQueryInstance</string>
-							<string>customQueryTextView</string>
-							<string>databaseCopyNameField</string>
-							<string>databaseCopySheet</string>
-							<string>databaseDataInstance</string>
-							<string>databaseEncodingButton</string>
-							<string>databaseNameField</string>
-							<string>databaseRenameNameField</string>
-							<string>databaseRenameSheet</string>
-							<string>databaseSheet</string>
-							<string>dbTablesTableView</string>
-							<string>encodingPopUp</string>
-							<string>exportControllerInstance</string>
-							<string>extendedTableInfoInstance</string>
-							<string>favoritesButton</string>
-							<string>historyControl</string>
-							<string>inputTextWindow</string>
-							<string>inputTextWindowHeader</string>
-							<string>inputTextWindowMessage</string>
-							<string>inputTextWindowSecureTextField</string>
-							<string>listFilterField</string>
-							<string>parentView</string>
-							<string>queryProgressBar</string>
-							<string>renameDatabaseButton</string>
-							<string>renameDatabaseMessageField</string>
-							<string>saveConnectionAccessory</string>
-							<string>saveConnectionAutoConnect</string>
-							<string>saveConnectionEncrypt</string>
-							<string>saveConnectionEncryptString</string>
-							<string>saveConnectionIncludeData</string>
-							<string>saveConnectionIncludeQuery</string>
-							<string>saveConnectionSavePassword</string>
-							<string>saveConnectionSavePasswordAlert</string>
-							<string>sidebarGrabber</string>
-							<string>spHistoryControllerInstance</string>
-							<string>statusTableAccessoryView</string>
-							<string>statusTableCopyChecksum</string>
-							<string>statusTableView</string>
-							<string>statusValues</string>
-							<string>tableContentInstance</string>
-							<string>tableDataInstance</string>
-							<string>tableDumpInstance</string>
-							<string>tableInfoCollapseButton</string>
-							<string>tableInfoTable</string>
-							<string>tableListSplitter</string>
-							<string>tableRelationsInstance</string>
-							<string>tableSourceInstance</string>
-							<string>tableTabView</string>
-							<string>tableTriggersInstance</string>
-							<string>tablesListInstance</string>
-							<string>taskCancelButton</string>
-							<string>taskCancellationCallbackObject</string>
-							<string>taskDescriptionText</string>
-							<string>taskProgressIndicator</string>
-							<string>taskProgressLayer</string>
-							<string>titleAccessoryView</string>
-							<string>titleImageView</string>
-							<string>titleStringView</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>NSWindow</string>
-							<string>NSSplitView</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
+							<string>CMTextView</string>
 							<string>NSTextField</string>
-							<string>NSTextView</string>
-							<string>NSWindow</string>
-							<string>id</string>
-							<string>NSTextView</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
+							<string>NSArrayController</string>
 							<string>NSTableView</string>
-							<string>NSPopUpButton</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>NSSearchField</string>
-							<string>NSView</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>NSSecureTextField</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
 							<string>NSButton</string>
-							<string>NSTableView</string>
-							<string>NSSplitView</string>
-							<string>id</string>
-							<string>id</string>
-							<string>NSTabView</string>
-							<string>id</string>
-							<string>id</string>
-							<string>NSButton</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>NSBox</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
+							<string>BWAnchoredButtonBar</string>
 						</object>
 					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addDatabaseButton</string>
-							<string>chooseDatabaseButton</string>
-							<string>connectionErrorDialog</string>
-							<string>contentViewSplitter</string>
-							<string>copyDatabaseButton</string>
-							<string>copyDatabaseDataButton</string>
-							<string>copyDatabaseMessageField</string>
-							<string>createTableSyntaxTextField</string>
-							<string>createTableSyntaxTextView</string>
-							<string>createTableSyntaxWindow</string>
-							<string>customQueryInstance</string>
-							<string>customQueryTextView</string>
-							<string>databaseCopyNameField</string>
-							<string>databaseCopySheet</string>
-							<string>databaseDataInstance</string>
-							<string>databaseEncodingButton</string>
-							<string>databaseNameField</string>
-							<string>databaseRenameNameField</string>
-							<string>databaseRenameSheet</string>
-							<string>databaseSheet</string>
-							<string>dbTablesTableView</string>
-							<string>encodingPopUp</string>
-							<string>exportControllerInstance</string>
-							<string>extendedTableInfoInstance</string>
-							<string>favoritesButton</string>
-							<string>historyControl</string>
-							<string>inputTextWindow</string>
-							<string>inputTextWindowHeader</string>
-							<string>inputTextWindowMessage</string>
-							<string>inputTextWindowSecureTextField</string>
-							<string>listFilterField</string>
-							<string>parentView</string>
-							<string>queryProgressBar</string>
-							<string>renameDatabaseButton</string>
-							<string>renameDatabaseMessageField</string>
-							<string>saveConnectionAccessory</string>
-							<string>saveConnectionAutoConnect</string>
-							<string>saveConnectionEncrypt</string>
-							<string>saveConnectionEncryptString</string>
-							<string>saveConnectionIncludeData</string>
-							<string>saveConnectionIncludeQuery</string>
-							<string>saveConnectionSavePassword</string>
-							<string>saveConnectionSavePasswordAlert</string>
-							<string>sidebarGrabber</string>
-							<string>spHistoryControllerInstance</string>
-							<string>statusTableAccessoryView</string>
-							<string>statusTableCopyChecksum</string>
-							<string>statusTableView</string>
-							<string>statusValues</string>
-							<string>tableContentInstance</string>
-							<string>tableDataInstance</string>
-							<string>tableDumpInstance</string>
-							<string>tableInfoCollapseButton</string>
-							<string>tableInfoTable</string>
-							<string>tableListSplitter</string>
-							<string>tableRelationsInstance</string>
-							<string>tableSourceInstance</string>
-							<string>tableTabView</string>
-							<string>tableTriggersInstance</string>
-							<string>tablesListInstance</string>
-							<string>taskCancelButton</string>
-							<string>taskCancellationCallbackObject</string>
-							<string>taskDescriptionText</string>
-							<string>taskProgressIndicator</string>
-							<string>taskProgressLayer</string>
-							<string>titleAccessoryView</string>
-							<string>titleImageView</string>
-							<string>titleStringView</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">addDatabaseButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">chooseDatabaseButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">connectionErrorDialog</string>
-								<string key="candidateClassName">NSWindow</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">contentViewSplitter</string>
-								<string key="candidateClassName">NSSplitView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyDatabaseButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyDatabaseDataButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyDatabaseMessageField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">createTableSyntaxTextField</string>
-								<string key="candidateClassName">NSTextField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">createTableSyntaxTextView</string>
-								<string key="candidateClassName">NSTextView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">createTableSyntaxWindow</string>
-								<string key="candidateClassName">NSWindow</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">customQueryInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">customQueryTextView</string>
-								<string key="candidateClassName">NSTextView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseCopyNameField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseCopySheet</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseDataInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseEncodingButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseNameField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseRenameNameField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseRenameSheet</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseSheet</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">dbTablesTableView</string>
-								<string key="candidateClassName">NSTableView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">encodingPopUp</string>
-								<string key="candidateClassName">NSPopUpButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">exportControllerInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">extendedTableInfoInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">favoritesButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">historyControl</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">inputTextWindow</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">inputTextWindowHeader</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">inputTextWindowMessage</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">inputTextWindowSecureTextField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">listFilterField</string>
-								<string key="candidateClassName">NSSearchField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">parentView</string>
-								<string key="candidateClassName">NSView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">queryProgressBar</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">renameDatabaseButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">renameDatabaseMessageField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveConnectionAccessory</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveConnectionAutoConnect</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveConnectionEncrypt</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveConnectionEncryptString</string>
-								<string key="candidateClassName">NSSecureTextField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveConnectionIncludeData</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveConnectionIncludeQuery</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveConnectionSavePassword</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">saveConnectionSavePasswordAlert</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">sidebarGrabber</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">spHistoryControllerInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">statusTableAccessoryView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">statusTableCopyChecksum</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">statusTableView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">statusValues</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableContentInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableDataInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableDumpInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableInfoCollapseButton</string>
-								<string key="candidateClassName">NSButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableInfoTable</string>
-								<string key="candidateClassName">NSTableView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableListSplitter</string>
-								<string key="candidateClassName">NSSplitView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableRelationsInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableSourceInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableTabView</string>
-								<string key="candidateClassName">NSTabView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableTriggersInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tablesListInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">taskCancelButton</string>
-								<string key="candidateClassName">NSButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">taskCancellationCallbackObject</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">taskDescriptionText</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">taskProgressIndicator</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">taskProgressLayer</string>
-								<string key="candidateClassName">NSBox</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">titleAccessoryView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">titleImageView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">titleStringView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPDatabaseDocument.h</string>
-					</object>
+					<reference key="sourceIdentifier" ref="110708609"/>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">SPDatabaseDocument</string>
+					<string key="className">SPTableView</string>
+					<string key="superclassName">NSTableView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPPrintController.h</string>
+						<string key="minorKey">Source/SPTableView.h</string>
 					</object>
 				</object>
+			</object>
+			<object class="NSMutableArray" key="referencedPartialClassDescriptionsV3.1+">
+				<bool key="EncodedWithXMLCoder">YES</bool>
 				<object class="IBPartialClassDescription">
-					<string key="className">SPHistoryController</string>
-					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">historyControlClicked:</string>
-						<string key="NS.object.0">NSSegmentedControl</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">historyControlClicked:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">historyControlClicked:</string>
-							<string key="candidateClassName">NSSegmentedControl</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>historyControl</string>
-							<string>theDocument</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSSegmentedControl</string>
-							<string>SPDatabaseDocument</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>historyControl</string>
-							<string>theDocument</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">historyControl</string>
-								<string key="candidateClassName">NSSegmentedControl</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">theDocument</string>
-								<string key="candidateClassName">SPDatabaseDocument</string>
-							</object>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPHistoryController.h</string>
+					<string key="className">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier" id="489582785">
+						<string key="majorKey">IBDocumentRelativeSource</string>
+						<string key="minorKey">../../Source/SPQueryFavoriteManager.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -4682,70 +3035,6 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 							<string>id</string>
 						</object>
 					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addQueryFavorite:</string>
-							<string>closeQueryManagerSheet:</string>
-							<string>duplicateQueryFavorite:</string>
-							<string>exportFavorites:</string>
-							<string>importFavoritesByAdding:</string>
-							<string>importFavoritesByReplacing:</string>
-							<string>insertPlaceholder:</string>
-							<string>removeAllQueryFavorites:</string>
-							<string>removeQueryFavorite:</string>
-							<string>saveFavoriteToFile:</string>
-							<string>showHelp:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">addQueryFavorite:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">closeQueryManagerSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">duplicateQueryFavorite:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">exportFavorites:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">importFavoritesByAdding:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">importFavoritesByReplacing:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">insertPlaceholder:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">removeAllQueryFavorites:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">removeQueryFavorite:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">saveFavoriteToFile:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showHelp:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -4763,7 +3052,7 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSPopUpButton</string>
 							<string>NSTextField</string>
-							<string>SPTextView</string>
+							<string>CMTextView</string>
 							<string>NSTextField</string>
 							<string>NSArrayController</string>
 							<string>NSTableView</string>
@@ -4771,549 +3060,7 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 							<string>BWAnchoredButtonBar</string>
 						</object>
 					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>encodingPopUp</string>
-							<string>favoriteNameTextField</string>
-							<string>favoriteQueryTextView</string>
-							<string>favoriteTabTriggerTextField</string>
-							<string>favoritesArrayController</string>
-							<string>favoritesTableView</string>
-							<string>removeButton</string>
-							<string>splitViewButtonBar</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">encodingPopUp</string>
-								<string key="candidateClassName">NSPopUpButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">favoriteNameTextField</string>
-								<string key="candidateClassName">NSTextField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">favoriteQueryTextView</string>
-								<string key="candidateClassName">SPTextView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">favoriteTabTriggerTextField</string>
-								<string key="candidateClassName">NSTextField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">favoritesArrayController</string>
-								<string key="candidateClassName">NSArrayController</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">favoritesTableView</string>
-								<string key="candidateClassName">NSTableView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">removeButton</string>
-								<string key="candidateClassName">NSButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">splitViewButtonBar</string>
-								<string key="candidateClassName">BWAnchoredButtonBar</string>
-							</object>
-						</object>
-					</object>
-					<reference key="sourceIdentifier" ref="110708609"/>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SPTableView</string>
-					<string key="superclassName">NSTableView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPTableView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SPTablesList</string>
-					<string key="superclassName">NSObject</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addTable:</string>
-							<string>closeSheet:</string>
-							<string>copyTable:</string>
-							<string>removeTable:</string>
-							<string>renameTable:</string>
-							<string>togglePaneCollapse:</string>
-							<string>truncateTable:</string>
-							<string>updateFilter:</string>
-							<string>updateTables:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addTable:</string>
-							<string>closeSheet:</string>
-							<string>copyTable:</string>
-							<string>removeTable:</string>
-							<string>renameTable:</string>
-							<string>togglePaneCollapse:</string>
-							<string>truncateTable:</string>
-							<string>updateFilter:</string>
-							<string>updateTables:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">addTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">closeSheet:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">copyTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">removeTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">renameTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">togglePaneCollapse:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">truncateTable:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">updateFilter:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">updateTables:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addTableButton</string>
-							<string>copyTableButton</string>
-							<string>copyTableContentSwitch</string>
-							<string>copyTableMessageField</string>
-							<string>copyTableNameField</string>
-							<string>copyTableSheet</string>
-							<string>customQueryInstance</string>
-							<string>databaseDataInstance</string>
-							<string>duplicateTableContextMenuItem</string>
-							<string>duplicateTableMenuItem</string>
-							<string>extendedTableInfoInstance</string>
-							<string>listFilterField</string>
-							<string>removeTableContextMenuItem</string>
-							<string>removeTableMenuItem</string>
-							<string>renameTableContextMenuItem</string>
-							<string>renameTableMenuItem</string>
-							<string>separatorTableContextMenuItem</string>
-							<string>separatorTableContextMenuItem2</string>
-							<string>separatorTableMenuItem</string>
-							<string>separatorTableMenuItem2</string>
-							<string>showCreateSyntaxContextMenuItem</string>
-							<string>showCreateSyntaxMenuItem</string>
-							<string>spHistoryControllerInstance</string>
-							<string>tabView</string>
-							<string>tableContentInstance</string>
-							<string>tableDataInstance</string>
-							<string>tableDocumentInstance</string>
-							<string>tableDumpInstance</string>
-							<string>tableEncodingButton</string>
-							<string>tableInfoCollapseButton</string>
-							<string>tableInfoInstance</string>
-							<string>tableListFilterSplitView</string>
-							<string>tableListSplitView</string>
-							<string>tableNameField</string>
-							<string>tableSheet</string>
-							<string>tableSourceInstance</string>
-							<string>tableTriggersInstance</string>
-							<string>tableTypeButton</string>
-							<string>tablesListView</string>
-							<string>toolbarActionsButton</string>
-							<string>toolbarAddButton</string>
-							<string>toolbarReloadButton</string>
-							<string>truncateTableButton</string>
-							<string>truncateTableContextButton</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>id</string>
-							<string>NSSearchField</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>NSMenuItem</string>
-							<string>SPHistoryController</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>NSButton</string>
-							<string>id</string>
-							<string>NSSplitView</string>
-							<string>NSSplitView</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>addTableButton</string>
-							<string>copyTableButton</string>
-							<string>copyTableContentSwitch</string>
-							<string>copyTableMessageField</string>
-							<string>copyTableNameField</string>
-							<string>copyTableSheet</string>
-							<string>customQueryInstance</string>
-							<string>databaseDataInstance</string>
-							<string>duplicateTableContextMenuItem</string>
-							<string>duplicateTableMenuItem</string>
-							<string>extendedTableInfoInstance</string>
-							<string>listFilterField</string>
-							<string>removeTableContextMenuItem</string>
-							<string>removeTableMenuItem</string>
-							<string>renameTableContextMenuItem</string>
-							<string>renameTableMenuItem</string>
-							<string>separatorTableContextMenuItem</string>
-							<string>separatorTableContextMenuItem2</string>
-							<string>separatorTableMenuItem</string>
-							<string>separatorTableMenuItem2</string>
-							<string>showCreateSyntaxContextMenuItem</string>
-							<string>showCreateSyntaxMenuItem</string>
-							<string>spHistoryControllerInstance</string>
-							<string>tabView</string>
-							<string>tableContentInstance</string>
-							<string>tableDataInstance</string>
-							<string>tableDocumentInstance</string>
-							<string>tableDumpInstance</string>
-							<string>tableEncodingButton</string>
-							<string>tableInfoCollapseButton</string>
-							<string>tableInfoInstance</string>
-							<string>tableListFilterSplitView</string>
-							<string>tableListSplitView</string>
-							<string>tableNameField</string>
-							<string>tableSheet</string>
-							<string>tableSourceInstance</string>
-							<string>tableTriggersInstance</string>
-							<string>tableTypeButton</string>
-							<string>tablesListView</string>
-							<string>toolbarActionsButton</string>
-							<string>toolbarAddButton</string>
-							<string>toolbarReloadButton</string>
-							<string>truncateTableButton</string>
-							<string>truncateTableContextButton</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">addTableButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyTableButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyTableContentSwitch</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyTableMessageField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyTableNameField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">copyTableSheet</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">customQueryInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">databaseDataInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">duplicateTableContextMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">duplicateTableMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">extendedTableInfoInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">listFilterField</string>
-								<string key="candidateClassName">NSSearchField</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">removeTableContextMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">removeTableMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">renameTableContextMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">renameTableMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">separatorTableContextMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">separatorTableContextMenuItem2</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">separatorTableMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">separatorTableMenuItem2</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">showCreateSyntaxContextMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">showCreateSyntaxMenuItem</string>
-								<string key="candidateClassName">NSMenuItem</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">spHistoryControllerInstance</string>
-								<string key="candidateClassName">SPHistoryController</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tabView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableContentInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableDataInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableDocumentInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableDumpInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableEncodingButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableInfoCollapseButton</string>
-								<string key="candidateClassName">NSButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableInfoInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableListFilterSplitView</string>
-								<string key="candidateClassName">NSSplitView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableListSplitView</string>
-								<string key="candidateClassName">NSSplitView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableNameField</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableSheet</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableSourceInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableTriggersInstance</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableTypeButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tablesListView</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">toolbarActionsButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">toolbarAddButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">toolbarReloadButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">truncateTableButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">truncateTableContextButton</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
-					<reference key="sourceIdentifier" ref="617951833"/>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SPTextView</string>
-					<string key="superclassName">NSTextView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">showMySQLHelpForCurrentWord:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">showMySQLHelpForCurrentWord:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">showMySQLHelpForCurrentWord:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>customQueryInstance</string>
-							<string>scrollView</string>
-							<string>tableDocumentInstance</string>
-							<string>tablesListInstance</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>SPCustomQuery</string>
-							<string>NSScrollView</string>
-							<string>SPDatabaseDocument</string>
-							<string>SPTablesList</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>customQueryInstance</string>
-							<string>scrollView</string>
-							<string>tableDocumentInstance</string>
-							<string>tablesListInstance</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBToOneOutletInfo">
-								<string key="name">customQueryInstance</string>
-								<string key="candidateClassName">SPCustomQuery</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">scrollView</string>
-								<string key="candidateClassName">NSScrollView</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tableDocumentInstance</string>
-								<string key="candidateClassName">SPDatabaseDocument</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">tablesListInstance</string>
-								<string key="candidateClassName">SPTablesList</string>
-							</object>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/SPTextView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SPTextView</string>
-					<string key="superclassName">NSTextView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBUserSource</string>
-						<string key="minorKey"/>
-					</object>
+					<reference key="sourceIdentifier" ref="489582785"/>
 				</object>
 			</object>
 			<object class="NSMutableArray" key="referencedPartialClassDescriptionsV3.2+">
@@ -5348,13 +3095,6 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 					<object class="NSMutableDictionary" key="actions">
 						<string key="NS.key.0">toggleCollapse:</string>
 						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">toggleCollapse:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">toggleCollapse:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
@@ -5762,13 +3502,6 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 					<string key="className">NSObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">Print.framework/Headers/PDEPluginInterface.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSObject</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">Sparkle.framework/Headers/SUAppcast.h</string>
 					</object>
 				</object>
@@ -5905,51 +3638,11 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">NSSearchField</string>
-					<string key="superclassName">NSTextField</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSSearchField.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSSearchFieldCell</string>
-					<string key="superclassName">NSTextFieldCell</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSSearchFieldCell.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSSecureTextField</string>
-					<string key="superclassName">NSTextField</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSSecureTextField.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSSegmentedControl</string>
-					<string key="superclassName">NSControl</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSSegmentedControl.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">NSSplitView</string>
 					<string key="superclassName">NSView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSSplitView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">NSTabView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">AppKit.framework/Headers/NSTabView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -6079,125 +3772,14 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 						<string key="NS.key.0">showWindow:</string>
 						<string key="NS.object.0">id</string>
 					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">showWindow:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">showWindow:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBFrameworkSource</string>
 						<string key="minorKey">AppKit.framework/Headers/NSWindowController.h</string>
 					</object>
 				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">WebView</string>
-					<string key="superclassName">NSView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>goBack:</string>
-							<string>goForward:</string>
-							<string>makeTextLarger:</string>
-							<string>makeTextSmaller:</string>
-							<string>makeTextStandardSize:</string>
-							<string>reload:</string>
-							<string>reloadFromOrigin:</string>
-							<string>stopLoading:</string>
-							<string>takeStringURLFrom:</string>
-							<string>toggleContinuousSpellChecking:</string>
-							<string>toggleSmartInsertDelete:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-							<string>id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>goBack:</string>
-							<string>goForward:</string>
-							<string>makeTextLarger:</string>
-							<string>makeTextSmaller:</string>
-							<string>makeTextStandardSize:</string>
-							<string>reload:</string>
-							<string>reloadFromOrigin:</string>
-							<string>stopLoading:</string>
-							<string>takeStringURLFrom:</string>
-							<string>toggleContinuousSpellChecking:</string>
-							<string>toggleSmartInsertDelete:</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBActionInfo">
-								<string key="name">goBack:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">goForward:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">makeTextLarger:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">makeTextSmaller:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">makeTextStandardSize:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">reload:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">reloadFromOrigin:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">stopLoading:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">takeStringURLFrom:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">toggleContinuousSpellChecking:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">toggleSmartInsertDelete:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBFrameworkSource</string>
-						<string key="minorKey">WebKit.framework/Headers/WebView.h</string>
-					</object>
-				</object>
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
@@ -6213,24 +3795,5 @@ IG5vdCBiZSB1c2VkIGluc2lkZSBvZiBhIHRhYiBzbmlwcGV0XeKAqA</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../../sequel-pro.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<bool key="EncodedWithXMLCoder">YES</bool>
-			<object class="NSArray" key="dict.sortedKeys">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>NSActionTemplate</string>
-				<string>NSMenuCheckmark</string>
-				<string>NSMenuMixedState</string>
-				<string>button_add</string>
-				<string>button_remove</string>
-			</object>
-			<object class="NSMutableArray" key="dict.values">
-				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>{15, 15}</string>
-				<string>{9, 8}</string>
-				<string>{7, 2}</string>
-				<string>{32, 23}</string>
-				<string>{32, 23}</string>
-			</object>
-		</object>
 	</data>
 </archive>

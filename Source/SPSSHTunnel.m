@@ -72,8 +72,6 @@
 	}
 
 	parentWindow = nil;
-	sshQuestionDialog = nil;
-	sshPasswordDialog = nil;
 	password = nil;
 	keychainName = nil;
 	keychainAccount = nil;
@@ -104,11 +102,6 @@
  */
 - (void)setParentWindow:(NSWindow *)theWindow
 {
-
-	// As this object is not a NSWindowController, use manual top-level nib item management
-	if (sshQuestionDialog) [sshQuestionDialog release], sshQuestionDialog = nil;
-	if (sshPasswordDialog) [sshPasswordDialog release], sshPasswordDialog = nil;
-
 	parentWindow = theWindow;
 	if (![NSBundle loadNibNamed:@"SSHQuestionDialog" owner:self]) {
 		NSLog(@"SSH query dialog could not be loaded; SSH tunnels will not function correctly.");
@@ -278,6 +271,7 @@
 	taskArguments = [[NSMutableArray alloc] init];
 	[taskArguments addObject:@"-N"]; // Tunnel only
 	[taskArguments addObject:@"-v"]; // Verbose mode for messages
+//	[taskArguments addObject:@"-C"]; // TODO: compression?
 	[taskArguments addObject:@"-M"]; // Places the ssh client into 'master' mode for connection sharing
 	[taskArguments addObject:@"-o ExitOnForwardFailure=yes"];
 	[taskArguments addObject:[NSString stringWithFormat:@"-o ConnectTimeout=%ld", (long)connectionTimeout]];
@@ -346,13 +340,6 @@
 
 	// Listen for output
 	[task waitUntilExit];
-
-	// On tunnel close, clean up, ready for re-use if the delegate reconnects.
-	[task release], task = nil;
-	[standardError release], standardError = nil;
-	[[NSNotificationCenter defaultCenter] removeObserver:self 
-													name:@"NSFileHandleDataAvailableNotification"
-												  object:nil];
 	
 	// If the task closed unexpectedly, alert appropriately
 	if (connectionState != PROXY_STATE_IDLE) {
@@ -362,9 +349,16 @@
 		if (delegate) [delegate performSelectorOnMainThread:stateChangeSelector withObject:self waitUntilDone:NO];
 	}
 
+	// On tunnel close, clean up
+	[[NSNotificationCenter defaultCenter] removeObserver:self 
+													name:@"NSFileHandleDataAvailableNotification"
+												  object:nil];
+
 	// Run the run loop for a short time to ensure all task/pipe callbacks are dealt with
 	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
 
+	[task release], task = nil;
+	[standardError release], standardError = nil;
 	[taskEnvironment release], taskEnvironment = nil;
 	[taskArguments release], taskArguments = nil;
 
@@ -581,7 +575,7 @@
 	// Work out whether a passphrase is being requested, extracting the key name
 	NSString *keyName = [theQuery stringByMatching:@"^\\s*Enter passphrase for key \\'(.*)\\':\\s*$" capture:1L];
 	if (keyName) {
-		[sshPasswordText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Enter your password for the SSH key\n\"%@\"", @"SSH key password prompt"), keyName]];
+		[sshPasswordText setStringValue:[NSString stringWithFormat:@"Enter your password for the SSH key\n\"%@\"", keyName]];
 		[sshPasswordKeychainCheckbox setHidden:NO];
         currentKeyName = [keyName retain];
 	} else {
@@ -652,10 +646,6 @@
 	if (password) [password release];
 	if (keychainName) [keychainName release];
 	if (keychainAccount) [keychainAccount release];
-
-	// As this object is not a NSWindowController, use manual top-level nib item management
-	if (sshQuestionDialog) [sshQuestionDialog release], sshQuestionDialog = nil;
-	if (sshPasswordDialog) [sshPasswordDialog release], sshPasswordDialog = nil;
 	
 	[super dealloc];
 }

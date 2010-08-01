@@ -25,7 +25,7 @@
 #import <Cocoa/Cocoa.h>
 #import <MCPKit/MCPKit.h>
 
-@class SPTextView;
+@class CMTextView;
 
 @interface SPFieldMapperController : NSWindowController 
 {
@@ -64,7 +64,7 @@
 	IBOutlet id lowPriorityUpdateCheckBox;
 	IBOutlet id highPriorityCheckBox;
 	IBOutlet id skipexistingRowsCheckBox;
-	IBOutlet SPTextView *onupdateTextView;
+	IBOutlet CMTextView *onupdateTextView;
 
 	IBOutlet id advancedButton;
 

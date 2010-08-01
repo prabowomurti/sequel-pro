@@ -29,10 +29,10 @@
 #import "SPDatabaseData.h"
 #import "SPStringAdditions.h"
 #import "SPConstants.h"
-#import "SPDatabaseDocument.h"
-#import "SPTablesList.h"
+#import "TableDocument.h"
+#import "TablesList.h"
 #import "SPAlertSheets.h"
-#import "SPTableStructure.h"
+#import "TableSource.h"
 
 @interface SPExtendedTableInfo (PrivateAPI)
 
@@ -238,7 +238,7 @@
 			[tableCreateSyntaxTextView setString:@""];
 			
 			NSString *createViewSyntax = [[[tableDataInstance tableCreateSyntax] createViewSyntaxPrettifier] stringByAppendingString:@";"];
-			
+
 			if (createViewSyntax) {
 				[tableCreateSyntaxTextView shouldChangeTextInRange:NSMakeRange(0, 0) replacementString:createViewSyntax];
 				[tableCreateSyntaxTextView insertText:createViewSyntax];
@@ -253,20 +253,20 @@
 			[tableCreateSyntaxTextView setEditable:NO];
 		}
 		
-		[tableCreatedAt setStringValue:@""];
-		[tableUpdatedAt setStringValue:@""];
+		[tableCreatedAt setStringValue:NSLocalizedString(@"Created at: ", @"table info created at label")];
+		[tableUpdatedAt setStringValue:NSLocalizedString(@"Updated at: ", @"table info updated at label")];
 		
 		// Set row values
-		[tableRowNumber setStringValue:@""];
-		[tableRowFormat setStringValue:@""];
-		[tableRowAvgLength setStringValue:@""];
+		[tableRowNumber setStringValue:NSLocalizedString(@"Number of rows: ", @"table info number of rows label")];
+		[tableRowFormat setStringValue:NSLocalizedString(@"Row format: ", @"table info row format label")];	
+		[tableRowAvgLength setStringValue:NSLocalizedString(@"Avg. row length: ", @"table info average row length label")];
 		[tableRowAutoIncrement setStringValue:@""];
 		
 		// Set size values
-		[tableDataSize setStringValue:@""];
-		[tableMaxDataSize setStringValue:@""];
-		[tableIndexSize setStringValue:@""];
-		[tableSizeFree setStringValue:@""];
+		[tableDataSize setStringValue:NSLocalizedString(@"Data size: ", @"table info data size label")];
+		[tableMaxDataSize setStringValue:NSLocalizedString(@"Max data size: ", @"table info max data size label")];	
+		[tableIndexSize setStringValue:NSLocalizedString(@"Index size: ", @"table info index size label")]; 
+		[tableSizeFree setStringValue:NSLocalizedString(@"Free data size: ", @"table info free data size label")];
 		
 		// Set comments 
 		[tableCommentsTextView setEditable:NO];
@@ -282,7 +282,7 @@
 	NSArray *collations = [databaseDataInstance getDatabaseCollationsForEncoding:[tableDataInstance tableEncoding]];
 	
 	if (([engines count] > 0) && ([statusFields objectForKey:@"Engine"])) {
-		
+
 		// Populate type popup button
 		for (NSDictionary *engine in engines)
 		{		
@@ -332,20 +332,20 @@
 		[tableCollationPopUpButton addItemWithTitle:NSLocalizedString(@"Not available", @"not available label")];
 	}
 	
-	[tableCreatedAt setStringValue:[self _formatValueWithKey:@"Create_time" inDictionary:statusFields]];
-	[tableUpdatedAt setStringValue:[self _formatValueWithKey:@"Update_time" inDictionary:statusFields]];
+	[tableCreatedAt setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Created at: ", @"table info created at label"), [self _formatValueWithKey:@"Create_time" inDictionary:statusFields]]];
+	[tableUpdatedAt setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Updated at: ", @"table info updated at label"), [self _formatValueWithKey:@"Update_time" inDictionary:statusFields]]];
 	
 	// Set row values
-	[tableRowNumber setStringValue:[self _formatValueWithKey:@"Rows" inDictionary:statusFields]];
-	[tableRowFormat setStringValue:[self _formatValueWithKey:@"Row_format" inDictionary:statusFields]];
-	[tableRowAvgLength setStringValue:[self _formatValueWithKey:@"Avg_row_length" inDictionary:statusFields]];
+	[tableRowNumber setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Number of rows: ", @"table info number of rows label"), [self _formatValueWithKey:@"Rows" inDictionary:statusFields]]];
+	[tableRowFormat setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Row format: ", @"table info row format label"), [self _formatValueWithKey:@"Row_format" inDictionary:statusFields]]];	
+	[tableRowAvgLength setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Avg. row length: ", @"table info average row length label"), [self _formatValueWithKey:@"Avg_row_length" inDictionary:statusFields]]];
 	[tableRowAutoIncrement setStringValue:[self _formatValueWithKey:@"Auto_increment" inDictionary:statusFields]];
 	
 	// Set size values
-	[tableDataSize setStringValue:[self _formatValueWithKey:@"Data_length" inDictionary:statusFields]];
-	[tableMaxDataSize setStringValue:[self _formatValueWithKey:@"Max_data_length" inDictionary:statusFields]];
-	[tableIndexSize setStringValue:[self _formatValueWithKey:@"Index_length" inDictionary:statusFields]];
-	[tableSizeFree setStringValue:[self _formatValueWithKey:@"Data_free" inDictionary:statusFields]];
+	[tableDataSize setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Data size: ", @"table info data size label"), [self _formatValueWithKey:@"Data_length" inDictionary:statusFields]]]; 
+	[tableMaxDataSize setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Max data size: ", @"table info max data size label"), [self _formatValueWithKey:@"Max_data_length" inDictionary:statusFields]]];	
+	[tableIndexSize setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Index size: ", @"table info index size label"), [self _formatValueWithKey:@"Index_length" inDictionary:statusFields]]]; 
+	[tableSizeFree setStringValue:[NSString stringWithFormat:@"%@%@", NSLocalizedString(@"Free data size: ", @"table info free data size label"), [self _formatValueWithKey:@"Data_free" inDictionary:statusFields]]];	 
 	
 	// Set comments
 	[tableCommentsTextView setEditable:YES];
@@ -353,7 +353,7 @@
 	[tableCommentsTextView setString:[statusFields objectForKey:@"Comment"]];
 	[tableCommentsTextView didChangeText];
 	[tableCommentsTextView setEditable:enableInteraction];
-			
+	
 	// Set create syntax
 	[tableCreateSyntaxTextView setEditable:YES];
 	[tableCreateSyntaxTextView shouldChangeTextInRange:NSMakeRange(0, [[tableCommentsTextView string] length]) replacementString:@""];
@@ -453,7 +453,7 @@
 - (void)textDidEndEditing:(NSNotification *)notification
 {
 	id object = [notification object];
-	
+
 	if ((object == tableCommentsTextView) && ([object isEditable]) && ([selectedTable length] > 0)) {
 		
 		NSString *currentComment = [[tableDataInstance statusValueForKey:@"Comment"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];

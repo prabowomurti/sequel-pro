@@ -24,15 +24,15 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SPDatabaseDocument, SPTableContent, SPTablesList;
+@class TableDocument, TableContent, TablesList;
 
 @interface SPHistoryController : NSObject 
 {
-	IBOutlet SPDatabaseDocument *theDocument;
+	IBOutlet TableDocument *theDocument;
 	IBOutlet NSSegmentedControl *historyControl;
 
-	SPTableContent *tableContentInstance;
-	SPTablesList *tablesListInstance;
+	TableContent *tableContentInstance;
+	TablesList *tablesListInstance;
 	NSMutableArray *history;
 	NSMutableDictionary *tableContentStates;
 	NSUInteger historyPosition;

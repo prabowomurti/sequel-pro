@@ -23,93 +23,36 @@
 //
 //  More info at <http://code.google.com/p/sequel-pro/>
 
+#import <Cocoa/Cocoa.h>
+
+#import "MCPKit.h"
 #import "SPExporter.h"
-#import "SPCSVExporterProtocol.h"
 
-@class SPTableData;
-
-/**
- * @class SPCSVExporter SPCSVExporter.m
- *
- * @author Stuart Connolly http://stuconnolly.com/
- *
- * CSV exporter class.
- */
 @interface SPCSVExporter : SPExporter
-{		
-	/**
-	 * Exporter delegate
-	 */
-	NSObject <SPCSVExporterProtocol> *delegate;
-	
-	/** 
-	 * Data array
-	 */
+{	
+	// CSV data
 	NSArray *csvDataArray;
+	MCPStreamingResult *csvDataResult;
 	
-	/**
-	 * Table name
-	 */
-	NSString *csvTableName;
-	
-	/**
-	 * Output field names
-	 */
+	// CSV options
 	BOOL csvOutputFieldNames;
-	
-	/**
-	 * CSV field separator string
-	 */
 	NSString *csvFieldSeparatorString;
-	
-	/**
-	 * CSV enclosing character string
-	 */
 	NSString *csvEnclosingCharacterString;
-	
-	/**
-	 * CSV escape string
-	 */
 	NSString *csvEscapeString;
-	
-	/**
-	 * CSV line ending string
-	 */
 	NSString *csvLineEndingString;
-	
-	/**
-	 * CSV NULL string
-	 */
 	NSString *csvNULLString;
-	
-	/**
-	 * Table data
-	 */
-	SPTableData *csvTableData;
+	NSArray  *csvTableColumnNumericStatus;
 }
 
-@property(readwrite, assign) NSObject <SPCSVExporterProtocol> *delegate;
+@property (readwrite, retain) NSArray *csvDataArray;
+@property (readwrite, retain) MCPStreamingResult *csvDataResult;
 
-@property(readwrite, retain) NSArray *csvDataArray;
-@property(readwrite, retain) NSString *csvTableName;
-
-@property(readwrite, assign) BOOL csvOutputFieldNames;
-
-@property(readwrite, retain) NSString *csvFieldSeparatorString;
-@property(readwrite, retain) NSString *csvEnclosingCharacterString;
-@property(readwrite, retain) NSString *csvEscapeString;
-@property(readwrite, retain) NSString *csvLineEndingString;
-@property(readwrite, retain) NSString *csvNULLString;
-
-@property(readwrite, retain) SPTableData *csvTableData;
-
-/**
- * Initialise an instance of SPCSVExporter using the supplied delegate.
- *
- * @param exportDelegate The exporter delegate
- *
- * @return The initialised instance
- */
-- (id)initWithDelegate:(NSObject *)exportDelegate;
+@property (readwrite, assign) BOOL csvOutputFieldNames;
+@property (readwrite, retain) NSString *csvFieldSeparatorString;
+@property (readwrite, retain) NSString *csvEnclosingCharacterString;
+@property (readwrite, retain) NSString *csvEscapeString;
+@property (readwrite, retain) NSString *csvLineEndingString;
+@property (readwrite, retain) NSString *csvNULLString;
+@property (readwrite, retain) NSArray  *csvTableColumnNumericStatus;
 
 @end

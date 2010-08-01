@@ -36,53 +36,24 @@ typedef enum {
 } SPViewMode;
 
 // Query modes
-enum {
+typedef enum {
 	SPInterfaceQueryMode    = 0,
 	SPCustomQueryQueryMode  = 1,
 	SPImportExportQueryMode = 2
-};
-typedef NSUInteger SPQueryMode;
+} SPQueryMode;
 
 // Connection types
-enum {
+typedef enum {
 	SPTCPIPConnection     = 0,
 	SPSocketConnection    = 1,
 	SPSSHTunnelConnection = 2
-}; 
-typedef NSUInteger SPConnectionType;
-
-// Export type constants
-enum {
-	SPSQLExport   = 0,
-	SPCSVExport   = 1,
-	SPXMLExport   = 2,
-	SPDotExport   = 3,
-	SPPDFExport   = 4,
-	SPHTMLExport  = 5,
-	SPExcelExport = 6
-};
-typedef NSUInteger SPExportType;
-
-// Export source constants
-enum {
-	SPFilteredExport = 0,
-	SPQueryExport    = 1,
-	SPTableExport    = 2
-};
-typedef NSUInteger SPExportSource;
-
-// SQL export INSERT statment divider constants
-enum {
-	SPSQLInsertEveryNDataBytes = 0,
-	SPSQLInsertEveryNRows      = 1
-};
-typedef NSUInteger SPSQLExportInsertDivider;
+} SPConnectionType;
 
 // Table row count query usage levels
 typedef enum {
-	SPRowCountFetchNever   = 0,
-	SPRowCountFetchIfCheap = 1,
-	SPRowCountFetchAlways  = 2
+	SPRowCountFetchNever	= 0,
+	SPRowCountFetchIfCheap	= 1,
+	SPRowCountFetchAlways	= 2
 } SPRowCountQueryUsageLevels;
 
 // Export type
@@ -106,13 +77,13 @@ typedef enum
 // History views
 typedef enum
 {
-	SPTableViewStructure   = 0,
-	SPTableViewContent     = 1,
-	SPTableViewCustomQuery = 2,
-	SPTableViewStatus      = 3,
-	SPTableViewRelations   = 4,
-	SPTableViewTriggers    = 5
-} SPTableViewType;
+	SPHistoryViewStructure   = 0,
+	SPHistoryViewContent     = 1,
+	SPHistoryViewCustomQuery = 2,
+	SPHistoryViewStatus      = 3,
+	SPHistoryViewRelations   = 4,
+	SPHistoryViewTriggers    = 5
+} SPHistoryViewType;
 
 // SSH tunnel password modes
 typedef enum
@@ -138,60 +109,6 @@ typedef enum
 	SPLinkDrawStateBackgroundHighlight = 2
 } SPTextAndLinkCellDrawState;
 
-// Menu tag constants
-typedef enum
-{
-	SPMainMenuSequelPro = 0,
-	SPMainMenuFile      = 1,
-	SPMainMenuEdit      = 2,
-	SPMainMenuView      = 3,
-	SPMainMenuDatabase  = 4,
-	SPMainMenuTable     = 5,
-	SPMainMenuWindow    = 6,
-	SPMainMenuHelp      = 7
-} SPMainMenuTags;
-
-// Encoding constants
-typedef enum
-{
-	SPEncodingAutodetect		= 0,
-	SPEncodingUCS2				= 10,
-	SPEncodingUTF8				= 20,
-	SPEncodingUTF8viaLatin1		= 30,
-	SPEncodingASCII				= 40,
-	SPEncodingLatin1			= 50,
-	SPEncodingMacRoman			= 60,
-	SPEncodingCP1250Latin2		= 70,
-	SPEncodingISOLatin2			= 80,
-	SPEncodingCP1256Arabic		= 90,
-	SPEncodingGreek				= 100,
-	SPEncodingHebrew			= 110,
-	SPEncodingLatin5Turkish		= 120,
-	SPEncodingCP1257WinBaltic	= 130,
-	SPEncodingCP1251WinCyrillic = 140,
-	SPEncodingBig5Chinese		= 150,
-	SPEncodingShiftJISJapanese	= 160,
-	SPEncodingEUCJPJapanese		= 170,
-	SPEncodingEUCKRKorean		= 180
-} SPEncodingTypes;
-
-// File compression formats
-typedef enum
-{
-	SPNoCompression    = 0,
-	SPGzipCompression  = 1,
-	SPBzip2Compression = 2
-} SPFileCompressionFormat;
-
-// Predefined localisable URLs
-#define SPLOCALIZEDURL_HOMEPAGE            NSLocalizedString(@"http://www.sequelpro.com/", @"Localized home page - do not localize if no translated webpage is available")
-#define SPLOCALIZEDURL_FAQ                 NSLocalizedString(@"http://www.sequelpro.com/docs/Frequently_Asked_Questions", @"Localized help page for Frequently Asked Questions - do not localize if no translated webpage is available")
-#define SPLOCALIZEDURL_DOCUMENTATION       NSLocalizedString(@"http://www.sequelpro.com/docs/", @"Localized documentation home page - do not localize if no translated webpage is available")
-#define SPLOCALIZEDURL_CONTACT             NSLocalizedString(@"http://www.sequelpro.com/docs/Contact_the_developers", @"Localized contact page - do not localize if no translated webpage is available")
-#define SPLOCALIZEDURL_KEYBOARDSHORTCUTS   NSLocalizedString(@"http://www.sequelpro.com/docs/Keyboard_Shortcuts", @"Localized keyboard shortcuts page - do not localize if no translated webpage is available")
-#define SPLOCALIZEDURL_CONNECTIONHELP      NSLocalizedString(@"http://www.sequelpro.com/docs/Getting_Connected", @"Localized connection help page - do not localize if no translated webpage is available")
-#define SPLOCALIZEDURL_TRANSLATIONFEEDBACK NSLocalizedString(@"http://dev.sequelpro.com/translate/feedback", @"Localized translation feedback page - do not localize if no translated webpage is available")
-
 // Long running notification time for Growl messages
 extern const CGFloat SPLongRunningNotificationTime;
 
@@ -213,7 +130,6 @@ extern NSString *SPQueryFavortiesPasteboardDragType;
 // File extensions
 extern NSString *SPFileExtensionDefault;
 extern NSString *SPFileExtensionSQL;
-extern NSString *SPBundleFileExtension;
 
 // Filenames
 extern NSString *SPHTMLPrintTemplate;
@@ -299,26 +215,21 @@ extern NSString *SPEditInSheetEnabled;
 extern NSString *SPTableInformationPanelCollapsed;
 extern NSString *SPTableColumnWidths;
 extern NSString *SPProcessListShowProcessID;
-extern NSString *SPProcessListEnableAutoRefresh;
-extern NSString *SPProcessListAutoRrefreshInterval;
+extern NSString *SPProcessListShowFullProcessList;
 extern NSString *SPFavoritesSortedBy;
 extern NSString *SPFavoritesSortedInReverse;
-extern NSString *SPAlwaysShowWindowTabBar;
 
 // Hidden Prefs
 extern NSString *SPPrintWarningRowLimit;
 extern NSString *SPDisplayServerVersionInWindowTitle;
 
-// Import and export
+// Import
 extern NSString *SPCSVImportFieldTerminator;
 extern NSString *SPCSVImportLineTerminator;
 extern NSString *SPCSVImportFieldEnclosedBy;
 extern NSString *SPCSVImportFieldEscapeCharacter;
 extern NSString *SPCSVImportFirstLineIsHeader;
 extern NSString *SPCSVFieldImportMappingAlignment;
-extern NSString *SPImportClipboardTempFileNamePrefix;
-extern NSString *SPSQLExportUseCompression;
-extern NSString *SPNoBOMforSQLdumpFile;
 
 // Misc
 extern NSString *SPContentFilters;
@@ -326,6 +237,7 @@ extern NSString *SPDocumentTaskEndNotification;
 extern NSString *SPDocumentTaskStartNotification;
 extern NSString *SPFieldEditorSheetFont;
 extern NSString *SPLastSQLFileEncoding;
+extern NSString *SPNoBOMforSQLdumpFile;
 extern NSString *SPPrintBackground;
 extern NSString *SPPrintImagePreviews;
 extern NSString *SPQueryFavorites;
@@ -338,9 +250,14 @@ extern NSString *SPBlobTextEditorSpellCheckingEnabled;
 extern NSString *SPUniqueSchemaDelimiter;
 
 // URLs
+extern NSString *SPHomePageURL;
 extern NSString *SPDonationsURL;
+extern NSString *SPFAQURL;
+extern NSString *SPDocumentationURL;
+extern NSString *SPContactURL;
+extern NSString *SPKeyboardShortcutsURL;
 extern NSString *SPMySQLSearchURL;
-extern NSString *SPDevURL;
+extern NSString *SPGettingConnectedDocURL;
 
 // Toolbar constants
 

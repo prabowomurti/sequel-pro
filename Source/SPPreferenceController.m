@@ -27,7 +27,7 @@
 #import "SPWindowAdditions.h"
 #import "SPFavoriteTextFieldCell.h"
 #import "SPKeychain.h"
-#import "SPDatabaseDocument.h"
+#import "TableDocument.h"
 #import "SPConnectionController.h"
 
 @interface SPPreferenceController (PrivateAPI)
@@ -100,7 +100,7 @@
 	
 	if (currentSortItem > -1) {
 		[self _sortFavorites];
-	}	
+	}
 }
 
 #pragma mark -
@@ -311,34 +311,6 @@
 		[prefs removeObjectForKey:@"SUSendProfileInfo"];
 	}
 
-	// For versions prior to 2325 (<0.9.9), convert the old encoding pref string into the new localizable constant
-	if  (recordedVersionNumber < 2325 && [prefs objectForKey:@"DefaultEncoding"] && [[prefs objectForKey:@"DefaultEncoding"] isKindOfClass:[NSString class]]) {
-		NSDictionary *encodingMap = [NSDictionary dictionaryWithObjectsAndKeys:
-											[NSNumber numberWithInt:SPEncodingAutodetect], @"Autodetect",
-											[NSNumber numberWithInt:SPEncodingUCS2], @"UCS-2 Unicode (ucs2)",
-											[NSNumber numberWithInt:SPEncodingUTF8], @"UTF-8 Unicode (utf8)",
-											[NSNumber numberWithInt:SPEncodingUTF8viaLatin1], @"UTF-8 Unicode via Latin 1",
-											[NSNumber numberWithInt:SPEncodingASCII], @"US ASCII (ascii)",
-											[NSNumber numberWithInt:SPEncodingLatin1], @"ISO Latin 1 (latin1)",
-											[NSNumber numberWithInt:SPEncodingMacRoman], @"Mac Roman (macroman)",
-											[NSNumber numberWithInt:SPEncodingCP1250Latin2], @"Windows Latin 2 (cp1250)",
-											[NSNumber numberWithInt:SPEncodingISOLatin2], @"ISO Latin 2 (latin2)",
-											[NSNumber numberWithInt:SPEncodingCP1256Arabic], @"Windows Arabic (cp1256)",
-											[NSNumber numberWithInt:SPEncodingGreek], @"ISO Greek (greek)",
-											[NSNumber numberWithInt:SPEncodingHebrew], @"ISO Hebrew (hebrew)",
-											[NSNumber numberWithInt:SPEncodingLatin5Turkish], @"ISO Turkish (latin5)",
-											[NSNumber numberWithInt:SPEncodingCP1257WinBaltic], @"Windows Baltic (cp1257)",
-											[NSNumber numberWithInt:SPEncodingCP1251WinCyrillic], @"Windows Cyrillic (cp1251)",
-											[NSNumber numberWithInt:SPEncodingBig5Chinese], @"Big5 Traditional Chinese (big5)",
-											[NSNumber numberWithInt:SPEncodingShiftJISJapanese], @"Shift-JIS Japanese (sjis)",
-											[NSNumber numberWithInt:SPEncodingEUCJPJapanese], @"EUC-JP Japanese (ujis)",
-											[NSNumber numberWithInt:SPEncodingEUCKRKorean], @"EUC-KR Korean (euckr)",
-											nil];
-		NSNumber *newMappedValue = [encodingMap valueForKey:[prefs objectForKey:@"DefaultEncoding"]];
-		if (newMappedValue == nil) newMappedValue = [NSNumber numberWithInt:0];
-		[prefs setObject:newMappedValue forKey:@"DefaultEncodingTag"];
-	}
-
 	// Update the prefs revision
 	[prefs setObject:[NSNumber numberWithInteger:currentVersionNumber] forKey:SPLastUsedVersion];	
 }
@@ -376,11 +348,11 @@
 - (IBAction)removeFavorite:(id)sender
 {
 	if ([favoritesTableView numberOfSelectedRows] == 1) {
-		NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Delete favorite '%@'?", @"delete database message"), [favoritesController valueForKeyPath:@"selection.name"]]
-										 defaultButton:NSLocalizedString(@"Delete", @"delete button") 
-									   alternateButton:NSLocalizedString(@"Cancel", @"cancel button") 
-										  otherButton:nil 
-							informativeTextWithFormat:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to delete the favorite '%@'? This operation cannot be undone.", @"delete database informative message"), [favoritesController valueForKeyPath:@"selection.name"]]];
+		NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Remove favorite '%@'?", @"remove database message"), [favoritesController valueForKeyPath:@"selection.name"]]
+										 defaultButton:NSLocalizedString(@"Remove", @"remove button")
+									   alternateButton:NSLocalizedString(@"Cancel", @"cancel button")
+										   otherButton:nil
+							 informativeTextWithFormat:[NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to remove the favorite '%@'? This operation cannot be undone.", @"remove database informative message"), [favoritesController valueForKeyPath:@"selection.name"]]];
 
 		NSArray *buttons = [alert buttons];
 
@@ -418,7 +390,7 @@
 		[favorite setObject:favoriteid forKey:@"id"];
 
 		// Alter the name for clarity
-		[favorite setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ Copy", @"Initial favourite name after duplicating a previous favourite"), [favorite objectForKey:@"name"]] forKey:@"name"];
+		[favorite setObject:[NSString stringWithFormat:@"%@ Copy", [favorite objectForKey:@"name"]] forKey:@"name"];
 
 		// Create new keychain items if appropriate
 		if (password && [password length]) {
@@ -458,7 +430,7 @@
  * Sorts the favorites table view based on the selected sort by item
  */
 - (IBAction)sortFavorites:(id)sender
-{	
+{
 	previousSortItem = currentSortItem;
 	currentSortItem  = [[sender menu] indexOfItem:sender];
 	
@@ -468,8 +440,8 @@
 	[self _sortFavorites];
 	
 	if (previousSortItem > -1) [[[sender menu] itemAtIndex:previousSortItem] setState:NSOffState];
-	
-	[[[sender menu] itemAtIndex:currentSortItem] setState:NSOnState];	
+
+	[[[sender menu] itemAtIndex:currentSortItem] setState:NSOnState];
 }
 
 /**
@@ -676,19 +648,19 @@
 	// Disable all automatic sorting
 	currentSortItem = -1;
 	reverseFavoritesSort = NO;
-	
+
 	[prefs setInteger:currentSortItem forKey:SPFavoritesSortedBy];
 	[prefs setBool:NO forKey:SPFavoritesSortedInReverse];
-	
+
 	// Remove sort descriptors
 	[favoritesController setSortDescriptors:[NSArray array]];
-	
+
 	// Uncheck sort by menu items
 	for (NSMenuItem *menuItem in [[favoritesSortByMenuItem submenu] itemArray])
 	{
 		[menuItem setState:NSOffState];
 	}
-		
+
 	originalRow = [[[info draggingPasteboard] stringForType:SPFavoritesPasteboardDragType] integerValue];
 	destinationRow = row;
 
@@ -1056,34 +1028,21 @@
 		[preferencesWindow endEditingFor:[preferencesWindow firstResponder]];
 }
 
-// -------------------------------------------------------------------------------
-// windowWillResize:toSize:
-// Trap window resize notifications and use them to disable resizing on most tabs
-// - except for the favourites tab.
-// -------------------------------------------------------------------------------
-- (NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize
-{
-	if ([sender showsResizeIndicator])
-		return frameSize;
-	else
-		return [sender frame].size;
-}
-
 #pragma mark -
 #pragma mark Other
 
 - (void)sheetDidEnd:(id)sheet returnCode:(NSInteger)returnCode contextInfo:(NSString *)contextInfo
 {
 
-	// Order out current sheet to suppress overlapping of sheets
-	if ([sheet respondsToSelector:@selector(orderOut:)])
+    // Order out current sheet to suppress overlapping of sheets
+    if ([sheet respondsToSelector:@selector(orderOut:)])
 		[sheet orderOut:nil];
-	else if ([sheet respondsToSelector:@selector(window)])
-		[[sheet window] orderOut:nil];
+    else if ([sheet respondsToSelector:@selector(window)])
+    	[[sheet window] orderOut:nil];
 
-	// Remove the current database
-	if ([contextInfo isEqualToString:@"removeFavorite"]) {
-		if (returnCode == NSAlertDefaultReturn) {
+    // Remove the current database
+    if ([contextInfo isEqualToString:@"removeFavorite"]) {
+    	if (returnCode == NSAlertDefaultReturn) {
 
 			// Get selected favorite's details
 			NSString *name     = [favoritesController valueForKeyPath:@"selection.name"];
@@ -1149,7 +1108,7 @@
 	[defaultFavoritePopup removeAllItems];
 	
 	// Use the last used favorite
-	[defaultFavoritePopup addItemWithTitle:NSLocalizedString(@"Last Used", @"Last Used entry in favorites menu")];
+	[defaultFavoritePopup addItemWithTitle:@"Last Used"];
 	[[defaultFavoritePopup menu] addItem:[NSMenuItem separatorItem]];
 	
 	// Add all favorites to the menu

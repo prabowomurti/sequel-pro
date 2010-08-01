@@ -24,9 +24,9 @@
 //  More info at <http://code.google.com/p/sequel-pro/>
 
 #import "SPPrintController.h"
-#import "SPTableContent.h"
-#import "SPTableStructure.h"
-#import "SPCustomQuery.h"
+#import "TableContent.h"
+#import "TableSource.h"
+#import "CustomQuery.h"
 #import "SPConstants.h"
 #import "SPTableRelations.h"
 #import "SPPrintAccessory.h"
@@ -36,7 +36,7 @@
 #import "SPExtendedTableInfo.h"
 #import "SPTableTriggers.h"
 
-@implementation SPDatabaseDocument (SPPrintController)
+@implementation TableDocument (SPPrintController)
 
 /**
  * WebView delegate method.
@@ -44,7 +44,7 @@
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame 
 {
 	// Because we need the webFrame loaded (for preview), we've moved the actual printing here
-	NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo];
+	NSPrintInfo *printInfo = [self printInfo];
 	
 	NSSize paperSize = [printInfo paperSize];
     NSRect printableRect = [printInfo imageablePageBounds];
@@ -89,7 +89,7 @@
 	
 	[op setPrintPanel:printPanel];
 	
-    [op runOperationModalForWindow:[self parentWindow]
+    [op runOperationModalForWindow:tableWindow
 						  delegate:self
 					didRunSelector:nil
 					   contextInfo:nil];
@@ -129,7 +129,7 @@
 			[[buttons objectAtIndex:0] setKeyEquivalentModifierMask:NSCommandKeyMask];
 			[[buttons objectAtIndex:1] setKeyEquivalent:@"\r"];
 			
-			[alert beginSheetModalForWindow:[self parentWindow] modalDelegate:self didEndSelector:@selector(printWarningDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+			[alert beginSheetModalForWindow:tableWindow modalDelegate:self didEndSelector:@selector(printWarningDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 		
 			return;
 		}
@@ -196,7 +196,7 @@
 - (void)generateHTMLForPrinting
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
+	
 	// Set up template engine with your chosen matcher
 	MGTemplateEngine *engine = [MGTemplateEngine templateEngine];
 	

@@ -27,7 +27,7 @@
 #import "ImageAndTextCell.h"
 #import "RegexKitLite.h"
 #import "SPQueryController.h"
-#import "SPTableContent.h"
+#import "TableContent.h"
 #import "SPConstants.h"
 #import "SPConnectionController.h"
 
@@ -58,8 +58,7 @@
 			NSLog(@"ContentFilterManager was called without a delegate.");
 			return nil;
 		}
-		tableDocumentInstance = [managerDelegate valueForKeyPath:@"tableDocumentInstance"];
-		delegatesFileURL = [tableDocumentInstance fileURL];
+		delegatesFileURL = [[managerDelegate valueForKeyPath:@"tableDocumentInstance"] fileURL];
 
 		filterType = [NSString stringWithString:compareType];
 
@@ -208,11 +207,11 @@
 }
 
 /**
- * This method is only implemented to be compatible with SPTextView.
+ * This method is only implemented to be compatible with CMTextView.
  */
 - (id)customQueryInstance
 {
-	return [tableDocumentInstance valueForKey:@"customQueryInstance"];
+	return [[[NSApp mainWindow] delegate] valueForKey:@"customQueryInstance"];
 }
 
 
@@ -372,7 +371,7 @@
 		[cf release];
 		
 		// Inform all opened documents to update the query favorites list
-		for(id doc in [[NSApp delegate] orderedDocuments])
+		for(id doc in [[NSDocumentController sharedDocumentController] documents])
 			if([[doc valueForKeyPath:@"tableContentInstance"] respondsToSelector:@selector(setCompareTypes:)])
 				[[doc valueForKeyPath:@"tableContentInstance"] setCompareTypes:nil];
 
@@ -767,7 +766,7 @@
 
 		NSDictionary *spf = nil;
 
-		if([[[filename pathExtension] lowercaseString] isEqualToString:SPFileExtensionDefault]) {
+		if([[[filename pathExtension] lowercaseString] isEqualToString:@"spf"]) {
 			NSData *pData = [NSData dataWithContentsOfFile:filename options:NSUncachedRead error:&readError];
 
 			spf = [[NSPropertyListSerialization propertyListFromData:pData 

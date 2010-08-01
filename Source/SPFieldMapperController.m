@@ -24,13 +24,13 @@
 
 #import "SPFieldMapperController.h"
 #import "SPTableData.h"
-#import "SPDataImport.h"
-#import "SPTablesList.h"
+#import "TableDump.h"
+#import "TablesList.h"
 #import "SPArrayAdditions.h"
 #import "SPStringAdditions.h"
 #import "SPConstants.h"
 #import "SPNotLoaded.h"
-#import "SPTextView.h"
+#import "CMTextView.h"
 
 @implementation SPFieldMapperController
 
@@ -82,15 +82,8 @@
 {
 
 	// Set source path
-	// Note: [fileSourcePath setURL:[NSURL fileWithPath:sourcePath]] does NOT work
-	// if Sequel Pro runs localized. Reason unknown, it seems to be a NSPathControl bug.
-	// Ask HansJB for more info.
-	NSPathControl *pc = [[[NSPathControl alloc] initWithFrame:NSZeroRect] autorelease];
-	[pc setURL:[NSURL fileURLWithPath:sourcePath]];
-	if([pc pathComponentCells])
-		[fileSourcePath setPathComponentCells:[pc pathComponentCells]];
+	[fileSourcePath setURL:[NSURL fileURLWithPath:sourcePath]];
 	[fileSourcePath setDoubleAction:@selector(goBackToFileChooser:)];
-
 	[onupdateTextView setDelegate:theDelegate];
 	windowMinWidth = [[self window] minSize].width;
 	windowMinHeigth = [[self window] minSize].height;
@@ -550,11 +543,7 @@
 - (IBAction)goBackToFileChooser:(id)sender
 {
 	[NSApp endSheet:[self window] returnCode:[sender tag]];
-	if([sourcePath hasPrefix:SPImportClipboardTempFileNamePrefix]) {
-		[theDelegate importFromClipboard];
-	} else {
-		[theDelegate importFile];
-	}
+	[theDelegate importFile];
 }
 
 #pragma mark -

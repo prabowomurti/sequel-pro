@@ -26,7 +26,7 @@
 #import <Cocoa/Cocoa.h>
 #import <MCPKit/MCPKit.h>
 
-#import "SPDatabaseDocument.h"
+#import "TableDocument.h"
 #import "SPKeychain.h"
 #import "SPSSHTunnel.h"
 #import "SPConstants.h"
@@ -56,9 +56,9 @@
 {
 	id delegate;
 	
-	SPDatabaseDocument *tableDocument;
-	NSView *databaseConnectionSuperview;
-	NSSplitView *databaseConnectionView;
+	TableDocument *tableDocument;
+	NSWindow *documentWindow;
+	NSSplitView *contentView;
 	SPKeychain *keychain;
 	NSUserDefaults *prefs;
 	NSMutableArray *favorites;
@@ -66,7 +66,6 @@
 	MCPConnection *mySQLConnection;
 	BOOL automaticFavoriteSelection;
 	BOOL cancellingConnection;
-	BOOL isConnecting;
 
 	NSInteger previousType;
 	NSInteger type;
@@ -87,8 +86,6 @@
 	NSString *connectionKeychainItemAccount;
 	NSString *connectionSSHKeychainItemName;
 	NSString *connectionSSHKeychainItemAccount;
-
-	NSMutableArray *nibObjectsToRelease;
 
 	IBOutlet NSView *connectionView;
 	IBOutlet NSSplitView *connectionSplitView;
@@ -116,10 +113,9 @@
 	IBOutlet NSProgressIndicator *progressIndicator;
 	IBOutlet NSTextField *progressIndicatorText;
     IBOutlet NSMenuItem *favoritesSortByMenuItem;
-	
+    
     BOOL reverseFavoritesSort;
-	BOOL mySQLConnectionCancelled;
-	
+
     SPFavoritesSortItem previousSortItem, currentSortItem;
 }
 
@@ -141,15 +137,12 @@
 @property (readwrite, retain) NSString *connectionKeychainItemAccount;
 @property (readwrite, retain) NSString *connectionSSHKeychainItemName;
 @property (readwrite, retain) NSString *connectionSSHKeychainItemAccount;
-
-@property (readonly, assign) BOOL isConnecting;
 @property (readonly, assign) NSString *favoritesPBoardType;
 
-- (id)initWithDocument:(SPDatabaseDocument *)theTableDocument;
+- (id)initWithDocument:(TableDocument *)theTableDocument;
 
 // Connection processes
 - (IBAction)initiateConnection:(id)sender;
-- (IBAction)cancelMySQLConnection:(id)sender;
 - (void)initiateSSHTunnelConnection;
 - (void)sshTunnelCallback:(SPSSHTunnel *)theTunnel;
 - (void)initiateMySQLConnection;

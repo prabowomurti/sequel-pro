@@ -181,7 +181,7 @@
  * it's data from the SPUser Entity objects in the current managedObjectContext.
  */
 - (void)_initializeTree:(NSArray *)items
-{
+{	
 	// Go through each item that contains a dictionary of key-value pairs
 	// for each user currently in the database.
 	for(NSInteger i = 0; i < [items count]; i++)
@@ -269,14 +269,14 @@
 {
 	// Initialize Databases
 	[schemas removeAllObjects];
-	
+
 	MCPResult *results = [self.mySqlConnection listDBs];
 	
 	if ([results numOfRows]) {
 		[results dataSeek:0];
 	}
 	
-	for (NSInteger i = 0; i < [results numOfRows]; i++) {
+	for (int i = 0; i < [results numOfRows]; i++) {
 		[schemas addObject:[results fetchRowAsDictionary]];
 	}
 	
@@ -333,7 +333,7 @@
 	// Assumes that the child has already been initialized with values from the
 	// global user table.
 	// Select rows from the db table that contains schema privs for each user/host
-	NSString *queryString = [NSString stringWithFormat:@"SELECT * from `mysql`.`db` d WHERE d.user = %@ and d.host = %@", 
+	NSString *queryString = [NSString stringWithFormat:@"SELECT * from `mysql`.`db` d WHERE d.user = %@ and d.host = %@",
 							 [[[child parent] valueForKey:@"user"] tickQuotedString], [[child valueForKey:@"host"] tickQuotedString]];
 	MCPResult *queryResults = [self.mySqlConnection queryString:queryString];
 	if ([queryResults numOfRows] > 0)
@@ -342,7 +342,7 @@
 		[queryResults dataSeek:0];
 	}
 	
-	for (NSInteger i = 0; i < [queryResults numOfRows]; i++) {
+	for (int i = 0; i < [queryResults numOfRows]; i++) {
 		NSDictionary *rowDict = [queryResults fetchRowAsDictionary];
 		NSManagedObject *dbPriv = [NSEntityDescription insertNewObjectForEntityForName:@"Privileges"
 																inManagedObjectContext:[self managedObjectContext]];
@@ -646,6 +646,7 @@
     NSArray *children = [[[treeController selectedObjects] objectAtIndex:0] 
                          valueForKey:@"children"];
 
+
 	// On all the children - host entries - set the username to be deleted,
 	// for later query contruction.
     for(NSManagedObject *child in children)
@@ -756,7 +757,7 @@
 			return;			
 		}
 	}
-    
+
 	[self.managedObjectContext reset];
     [grantedSchemaPrivs removeAllObjects];
 	[grantedTableView reloadData];
@@ -994,7 +995,7 @@
 - (BOOL)deleteUsers:(NSArray *)deletedUsers
 {
 	NSMutableString *droppedUsers = [NSMutableString string];
-
+	
 	for (NSManagedObject *user in deletedUsers)
 	{
         if (![[[user entity] name] isEqualToString:@"Privileges"] && [user valueForKey:@"host"] != nil)
@@ -1005,7 +1006,7 @@
 		}
 		
 	}
-
+	
     if ([droppedUsers length] > 2) {
         droppedUsers = [[droppedUsers substringToIndex:[droppedUsers length]-2] mutableCopy];
         [self.mySqlConnection queryString:[NSString stringWithFormat:@"DROP USER %@", droppedUsers]];
@@ -1067,7 +1068,7 @@
 	NSMutableArray *revokePrivileges = [NSMutableArray array];
 	
 	NSString *dbName = [schemaPriv valueForKey:@"db"];
-    dbName = [dbName stringByReplacingOccurrencesOfString:@"_" withString:@"\\_"];
+	
 	NSString *statement = [NSString stringWithFormat:@"SELECT USER,HOST FROM `mysql`.`db` WHERE USER=%@ AND HOST=%@ AND DB=%@",
 									  [[schemaPriv valueForKeyPath:@"user.parent.user"] tickQuotedString],
 									  [[schemaPriv valueForKeyPath:@"user.host"] tickQuotedString],
@@ -1311,7 +1312,7 @@
         }
         if (retVal == NO) {
             NSAlert *alert = [NSAlert alertWithMessageText:@"User doesn't have any hosts."
-                                             defaultButton:NSLocalizedString(@"Add Host", @"Add Host")
+                                             defaultButton:@"Add Host"
                                            alternateButton:NSLocalizedString(@"Cancel", @"cancel button")
                                                otherButton:nil
                                  informativeTextWithFormat:@"This user doesn't have any hosts associated with it. User will be deleted unless one is added"];

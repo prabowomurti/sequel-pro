@@ -134,14 +134,11 @@
 	NSUInteger       mConnectionFlags; /* The flags to be used for the connection to the database. */
 	
 	id delegate; /* Connection delegate */
-    
-	/* Anything that performs a mysql_net_read is not thread-safe: mysql queries, pings */
-    /* Always lock the connection first. Don't use this lock directly, use the lockConnection method! */
-	NSConditionLock *connectionLock; 
+	
+	NSLock *queryLock; /* Anything that performs a mysql_net_read is not thread-safe: mysql queries, pings */
 
 	BOOL useKeepAlive;
 	BOOL isDisconnecting;
-	BOOL userTriggeredDisconnect;
 	NSInteger connectionTimeout;
 	CGFloat keepAliveInterval;
 	
@@ -184,7 +181,6 @@
 	NSInteger isQueryingDbStructure;
 	BOOL cancelQueryingDbStructure;
 	BOOL lockQuerying;
-	NSInteger automaticReconnectAttempts;
 	
 	// Pointers
 	IMP cStringPtr;
@@ -228,7 +224,6 @@
 - (void)disconnect;
 - (BOOL)reconnect;
 - (BOOL)isConnected;
-- (BOOL)userTriggeredDisconnect;
 - (BOOL)checkConnection;
 - (BOOL)pingConnection;
 void pingConnectionTask(void *ptr);
@@ -280,11 +275,9 @@ void performThreadedKeepAlive(void *ptr);
 - (void)cancelCurrentQuery;
 - (BOOL)queryCancelled;
 - (BOOL)queryCancellationUsedReconnect;
-- (void)flushMultiResults;
 
 // Locking
 - (void)lockConnection;
-- (BOOL)tryLockConnection;
 - (void)unlockConnection;
 
 // Database structure
@@ -292,8 +285,7 @@ void performThreadedKeepAlive(void *ptr);
 - (MCPResult *)listDBsLike:(NSString *)dbsName;
 - (MCPResult *)listTables;
 - (MCPResult *)listTablesLike:(NSString *)tablesName;
-- (NSArray *)listTablesFromDB:(NSString *)dbName;
-- (NSArray *)listTablesFromDB:(NSString *)dbName like:(NSString *)tablesName;
+- (MCPResult *)listTablesFromDB:(NSString *)dbName like:(NSString *)tablesName;
 - (MCPResult *)listFieldsFromTable:(NSString *)tableName;
 - (MCPResult *)listFieldsFromTable:(NSString *)tableName like:(NSString *)fieldsName;
 

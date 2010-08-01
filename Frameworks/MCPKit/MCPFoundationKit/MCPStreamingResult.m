@@ -45,12 +45,8 @@
 
 
 @interface MCPStreamingResult (PrivateAPI)
-
-const char *_int2bin(unsigned int n, unsigned long len, char *buf);
-
 - (void) _downloadAllData;
 - (void) _freeAllDataWhenDone;
-
 @end
 
 @implementation MCPStreamingResult : MCPResult
@@ -89,9 +85,7 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 			[mNames release];
 			mNames = nil;
 		}
-        
-        
-        
+
 		mResult = mysql_use_result(mySQLPtr);
 
 		if (mResult) {
@@ -104,7 +98,7 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 		// Obtain SEL references and pointer
 		isConnectedSEL = @selector(isConnected);
 		isConnectedPtr = [parentConnection methodForSelector:isConnectedSEL];
-                
+
 		// If the result is opened in download-data-fast safe mode, set up the additional variables
 		// and threads required.
 		if (!fullyStreaming) {
@@ -137,14 +131,9 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
  */
 - (void) dealloc
 {
-	[self cancelResultLoad]; //this should close the connection if it is still open
-    
-    if (!connectionUnlocked) {
-        //this should NEVER happen
-        NSLog(@"MCPStreamingResult: The connection has not been unlocked.");
-        [parentConnection unlockConnection];
-    }
-    
+	[self cancelResultLoad];
+	if (!connectionUnlocked) [parentConnection unlockConnection];
+
 	if (!fullyStreaming) {
 		pthread_mutex_destroy(&dataFreeLock);
 		pthread_mutex_destroy(&dataCreationLock);
@@ -163,7 +152,7 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 - (NSArray *)fetchNextRowAsArray
 {
 	MYSQL_ROW theRow;
-	char *theRowData, *buf;
+	char *theRowData;
 	unsigned long *fieldLengths;
 	NSInteger i, copiedDataLength;
 	NSMutableArray *returnArray;
@@ -173,14 +162,8 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 	if (fullyStreaming) {
 		theRow = mysql_fetch_row(mResult);
 
-		// If no data was returned, we're at the end of the result set - unlock the connection and return nil
-		if (theRow == NULL) {
-            if (!connectionUnlocked) {
-                [parentConnection unlockConnection];
-                connectionUnlocked = YES;
-            }
-            return nil;
-        }
+		// If no data was returned, we're at the end of the result set - return nil.
+		if (theRow == NULL) return nil;
 
 		// Retrieve the lengths of the returned data
 		fieldLengths = mysql_fetch_lengths(mResult);
@@ -246,12 +229,7 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 				copiedDataLength += fieldLengths[i] + 1;
 			}
 		}
-		
-		// If the field is of type BIT, then allocate the binary buffer
-		if (fieldDefinitions[i].type == FIELD_TYPE_BIT) {
-			buf = malloc(fieldDefinitions[i].length + 1);
-		}
-		
+
 		// If the data hasn't already been detected as NULL - in which case it will have been
 		// set to NSNull - process the data by type
 		if (cellData == nil) {
@@ -292,12 +270,7 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 					break;
 
 				case FIELD_TYPE_BIT:
-					// Get a binary representation of the data
-					_int2bin(theData[1], fieldDefinitions[i].length, buf);
-					
-					cellData = (theData != NULL) ? [NSString stringWithUTF8String:buf] : @"";
-					
-					free(buf);
+					cellData = (theData != NULL) ? [NSString stringWithFormat:@"%u", theData[0]] : @"";
 					break;
 
 				case FIELD_TYPE_TINY_BLOB:
@@ -360,7 +333,6 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 
 /*
  * Ensure the result set is fully processed and freed without any processing
- * This method ensures that the connection is unlocked.
  */
 - (void) cancelResultLoad
 {
@@ -373,13 +345,7 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 			theRow = mysql_fetch_row(mResult);
 
 			// If no data was returned, we're at the end of the result set - return.
-			if (theRow == NULL) {
-                if (!connectionUnlocked) {
-                    [parentConnection unlockConnection];
-                    connectionUnlocked = YES;
-                }
-                return;
-            }
+			if (theRow == NULL) return;
 		}
 
 	// If in cached-streaming/fast download mode, loop until all data is fetched and freed
@@ -395,8 +361,8 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 			// once all memory has been freed
 			if (processedRowCount == downloadedRowCount) {
 				while (!dataFreed) usleep(1000);
-                // we don't need to unlock the connection because
-                // the data loading thread already did that
+				[parentConnection unlockConnection];
+				connectionUnlocked = YES;
 				return;
 			}
 			processedRowCount++;
@@ -426,21 +392,6 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf);
 @end
 
 @implementation MCPStreamingResult (PrivateAPI)
-
-/**
- * Provides a binary representation of the supplied integer (n) in the supplied buffer (buf). The resulting
- * binary representation will be zero-padded according to the supplied field length (len).
- */
-const char *_int2bin(unsigned int n, unsigned long len, char *buf)
-{					
-    for (int i = (len - 1); i >= 0; --i)
-	{
-        buf[i] = (n & 1) ? '1' : '0';
-        n >>= 1;
-    }
-	
-    buf[len] = '\0';
-}
 
 /**
  * Used internally to download results in a background thread
@@ -508,8 +459,8 @@ const char *_int2bin(unsigned int n, unsigned long len, char *buf)
 	}
 
 	// Unlock the parent connection now data has been retrieved
-    [parentConnection unlockConnection];
-    connectionUnlocked = YES;
+	connectionUnlocked = YES;
+	[parentConnection unlockConnection];
 
 	dataDownloaded = YES;
 	[downloadPool drain];

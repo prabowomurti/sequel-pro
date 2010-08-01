@@ -44,7 +44,6 @@ NSString *SPContentFilterPasteboardDragType      = @"SPContentFilterPasteboard";
 
 // File extensions
 NSString *SPFileExtensionDefault                 = @"spf";
-NSString *SPBundleFileExtension                  = @"spfs";
 NSString *SPFileExtensionSQL                     = @"sql";
 
 // Filenames
@@ -60,7 +59,7 @@ NSString *SPLastFavoriteIndex                    = @"LastFavoriteIndex";
 NSString *SPAutoConnectToDefault                 = @"AutoConnectToDefault";
 NSString *SPDefaultViewMode                      = @"DefaultViewMode";
 NSString *SPLastViewMode                         = @"LastViewMode";
-NSString *SPDefaultEncoding                      = @"DefaultEncodingTag";
+NSString *SPDefaultEncoding                      = @"DefaultEncoding";
 NSString *SPUseMonospacedFonts                   = @"UseMonospacedFonts";
 NSString *SPDisplayTableViewVerticalGridlines    = @"DisplayTableViewVerticalGridlines";
 NSString *SPCustomQueryMaxHistoryItems           = @"CustomQueryMaxHistoryItems";
@@ -130,26 +129,21 @@ NSString *SPEditInSheetEnabled                   = @"EditInSheetEnabled";
 NSString *SPTableInformationPanelCollapsed       = @"TableInformationPanelCollapsed";
 NSString *SPTableColumnWidths                    = @"tableColumnWidths";
 NSString *SPProcessListShowProcessID             = @"ProcessListShowProcessID";
-NSString *SPProcessListEnableAutoRefresh         = @"ProcessListEnableAutoRefresh";
-NSString *SPProcessListAutoRrefreshInterval      = @"ProcessListAutoRrefreshInterval";
+NSString *SPProcessListShowFullProcessList       = @"ProcessListShowFullProcessList";
 NSString *SPFavoritesSortedBy                    = @"FavoritesSortedBy";
 NSString *SPFavoritesSortedInReverse             = @"FavoritesSortedInReverse";
-NSString *SPAlwaysShowWindowTabBar				 = @"WindowAlwaysShowTabBar";
 
 // Hidden Prefs
 NSString *SPPrintWarningRowLimit                 = @"PrintWarningRowLimit";
 NSString *SPDisplayServerVersionInWindowTitle    = @"DisplayServerVersionInWindowTitle";
 
-// Import and export
+// Import
 NSString *SPCSVImportFieldEnclosedBy             = @"CSVImportFieldEnclosedBy";
 NSString *SPCSVImportFieldEscapeCharacter        = @"CSVImportFieldEscapeCharacter";
 NSString *SPCSVImportFieldTerminator             = @"CSVImportFieldTerminator";
 NSString *SPCSVImportFirstLineIsHeader           = @"CSVImportFirstLineIsHeader";
 NSString *SPCSVImportLineTerminator              = @"CSVImportLineTerminator";
 NSString *SPCSVFieldImportMappingAlignment       = @"CSVFieldImportMappingAlignment";
-NSString *SPImportClipboardTempFileNamePrefix    = @"/tmp/_SP_ClipBoard_Import_File_";
-NSString *SPSQLExportUseCompression              = @"SQLExportUseCompression";
-NSString *SPNoBOMforSQLdumpFile                  = @"NoBOMforSQLdumpFile";
 
 // Misc 
 NSString *SPContentFilters                       = @"ContentFilters";
@@ -157,6 +151,7 @@ NSString *SPDocumentTaskEndNotification          = @"DocumentTaskEnded";
 NSString *SPDocumentTaskStartNotification        = @"DocumentTaskStarted";
 NSString *SPFieldEditorSheetFont                 = @"FieldEditorSheetFont";
 NSString *SPLastSQLFileEncoding                  = @"lastSqlFileEncoding";
+NSString *SPNoBOMforSQLdumpFile                  = @"NoBOMforSQLdumpFile";
 NSString *SPPrintBackground                      = @"PrintBackground";
 NSString *SPPrintImagePreviews                   = @"PrintImagePreviews";
 NSString *SPQueryFavorites                       = @"queryFavorites";
@@ -169,9 +164,14 @@ NSString *SPBlobTextEditorSpellCheckingEnabled   = @"BlobTextEditorSpellChecking
 NSString *SPUniqueSchemaDelimiter                = @"￸"; // U+FFF8
 
 // URLs
+NSString *SPHomePageURL                          = @"http://www.sequelpro.com/";
 NSString *SPDonationsURL                         = @"http://www.sequelpro.com/donate.html";
-NSString *SPMySQLSearchURL                       = @"http://search.mysql.com/search?q=%@&site=refman-%@&lr=lang_%@";
-NSString *SPDevURL                               = @"http://code.google.com/p/sequel-pro/";
+NSString *SPFAQURL                               = @"http://www.sequelpro.com/docs/Frequently_Asked_Questions";
+NSString *SPDocumentationURL                     = @"http://www.sequelpro.com/docs/";
+NSString *SPContactURL                           = @"http://www.sequelpro.com/docs/Contact_the_developers";
+NSString *SPKeyboardShortcutsURL                 = @"http://www.sequelpro.com/docs/Keyboard_Shortcuts";
+NSString *SPMySQLSearchURL                       = @"http://search.mysql.com/search?q=%@&site=refman-%@";
+NSString *SPGettingConnectedDocURL               = @"http://www.sequelpro.com/docs/Getting_Connected";
 
 // Toolbar constants
 

@@ -54,7 +54,7 @@
 	size = (size / 1024);
 	
 	if (size < 1023) {
-		[numberFormatter setFormat:@"#,##0.0 KiB"];
+		[numberFormatter setFormat:@"#,##0.0 KB"];
 		
 		return [numberFormatter stringFromNumber:[NSNumber numberWithDouble:size]];
 	}
@@ -62,7 +62,7 @@
 	size = (size / 1024);
 	
 	if (size < 1023) {
-		[numberFormatter setFormat:@"#,##0.0 MiB"];
+		[numberFormatter setFormat:@"#,##0.0 MB"];
 		
 		return [numberFormatter stringFromNumber:[NSNumber numberWithDouble:size]];
 	}
@@ -70,21 +70,24 @@
 	size = (size / 1024);
 	
 	if (size < 1023) {
-		[numberFormatter setFormat:@"#,##0.0 GiB"];
+		[numberFormatter setFormat:@"#,##0.0 GB"];
 		
 		return [numberFormatter stringFromNumber:[NSNumber numberWithDouble:size]];
 	}
 
 	size = (size / 1024);
 	
-	[numberFormatter setFormat:@"#,##0.0 TiB"];
+	[numberFormatter setFormat:@"#,##0.0 TB"];
 	
 	return [numberFormatter stringFromNumber:[NSNumber numberWithDouble:size]];
 }
 
-/**
- * Returns a human readable version string of the supplied time interval.
- */ 
+
+// -------------------------------------------------------------------------------
+// stringForTimeInterval:
+//
+// Returns a human readable version string of the supplied time interval.
+// -------------------------------------------------------------------------------
 + (NSString *)stringForTimeInterval:(CGFloat)timeInterval
 {
 	NSNumberFormatter *numberFormatter = [[[NSNumberFormatter alloc] init] autorelease];
@@ -142,78 +145,42 @@
 	return [numberFormatter stringFromNumber:[NSNumber numberWithDouble:timeInterval]];
 }
 
-/**
- * Returns a new created UUID string.
- */
-+ (NSString*)stringWithNewUUID
-{
-	// Create a new UUID
-	CFUUIDRef uuidObj = CFUUIDCreate(nil);
 
-	// Get the string representation of the UUID
-	NSString *newUUID = (NSString*)CFUUIDCreateString(nil, uuidObj);
-	CFRelease(uuidObj);
-	return [newUUID autorelease];
-}
-
-/**
- * Escapes HTML special characters.
- */
-- (NSString *)HTMLEscapeString
-{
-	NSMutableString *mutableString = [NSMutableString stringWithString:self];
-	
-	[mutableString replaceOccurrencesOfString:@"&" withString:@"&amp;"
-									  options:NSLiteralSearch
-										range:NSMakeRange(0, [mutableString length])];
-	
-	[mutableString replaceOccurrencesOfString:@"<" withString:@"&lt;"
-									  options:NSLiteralSearch
-										range:NSMakeRange(0, [mutableString length])];
-	
-	[mutableString replaceOccurrencesOfString:@">" withString:@"&gt;"
-									  options:NSLiteralSearch
-										range:NSMakeRange(0, [mutableString length])];
-	
-	[mutableString replaceOccurrencesOfString:@"\"" withString:@"&quot;"
-									  options:NSLiteralSearch
-										range:NSMakeRange(0, [mutableString length])];
-	
-	return [NSString stringWithString:mutableString];
-}
-
-/**
- * Returns the string quoted with backticks as required for MySQL identifiers
- * eg.:  tablename    =>   `tablename`
- *       my`table     =>   `my``table`
- */
+// -------------------------------------------------------------------------------
+// backtickQuotedString
+//
+// Returns the string quoted with backticks as required for MySQL identifiers
+// eg.:  tablename    =>   `tablename`
+//       my`table     =>   `my``table`
+// -------------------------------------------------------------------------------
 - (NSString *)backtickQuotedString
 {
 	return [NSString stringWithFormat: @"`%@`", [self stringByReplacingOccurrencesOfString:@"`" withString:@"``"]];
 }
 
-/**
- * Returns the string quoted with ticks as required for MySQL identifiers
- * eg.:  tablename    =>   'tablename'
- *       my'table     =>   'my''table'
- */
+// -------------------------------------------------------------------------------
+// tickQuotedString
+//
+// Returns the string quoted with ticks as required for MySQL identifiers
+// eg.:  tablename    =>   'tablename'
+//       my'table     =>   'my''table'
+// -------------------------------------------------------------------------------
 - (NSString *)tickQuotedString
 {
 	return [NSString stringWithFormat: @"'%@'", [self stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
 }
 
-/**
- *
- */
 - (NSString *)replaceUnderscoreWithSpace
 {
 	return [self stringByReplacingOccurrencesOfString:@"_" withString:@" "];
 }
 
-/**
- * Returns a 'CREATE VIEW SYNTAX' string a bit more readable
- * If the string doesn't match it returns the unchanged string.
- */
+// -------------------------------------------------------------------------------
+// createViewSyntaxPrettifier
+//
+// Returns a 'CREATE VIEW SYNTAX' string a bit more readable
+// If the string doesn't match it returns the unchanged string.
+// -------------------------------------------------------------------------------
 - (NSString *)createViewSyntaxPrettifier
 {
 	NSRange searchRange = NSMakeRange(0, [self length]);
@@ -252,13 +219,16 @@
 	return(tblSyntax);
 }
 
-/**
- * Returns an array of serialised NSRanges, each representing a line within the string
- * which is at least partially covered by the NSRange supplied.
- * Each line includes the line termination character(s) for the line.  As per
- * lineRangeForRange, lines are split by CR, LF, CRLF, U+2028 (Unicode line separator),
- * or U+2029 (Unicode paragraph separator).
- */
+
+// -------------------------------------------------------------------------------
+// lineRangesForRange
+//
+// Returns an array of serialised NSRanges, each representing a line within the string
+// which is at least partially covered by the NSRange supplied.
+// Each line includes the line termination character(s) for the line.  As per
+// lineRangeForRange, lines are split by CR, LF, CRLF, U+2028 (Unicode line separator),
+// or U+2029 (Unicode paragraph separator).
+// -------------------------------------------------------------------------------
 - (NSArray *)lineRangesForRange:(NSRange)aRange
 {
 	NSMutableArray *lineRangesArray = [NSMutableArray array];
@@ -281,6 +251,7 @@
 	// Return the constructed array of ranges
 	return lineRangesArray;
 }
+
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
 /*
@@ -315,10 +286,8 @@
 }
 #endif
 
-/**
- *
- */
-- (NSString *)stringByRemovingCharactersInSet:(NSCharacterSet *)charSet options:(NSUInteger)mask
+
+- (NSString *)stringByRemovingCharactersInSet:(NSCharacterSet*) charSet options:(NSUInteger) mask
 {
 	NSRange                 range;
 	NSMutableString*        newString = [NSMutableString string];
@@ -347,17 +316,13 @@
 	return newString;
 }
 
-/**
- *
- */
-- (NSString *)stringByRemovingCharactersInSet:(NSCharacterSet *)charSet
+
+- (NSString *)stringByRemovingCharactersInSet:(NSCharacterSet*) charSet
 {
 	return [self stringByRemovingCharactersInSet:charSet options:0];
 }
 
-/**
- * Calculate the distance between two string case-insensitively
- */
+// calculate the distance between two string case-insensitively
 - (CGFloat)levenshteinDistanceWithWord:(NSString *)stringB
 {
 	// normalize strings
@@ -403,13 +368,10 @@
 
 		return distance;
 	}
-	
 	return 0.0;
 }
 
-/**
- * Returns the minimum of a, b and c
- */
+// return the minimum of a, b and c
 - (NSInteger)smallestOf:(NSInteger)a andOf:(NSInteger)b andOf:(NSInteger)c
 {
 	NSInteger min = a;

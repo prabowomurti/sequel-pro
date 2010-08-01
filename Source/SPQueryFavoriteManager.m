@@ -30,7 +30,7 @@
 #import "SPConstants.h"
 #import "SPConnectionController.h"
 #import "RegexKitLite.h"
-#import "SPTextView.h"
+#import "CMTextView.h"
 
 #define SP_MULTIPLE_SELECTION_PLACEHOLDER_STRING NSLocalizedString(@"[multiple selection]", @"[multiple selection]")
 #define SP_NO_SELECTION_PLACEHOLDER_STRING NSLocalizedString(@"[no selection]", @"[no selection]")
@@ -59,8 +59,7 @@
 			NSLog(@"Query Favorite Manger was called without a delegate.");
 			return nil;
 		}
-		tableDocumentInstance = [managerDelegate valueForKeyPath:@"tableDocumentInstance"];
-		delegatesFileURL = [tableDocumentInstance fileURL];
+		delegatesFileURL = [[managerDelegate valueForKeyPath:@"tableDocumentInstance"] fileURL];
 	}
 	
 	return self;
@@ -178,11 +177,11 @@
 }
 
 /**
- * This method is only implemented to be compatible with SPTextView.
+ * This method is only implemented to be compatible with CMTextView.
  */
 - (id)customQueryInstance
 {
-	return [tableDocumentInstance valueForKey:@"customQueryInstance"];
+	return [[[NSApp mainWindow] delegate] valueForKey:@"customQueryInstance"];
 }
 
 #pragma mark -
@@ -329,7 +328,7 @@
 	
 	[panel beginSheetForDirectory:nil 
 						   file:@"" 
-						  types:[NSArray arrayWithObjects:SPFileExtensionDefault, SPFileExtensionSQL, nil] 
+						  types:[NSArray arrayWithObjects:@"spf", @"sql", nil] 
 				 modalForWindow:[self window]
 				  modalDelegate:self 
 				 didEndSelector:@selector(importPanelDidEnd:returnCode:contextInfo:) 
@@ -383,7 +382,7 @@
 		[prefs setObject:[self queryFavoritesForFileURL:nil] forKey:SPQueryFavorites];
 
 		// Inform all opened documents to update the query favorites list
-		for(id doc in [[NSApp delegate] orderedDocuments])
+		for(id doc in [[NSDocumentController sharedDocumentController] documents])
 			if([[doc valueForKeyPath:@"customQueryInstance"] respondsToSelector:@selector(queryFavoritesHaveBeenUpdated:)])
 				[[doc valueForKeyPath:@"customQueryInstance"] queryFavoritesHaveBeenUpdated:self];
 
@@ -394,7 +393,7 @@
 
 - (IBAction)showHelp:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:NSLocalizedString(@"http://www.sequelpro.com/docs/Query_Favorites", @"Localized help page for query favourites - do not localize if no translated webpage is available")]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.sequelpro.com/docs/Query_Favorites"]];
 }
 
 #pragma mark -
@@ -748,7 +747,7 @@
 
 		NSDictionary *spf = nil;
 
-		if([[[filename pathExtension] lowercaseString] isEqualToString:SPFileExtensionDefault]) {
+		if([[[filename pathExtension] lowercaseString] isEqualToString:@"spf"]) {
 			NSData *pData = [NSData dataWithContentsOfFile:filename options:NSUncachedRead error:&readError];
 
 			spf = [[NSPropertyListSerialization propertyListFromData:pData 

@@ -27,7 +27,7 @@
 #import "SPConsoleMessage.h"
 #import "SPArrayAdditions.h"
 #import "SPConstants.h"
-#import "SPCustomQuery.h"
+#import "CustomQuery.h"
 
 #define MESSAGE_TRUNCATE_CHARACTER_LENGTH 256
 
@@ -594,7 +594,7 @@ static SPQueryController *sharedQueryController = nil;
 {
 	// Check for multiple instance of the same document.
 	// Remove it if only one instance was registerd.
-	NSArray *allDocs = [[NSApp delegate] orderedDocuments];
+	NSArray *allDocs = [[NSDocumentController sharedDocumentController] documents];
 	NSMutableArray *allURLs = [NSMutableArray array];
 	for(id doc in allDocs) {
 		if (![doc fileURL]) continue;
@@ -635,7 +635,7 @@ static SPQueryController *sharedQueryController = nil;
 		[historyContainer setObject:historyArray forKey:[fileURL absoluteString]];
 
 	// Inform all opened documents to update the history list
-	for(id doc in [[NSApp delegate] orderedDocuments])
+	for(id doc in [[NSDocumentController sharedDocumentController] documents])
 		if([[doc valueForKeyPath:@"customQueryInstance"] respondsToSelector:@selector(historyItemsHaveBeenUpdated:)])
 				[[doc valueForKeyPath:@"customQueryInstance"] performSelectorOnMainThread:@selector(historyItemsHaveBeenUpdated:) withObject:self waitUntilDone:NO];
 
@@ -778,7 +778,7 @@ static SPQueryController *sharedQueryController = nil;
 {
 	messagesVisibleSet = nil;
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
-	
+
 	[dateFormatter release], dateFormatter = nil;
 	
 	[messagesFullSet release], messagesFullSet = nil;
@@ -948,9 +948,9 @@ static SPQueryController *sharedQueryController = nil;
 	if (!error) {
 		messageTemp = [messageTemp stringByAppendingString:@";"];
 	}
-	
+
 	SPConsoleMessage *consoleMessage = [SPConsoleMessage consoleMessageWithMessage:messageTemp date:[NSDate date] connection:connection];
-		
+
 	[consoleMessage setIsError:error];
 	
 	[messagesFullSet addObject:consoleMessage];

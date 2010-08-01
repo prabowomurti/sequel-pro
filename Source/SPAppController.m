@@ -25,28 +25,23 @@
 
 #import "SPKeychain.h"
 #import "SPAppController.h"
-#import "SPDatabaseDocument.h"
+#import "TableDocument.h"
 #import "SPPreferenceController.h"
 #import "SPAboutController.h"
-#import "SPDataImport.h"
+#import "TableDump.h"
 #import "SPEncodingPopupAccessory.h"
 #import "SPConstants.h"
-#import "SPWindowController.h"
 
-#import <PSMTabBar/PSMTabBarControl.h>
 #import <Sparkle/Sparkle.h>
 
 @implementation SPAppController
 
 /**
- * Initialise the application's main controller, setting itself as the app delegate.
+ * Inialise the application's main controller, setting itself as the app delegate.
  */
 - (id)init
 {
 	if ((self = [super init])) {
-		_sessionURL = nil;
-		_spfSessionDocData = [[NSMutableDictionary alloc] init];
-		
 		[NSApp setDelegate:self];
 	}
 
@@ -80,10 +75,7 @@
 	
 	// Register SPAppController for AppleScript events
 	[[NSScriptExecutionContext sharedScriptExecutionContext] setTopLevelObject:self];
-
-	// Register for drag start notifications - used to bring all windows to front
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tabDragStarted:) name:PSMTabDragDidBeginNotification object:nil];
-
+	
 	isNewFavorite = NO;
 }
 
@@ -104,6 +96,14 @@
  */
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
+	if ([menuItem action] == @selector(openConnectionSheet:) && [menuItem tag] == 0)
+	{
+		// Do not allow to open a sql/spf file if SP asks for connection details
+		if ([[[NSDocumentController sharedDocumentController] documents] count]) {
+			if(![[[[NSDocumentController sharedDocumentController] currentDocument] mySQLVersion] length])
+				return NO;
+		}
+	}
 	if ([menuItem action] == @selector(openCurrentConnectionInNewWindow:))
 	{
 		[menuItem setTitle:NSLocalizedString(@"Open in New Window", @"menu item open in new window")];
@@ -123,7 +123,7 @@
 - (void)panelSelectionDidChange:(id)sender
 {
 	if ([sender isKindOfClass:[NSOpenPanel class]]) {
-		if([[[[sender filename] pathExtension] lowercaseString] isEqualToString:SPFileExtensionSQL]) {
+		if([[[[sender filename] pathExtension] lowercaseString] isEqualToString:@"sql"]) {
 			[encodingPopUp setEnabled:YES];
 		} else {
 			[encodingPopUp setEnabled:NO];
@@ -160,19 +160,19 @@
 
 	// it will enabled if user selects a *.sql file
 	[encodingPopUp setEnabled:NO];
-
+	
 	// Check if at least one document exists, if so show a sheet
-	if ([self frontDocumentWindow]) {
+	if ([[[NSDocumentController sharedDocumentController] documents] count]) {
 		[panel beginSheetForDirectory:nil 
 								 file:@"" 
-								types:[NSArray arrayWithObjects:SPFileExtensionDefault, SPFileExtensionSQL, SPBundleFileExtension, nil] 
-					   modalForWindow:[self frontDocumentWindow]
+								types:[NSArray arrayWithObjects:@"spf", @"sql", nil] 
+					   modalForWindow:[[[NSDocumentController sharedDocumentController] currentDocument] valueForKey:@"tableWindow"]
 						modalDelegate:self 
 					   didEndSelector:@selector(openConnectionPanelDidEnd:returnCode:contextInfo:) 
 						  contextInfo:NULL];
 	} 
 	else {
-		NSInteger returnCode = [panel runModalForDirectory:nil file:nil types:[NSArray arrayWithObjects:SPFileExtensionDefault, SPFileExtensionSQL, SPBundleFileExtension, nil]];
+		NSInteger returnCode = [panel runModalForDirectory:nil file:nil types:[NSArray arrayWithObjects:@"spf", @"sql", nil]];
 
 		if (returnCode) [self application:nil openFiles:[panel filenames]];
 
@@ -202,7 +202,7 @@
 	for (NSString *filename in filenames) 
 	{
 		// Opens a sql file and insert its content into the Custom Query editor
-		if([[[filename pathExtension] lowercaseString] isEqualToString:SPFileExtensionSQL]) {
+		if([[[filename pathExtension] lowercaseString] isEqualToString:@"sql"]) {
 
 			// Check size and NSFileType
 			NSDictionary *attr = [[NSFileManager defaultManager] fileAttributesAtPath:filename traverseLink:YES];
@@ -220,12 +220,12 @@
 						[alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"cancel button")];
 
 						// Show 'Import' button only if there's a connection available
-						if ([self frontDocument])
+						if ([[[NSDocumentController sharedDocumentController] documents] count])
 							[alert addButtonWithTitle:NSLocalizedString(@"Import", @"import button")];
 
 
-						[alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Do you really want to load a SQL file with %@ of data into the Query Editor?", @"message of panel asking for confirmation for loading large text into the query editor"),
-							 [NSString stringForByteSize:[filesize longLongValue]]]];
+						[alert setInformativeText:[NSString stringWithFormat:NSLocalizedString(@"Do you really want to load a SQL file with %.1f MB of data into the Query Editor?", @"message of panel asking for confirmation for loading large text into the query editor"),
+							 [filesize unsignedLongValue]/1048576.0]];
 						[alert setHelpAnchor:filename];
 						[alert setMessageText:NSLocalizedString(@"Warning",@"warning")];
 						[alert setAlertStyle:NSWarningAlertStyle];
@@ -237,29 +237,11 @@
 						if(returnCode == NSAlertSecondButtonReturn) return; // Cancel
 						else if(returnCode == NSAlertThirdButtonReturn) {   // Import
 							// begin import process
-							[[[self frontDocument] valueForKeyPath:@"tableDumpInstance"] startSQLImportProcessWithFile:filename];
+							[[[[NSDocumentController sharedDocumentController] currentDocument] valueForKeyPath:@"tableDumpInstance"] startSQLImportProcessWithFile:filename];
 							return;
 						}
 					}
 				}
-			}
-
-			// Attempt to open the file into a string.
-			NSString *sqlString = nil;
-			
-			// If the user came from an openPanel use the chosen encoding
-			if (encodingPopUp) {
-				NSError *error = nil;
-				sqlString = [NSString stringWithContentsOfFile:filename encoding:[[encodingPopUp selectedItem] tag] error:&error];
-				if(error != nil) {
-					NSAlert *errorAlert = [NSAlert alertWithError:error];
-					[errorAlert runModal];
-					return;
-				}
-			
-			// Otherwise, read while attempting to autodetect the encoding
-			} else {
-				sqlString = [self contentOfFile:filename];
 			}
 
 			// if encodingPopUp is defined the filename comes from an openPanel and
@@ -267,250 +249,60 @@
 			if(encodingPopUp)
 				[[NSUserDefaults standardUserDefaults] setInteger:[[encodingPopUp selectedItem] tag] forKey:SPLastSQLFileEncoding];
 
-			// Check if at least one document exists.  If not, open one.
-			if (![self frontDocument]) {
-				[self newWindow:self];
-				[[self frontDocument] initQueryEditorWithString:sqlString];
-			} else {
+			// Check if at least one document exists
+			if (![[[NSDocumentController sharedDocumentController] documents] count]) {
 
+				TableDocument *firstTableDocument;
+
+				// Manually open a new document, setting SPAppController as sender to trigger autoconnection
+				if (firstTableDocument = [[NSDocumentController sharedDocumentController] makeUntitledDocumentOfType:@"Sequel Pro connection" error:nil]) {
+					[firstTableDocument setShouldAutomaticallyConnect:NO];
+
+					// user comes from a openPanel? if so use the chosen encoding
+					if(encodingPopUp) {
+						NSError *error = nil;
+						NSString *content = [NSString stringWithContentsOfFile:filename encoding:[[encodingPopUp selectedItem] tag] error:&error];
+						if(error != nil) {
+							NSAlert *errorAlert = [NSAlert alertWithError:error];
+							[errorAlert runModal];
+							return;
+						}
+						[firstTableDocument initQueryEditorWithString:content];
+						
+					}
+					else
+						[firstTableDocument initQueryEditorWithString:[self contentOfFile:filename]];
+
+					[[NSDocumentController sharedDocumentController] addDocument:firstTableDocument];
+					[firstTableDocument makeWindowControllers];
+					[firstTableDocument showWindows];
+				}
+			} else {
 				// Pass query to the Query editor of the current document
-				[[self frontDocument] doPerformLoadQueryService:[self contentOfFile:filename]];
+				[[[NSDocumentController sharedDocumentController] currentDocument] doPerformLoadQueryService:[self contentOfFile:filename]];
 			}
 
 			break; // open only the first SQL file
 
 		}
-		else if([[[filename pathExtension] lowercaseString] isEqualToString:SPFileExtensionDefault]) {
+		else if([[[filename pathExtension] lowercaseString] isEqualToString:@"spf"]) {
 
-			SPWindowController *frontController = nil;
+			TableDocument *newTableDocument;
 
-			for (NSWindow *aWindow in [self orderedWindows]) {
-				if ([[aWindow windowController] isMemberOfClass:[SPWindowController class]]) {
-					frontController = [aWindow windowController];
-					break;
-				}
+			// Manually open a new document, setting SPAppController as sender to trigger autoconnection
+			if (newTableDocument = [[NSDocumentController sharedDocumentController] makeUntitledDocumentOfType:@"Sequel Pro connection" error:nil]) {
+				[newTableDocument setShouldAutomaticallyConnect:NO];
+				[[NSDocumentController sharedDocumentController] addDocument:newTableDocument];
+				[newTableDocument makeWindowControllers];
+				[newTableDocument showWindows];
+				[newTableDocument initWithConnectionFile:filename];
 			}
-
-			// If no window was found or the front most window has no tabs, create a new one
-			if (!frontController || [[frontController valueForKeyPath:@"tabView"] numberOfTabViewItems] == 1) {
-				[self newWindow:self];
-			// Open the spf file in a new tab if the tab bar is visible
-			} else if ([[frontController valueForKeyPath:@"tabView"] numberOfTabViewItems] != 1) {
-				if ([[frontController window] isMiniaturized]) [[frontController window] deminiaturize:self];
-				[frontController addNewConnection:self];
-			}
-
-			[[self frontDocument] initWithConnectionFile:filename];
-		}
-		else if([[[filename pathExtension] lowercaseString] isEqualToString:SPBundleFileExtension]) {
-
-			NSError *readError = nil;
-			NSString *convError = nil;
-			NSPropertyListFormat format;
-			NSDictionary *spfs = nil;
-			NSData *pData = [NSData dataWithContentsOfFile:[NSString stringWithFormat:@"%@/info.plist", filename] options:NSUncachedRead error:&readError];
-
-			spfs = [[NSPropertyListSerialization propertyListFromData:pData 
-					mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&convError] retain];
-
-			if(!spfs || readError != nil || [convError length] || !(format == NSPropertyListXMLFormat_v1_0 || format == NSPropertyListBinaryFormat_v1_0)) {
-				NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Error while reading connection data file", @"error while reading connection data file")]
-												 defaultButton:NSLocalizedString(@"OK", @"OK button") 
-											   alternateButton:nil 
-												  otherButton:nil 
-									informativeTextWithFormat:NSLocalizedString(@"Connection data file couldn't be read.", @"error while reading connection data file")];
-
-				[alert setAlertStyle:NSCriticalAlertStyle];
-				[alert runModal];
-				if (spfs) [spfs release];
-				return;
-			}
-
-
-			if([spfs objectForKey:@"windows"] && [[spfs objectForKey:@"windows"] isKindOfClass:[NSArray class]]) {
-
-				NSFileManager *fileManager = [NSFileManager defaultManager];
-
-				// Retrieve Save Panel accessory view data for remembering them globally
-				NSMutableDictionary *spfsDocData = [NSMutableDictionary dictionary];
-				[spfsDocData setObject:[NSNumber numberWithBool:[[spfs objectForKey:@"encrypted"] boolValue]] forKey:@"encrypted"];
-				[spfsDocData setObject:[NSNumber numberWithBool:[[spfs objectForKey:@"auto_connect"] boolValue]] forKey:@"auto_connect"];
-				[spfsDocData setObject:[NSNumber numberWithBool:[[spfs objectForKey:@"save_password"] boolValue]] forKey:@"save_password"];
-				[spfsDocData setObject:[NSNumber numberWithBool:[[spfs objectForKey:@"include_session"] boolValue]] forKey:@"include_session"];
-				[spfsDocData setObject:[NSNumber numberWithBool:[[spfs objectForKey:@"save_editor_content"] boolValue]] forKey:@"save_editor_content"];
-
-				// Set global session properties
-				[[NSApp delegate] setSpfSessionDocData:spfsDocData];
-				[[NSApp delegate] setSessionURL:filename];
-
-				// Loop through each defined window in reversed order to reconstruct the last active window
-				for(NSDictionary *window in [[[spfs objectForKey:@"windows"] reverseObjectEnumerator] allObjects]) {
-
-					// Create a new window controller, and set up a new connection view within it.
-					SPWindowController *newWindowController = [[SPWindowController alloc] initWithWindowNibName:@"MainWindow"];
-					NSWindow *newWindow = [newWindowController window];
-
-					// If window has more than 1 tab then set setHideForSingleTab to NO
-					// in order to avoid animation problems while opening tabs
-					if([[window objectForKey:@"tabs"] count] > 1)
-						[newWindowController setHideForSingleTab:NO];
-
-					// The first window should use autosaving; subsequent windows should cascade.
-					// So attempt to set the frame autosave name; this will succeed for the very
-					// first window, and fail for others.
-					BOOL usedAutosave = [newWindow setFrameAutosaveName:@"DBView"];
-					if (!usedAutosave) {
-						[newWindow setFrameUsingName:@"DBView"];
-					}
-
-					if([window objectForKey:@"frame"])
-						[newWindow setFrame:NSRectFromString([window objectForKey:@"frame"]) display:NO];
-
-					// Set the window controller as the window's delegate
-					[newWindow setDelegate:newWindowController];
-
-					usleep(1000);
-
-					// Show the window
-					[newWindowController showWindow:self];
-
-					// Loop through all defined tabs for each window
-					for(NSDictionary *tab in [window objectForKey:@"tabs"]) {
-
-						NSString *fileName = nil;
-						BOOL isBundleFile = NO;
-
-						// If isAbsolutePath then take this path directly
-						// otherwise construct the releative path for the passed spfs file
-						if([[tab objectForKey:@"isAbsolutePath"] boolValue])
-							fileName = [tab objectForKey:@"path"];
-						else {
-							fileName = [NSString stringWithFormat:@"%@/Contents/%@", filename, [tab objectForKey:@"path"]];
-							isBundleFile = YES;
-						}
-
-						// Security check if file really exists
-						if([fileManager fileExistsAtPath:fileName]) {
-
-							// Add new the tab
-							if(newWindowController) {
-
-								if ([[newWindowController window] isMiniaturized]) [[newWindowController window] deminiaturize:self];
-								[newWindowController addNewConnection:self];
-
-								[[self frontDocument] setIsSavedInBundle:isBundleFile];
-								[[self frontDocument] initWithConnectionFile:fileName];
-							}
-
-						} else {
-							NSLog(@"Bundle file “%@” does not exists", fileName);
-							NSBeep();
-						}
-					}
-
-					// Select active tab
-					[newWindowController selectTabAtIndex:[[window objectForKey:@"selectedTabIndex"] intValue]];
-
-					// Reset setHideForSingleTab
-					if([[NSUserDefaults standardUserDefaults] objectForKey:SPAlwaysShowWindowTabBar])
-						[newWindowController setHideForSingleTab:[[NSUserDefaults standardUserDefaults] boolForKey:SPAlwaysShowWindowTabBar]];
-					else
-						[newWindowController setHideForSingleTab:YES];
-
-				}
-
-			}
-
-			[spfs release];
+			
 		}
 		else {
 			NSLog(@"Only files with the extensions ‘spf’ or ‘sql’ are allowed.");
 		}
 	}
-}
-
-#pragma mark -
-#pragma mark Window management
-
-/**
- * Create a new window, containing a single tab.
- */
-- (IBAction)newWindow:(id)sender
-{
-	static NSPoint cascadeLocation = {.x = 0, .y = 0};
-
-	// Create a new window controller, and set up a new connection view within it.
-	SPWindowController *newWindowController = [[SPWindowController alloc] initWithWindowNibName:@"MainWindow"];
-	[newWindowController addNewConnection:self];
-	NSWindow *newWindow = [newWindowController window];
-
-	// Cascading defaults to on - retrieve the window origin automatically assigned by cascading,
-	// and convert to a top left point.
-	NSPoint topLeftPoint = [newWindow frame].origin;
-	topLeftPoint.y += [newWindow frame].size.height;
-
-	// The first window should use autosaving; subsequent windows should cascade.
-	// So attempt to set the frame autosave name; this will succeed for the very
-	// first window, and fail for others.
-	BOOL usedAutosave = [newWindow setFrameAutosaveName:@"DBView"];
-	if (!usedAutosave) {
-		[newWindow setFrameUsingName:@"DBView"];
-	}
-
-	// Cascade according to the statically stored cascade location.
-	cascadeLocation = [newWindow cascadeTopLeftFromPoint:cascadeLocation];
-
-	// Set the window controller as the window's delegate
-	[newWindow setDelegate:newWindowController];
-
-	// Show the window, and perform frontmost tasks again once the window has drawn
-	[newWindowController showWindow:self];
-	[[newWindowController selectedTableDocument] didBecomeActiveTabInWindow];
-}
-
-/**
- * Create a new tab in the frontmost window.
- */
-- (IBAction)newTab:(id)sender
-{
-	SPWindowController *frontController = nil;
-
-	for (NSWindow *aWindow in [self orderedWindows]) {
-		if ([[aWindow windowController] isMemberOfClass:[SPWindowController class]]) {
-			frontController = [aWindow windowController];
-			break;
-		}
-	}
-
-	// If no window was found, create a new one
-	if (!frontController) {
-		[self newWindow:self];
-	} else {
-		if ([[frontController window] isMiniaturized]) [[frontController window] deminiaturize:self];
-		[frontController addNewConnection:self];
-	}
-}
-
-/**
- * Retrieve the frontmost document window; returns nil if not found.
- */
-- (NSWindow *) frontDocumentWindow
-{
-	for (NSWindow *aWindow in [self orderedWindows]) {
-		if ([[aWindow windowController] isMemberOfClass:[SPWindowController class]]) {
-			return aWindow;
-		}
-	}
-
-	return nil;
-}
-
-/**
- * When tab drags start, bring all the windows in front of other applications.
- */
-- (void)tabDragStarted:(id)sender
-{
-	[NSApp arrangeInFront:self];
 }
 
 #pragma mark -
@@ -545,68 +337,11 @@
 	return prefsController;
 }
 
-/**
- * Provide a method to retrieve an ordered list of the database
- * connection windows currently open in the application.
- */
-- (NSArray *) orderedDatabaseConnectionWindows
-{
-	NSMutableArray *orderedDatabaseConnectionWindows = [NSMutableArray array];
-	for (NSWindow *aWindow in [NSApp orderedWindows]) {
-		if ([[aWindow windowController] isMemberOfClass:[SPWindowController class]]) [orderedDatabaseConnectionWindows addObject:aWindow];
-	}
-	return orderedDatabaseConnectionWindows;
-}
-
-/**
- * Retrieve the frontmost document; returns nil if not found.
- */
-- (SPDatabaseDocument *) frontDocument
-{
-	for (NSWindow *aWindow in [self orderedWindows]) {
-		if ([[aWindow windowController] isMemberOfClass:[SPWindowController class]]) {
-			return [[aWindow windowController] selectedTableDocument];
-		}
-	}
-
-	return nil;
-}
-
-/**
- * Retrieve the session URL. Return nil if no session is opened
- */
-- (NSURL *)sessionURL
-{
-	return _sessionURL;
-}
-
-/**
- * Set the global session URL used for Save (As) Session.
- */
-- (void)setSessionURL:(NSString *)urlString
-{
-	if(_sessionURL) [_sessionURL release], _sessionURL = nil;
-	if(urlString)
-		_sessionURL = [[NSURL fileURLWithPath:urlString] retain];
-}
-
-- (NSDictionary *)spfSessionDocData
-{
-	return _spfSessionDocData;
-}
-
-- (void)setSpfSessionDocData:(NSDictionary *)data
-{
-	[_spfSessionDocData removeAllObjects];
-	if(data)
-		[_spfSessionDocData addEntriesFromDictionary:data];
-}
-
 #pragma mark -
 #pragma mark Services menu methods
 
 /**
- * Passes the query to the frontmost document
+ * Passes the query to the last created document
  */
 - (void)doPerformQueryService:(NSPasteboard *)pboard userData:(NSString *)data error:(NSString **)error
 {
@@ -621,14 +356,14 @@
 	}
 	
 	// Check if at least one document exists
-	if (![self frontDocument]) {
+	if (![[[NSDocumentController sharedDocumentController] documents] count]) {
 		*error = @"No Documents open!";
 		
 		return;
 	}
 	
-	// Pass query to front document
-	[[self frontDocument] doPerformQueryService:pboardString];
+	// Pass query to last created document
+	[[[[NSDocumentController sharedDocumentController] documents] objectAtIndex:([[[NSDocumentController sharedDocumentController] documents] count] - 1)] doPerformQueryService:pboardString];
 	
 	return;
 }
@@ -649,7 +384,7 @@
  */
 - (IBAction)visitWebsite:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPLOCALIZEDURL_HOMEPAGE]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPHomePageURL]];
 }
 
 /**
@@ -657,7 +392,7 @@
  */
 - (IBAction)visitHelpWebsite:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPLOCALIZEDURL_DOCUMENTATION]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPDocumentationURL]];
 }
 
 /**
@@ -665,7 +400,7 @@
  */
 - (IBAction)visitFAQWebsite:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPLOCALIZEDURL_FAQ]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPFAQURL]];
 }
 
 /**
@@ -673,15 +408,7 @@
  */
 - (IBAction)provideFeedback:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPLOCALIZEDURL_CONTACT]];
-}
-
-/**
- * Opens the 'Translation Feedback' page in the default browser.
- */
-- (IBAction)provideTranslationFeedback:(id)sender
-{
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPLOCALIZEDURL_TRANSLATIONFEEDBACK]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPContactURL]];
 }
 
 /**
@@ -689,7 +416,7 @@
  */
 - (IBAction)viewKeyboardShortcuts:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPLOCALIZEDURL_KEYBOARDSHORTCUTS]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:SPKeyboardShortcutsURL]];
 }
 
 #pragma mark -
@@ -719,18 +446,21 @@
 #pragma mark Other methods
 
 /**
- * Override the default open-blank-document methods to automatically connect automatically opened windows
- * if the preference is set
+ * Override the default open-blank-document methods to automatically connect automatically opened windows.
  */
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
+	TableDocument *firstTableDocument;
 
-	// Manually open a table document
-	[self newWindow:self];
-
-	// Set autoconnection if appropriate
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:SPAutoConnectToDefault]) {
-		[[self frontDocument] connect];
+	// Manually open a new document, setting SPAppController as sender to trigger autoconnection
+	if (firstTableDocument = [[NSDocumentController sharedDocumentController] makeUntitledDocumentOfType:@"Sequel Pro connection" error:nil]) {
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:SPAutoConnectToDefault]) {
+			[firstTableDocument setShouldAutomaticallyConnect:YES];
+		}
+		
+		[[NSDocumentController sharedDocumentController] addDocument:firstTableDocument];
+		[firstTableDocument makeWindowControllers];
+		[firstTableDocument showWindows];
 	}
 
 	// Return NO to the automatic opening
@@ -744,8 +474,16 @@
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag
 {
 	// Only create a new document (without auto-connect) when there are already no documents open.
-	if (![self frontDocument]) {
-		[self newWindow:self];
+	if ([[[NSDocumentController sharedDocumentController] documents] count] == 0) {
+		TableDocument *firstTableDocument;
+		
+		// Manually open a new document, setting SPAppController as sender to trigger autoconnection
+		if (firstTableDocument = [[NSDocumentController sharedDocumentController] makeUntitledDocumentOfType:@"Sequel Pro connection" error:nil]) {
+			[[NSDocumentController sharedDocumentController] addDocument:firstTableDocument];
+			[firstTableDocument makeWindowControllers];
+			[firstTableDocument showWindows];
+		}
+		
 		return NO;
 	}
 	
@@ -782,7 +520,7 @@
 
 	// UTF16/32 files are detected as application/octet-stream resp. audio/mpeg
 	if( [result hasPrefix:@"text/plain"] 
-		|| [[[aPath pathExtension] lowercaseString] isEqualToString:SPFileExtensionSQL] 
+		|| [[[aPath pathExtension] lowercaseString] isEqualToString:@"sql"] 
 		|| [[[aPath pathExtension] lowercaseString] isEqualToString:@"txt"]
 		|| [result hasPrefix:@"audio/mpeg"] 
 		|| [result hasPrefix:@"application/octet-stream"]
@@ -882,30 +620,20 @@
  */
 - (NSArray *)orderedDocuments
 {
-	NSMutableArray *orderedDocuments = [NSMutableArray array];
-
-	for (NSWindow *aWindow in [self orderedWindows]) {
-		if ([[aWindow windowController] isMemberOfClass:[SPWindowController class]]) {
-			[orderedDocuments addObjectsFromArray:[[aWindow windowController] documents]];
-		}
-	}
-
-	return orderedDocuments;
+	return [[NSDocumentController sharedDocumentController] documents];
 }
 
 /** 
  * Support for 'make new document'.
- * TODO: following tab support this has been disabled - need to discuss reimplmenting vs syntax.
  */
-- (void)insertInOrderedDocuments:(SPDatabaseDocument *)doc 
+- (void)insertInOrderedDocuments:(TableDocument *)doc 
 {
-	[self newWindow:self];
-/*	if ([[NSUserDefaults standardUserDefaults] boolForKey:SPAutoConnectToDefault])
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:SPAutoConnectToDefault])
 		[doc setShouldAutomaticallyConnect:YES];
 	
 	[[NSDocumentController sharedDocumentController] addDocument:doc];
 	[doc makeWindowControllers];
-	[doc showWindows];*/
+	[doc showWindows];
 }
 
 /**
@@ -929,16 +657,13 @@
 #pragma mark -
 
 /**
- * Deallocate
+ * Deallocate prefs controller
  */
 - (void)dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-
-	if(_spfSessionDocData) [_spfSessionDocData release], _spfSessionDocData = nil;
 	[prefsController release], prefsController = nil;
 	[aboutController release], aboutController = nil;
-	if(_sessionURL) [_sessionURL release], _sessionURL = nil;
+	
 	[super dealloc];
 }
 

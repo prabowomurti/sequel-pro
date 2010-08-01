@@ -25,8 +25,8 @@
 
 #import "SPTableData.h"
 #import "SPSQLParser.h"
-#import "SPDatabaseDocument.h"
-#import "SPTablesList.h"
+#import "TableDocument.h"
+#import "TablesList.h"
 #import "SPStringAdditions.h"
 #import "SPArrayAdditions.h"
 #import "SPConstants.h"
@@ -293,15 +293,14 @@
 	NSDictionary *columnData;
 	NSEnumerator *enumerator;
 	
-	[columns removeAllObjects];
-	[columnNames removeAllObjects];
-	[constraints removeAllObjects];
-
 	if( [tableListInstance tableType] == SPTableTypeTable || [tableListInstance tableType] == SPTableTypeView ) {		
 		tableData = [self informationForTable:[tableListInstance tableName]];
 	}
 	
 	if (tableData == nil ) {
+		[columns removeAllObjects];
+		[columnNames removeAllObjects];
+		[constraints removeAllObjects];
 		return FALSE;
 	}
 
@@ -781,8 +780,7 @@
 	// The character set has to be guessed at via the database encoding.
 	// Add the details to the data object.
 	viewData = [NSMutableDictionary dictionary];
-	if (tableDocumentInstance)
-		[viewData setObject:[NSString stringWithString:[tableDocumentInstance databaseEncoding]] forKey:@"encoding"];
+	[viewData setObject:[NSString stringWithString:[tableDocumentInstance databaseEncoding]] forKey:@"encoding"];
 	[viewData setObject:[NSArray arrayWithArray:tableColumns] forKey:@"columns"];
 
 	[tableColumns release];
@@ -853,7 +851,7 @@
 
 		// If the "Engine" key is NULL, a problem occurred when retrieving the table information.
 		if ([[status objectForKey:@"Engine"] isNSNull]) {
-			[status setDictionary:[NSDictionary dictionaryWithObjectsAndKeys:@"Error", @"Engine", [NSString stringWithFormat:NSLocalizedString(@"An error occurred retrieving table information.  MySQL said: %@", @"MySQL table info retrieval error message"), [status objectForKey:@"Comment"]], @"Comment", [tableListInstance tableName], @"Name", nil]];
+			[status setDictionary:[NSDictionary dictionaryWithObjectsAndKeys:@"Error", @"Engine", [NSString stringWithFormat:@"An error occurred retrieving table information.  MySQL said: %@", [status objectForKey:@"Comment"]], @"Comment", [tableListInstance tableName], @"Name", nil]];
 			return FALSE;
 		}
 

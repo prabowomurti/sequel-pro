@@ -36,7 +36,7 @@
 #import "SPConstants.h"
 #import "SPQueryController.h"
 #import "RegexKitLite.h"
-#import "SPTextView.h"
+#import "CMTextView.h"
 #import "SPConstants.h"
 
 
@@ -75,6 +75,7 @@
 	};
 
 	unichar keyCode = 0;
+
 	if([anEvent type] == NSKeyDown && [[anEvent characters] length] == 1)
 		keyCode = [[anEvent characters] characterAtIndex:0];
 
@@ -90,6 +91,7 @@
 			} else {
 				[self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 			}
+
 			[self scrollRowToVisible:row];
 			return YES;
 		}
@@ -153,7 +155,7 @@
 	[mutablePrefix release];
 	[textualInputCharacters release];
 	[originalFilterString release];
-	if(syncArrowImages) [syncArrowImages release];
+	if (syncArrowImages) [syncArrowImages release];
 	if(suggestions) [suggestions release];
 
 	if (filtered) [filtered release];
@@ -408,13 +410,12 @@
 		}
 		return @"";
 	} else if([[aTableColumn identifier] isEqualToString:@"name"]) {
-		if(isQueryingDatabaseStructure && rowIndex == 0) 
+		if(isQueryingDatabaseStructure && rowIndex == 0)
 			return NSLocalizedString(@"fetching database structure in progress", @"fetching database structure in progress");
 
 		return [[filtered objectAtIndex:rowIndex] objectForKey:@"display"];
-
 	} else if ([[aTableColumn identifier] isEqualToString:@"list"] || [[aTableColumn identifier] isEqualToString:@"type"]) {
-		if(isQueryingDatabaseStructure && rowIndex == 0) 
+		if(isQueryingDatabaseStructure && rowIndex == 0)
 			return NSLocalizedString(@"fetching database structure data in progress", @"fetching database structure data in progress");
 
 		if(dictMode) {
@@ -435,7 +436,7 @@
 		}
 
 	} else if ([[aTableColumn identifier] isEqualToString:@"path"]) {
-		if(isQueryingDatabaseStructure && rowIndex == 0) 
+		if(isQueryingDatabaseStructure && rowIndex == 0)
 			return NSLocalizedString(@"fetching database structure in progress", @"fetching database structure in progress");
 
 		if(dictMode) {
@@ -608,7 +609,7 @@
 {
 
 	NSMutableArray* newFiltered = [[NSMutableArray alloc] initWithCapacity:5];
-	
+
 	if([mutablePrefix length] > 0)
 	{
 		if(dictMode) {
@@ -772,10 +773,10 @@
 
 		if(!event)
 			continue;
-
+		
 		// Exit if closeMe has been set in the meantime
 		if(closeMe) return;
-		
+
 		NSEventType t = [event type];
 		if([theTableView SP_NarrowDownCompletion_canHandleEvent:event])
 		{
@@ -791,15 +792,15 @@
 			if (([event modifierFlags] & (NSShiftKeyMask|NSControlKeyMask|NSAlternateKeyMask|NSCommandKeyMask)) == NSAlternateKeyMask || [[event characters] length] == 0)
 			{
 				if(autoCompletionMode) {
-					if(commonPrefixWasInsertedByAutoComplete) {
-						[theView setSelectedRange:theCharRange];
-						[theView insertText:originalFilterString];
-						[theView setCompletionIsOpen:NO];
-						[self close];
-						[NSApp sendEvent:event];
-						break;
-					}
-				}
+    				if(commonPrefixWasInsertedByAutoComplete) {
+    					[theView setSelectedRange:theCharRange];
+    					[theView insertText:originalFilterString];
+    					[theView setCompletionIsOpen:NO];
+    					[self close];
+    					[NSApp sendEvent:event];
+    					break;
+    				}
+    			}
 				[NSApp sendEvent: event];
 
 				if(commaInsertionMode)
@@ -823,14 +824,14 @@
 					[self filter];
 				} else {
 					if(autoCompletionMode) {
-						if(commonPrefixWasInsertedByAutoComplete) {
-							[theView setSelectedRange:theCharRange];
-							[theView insertText:originalFilterString];
-						}
-						[theView setCompletionIsOpen:NO];
-						[self close];
-						break;
-					}
+    					if(commonPrefixWasInsertedByAutoComplete) {
+    						[theView setSelectedRange:theCharRange];
+    						[theView insertText:originalFilterString];
+    					}
+    					[theView setCompletionIsOpen:NO];
+    					[self close];
+    					break;
+    				}
 					if(cursorMovedLeft) [theView performSelector:@selector(moveRight:)];
 					break;
 				}
@@ -842,13 +843,13 @@
 			else if(key == NSBackspaceCharacter || key == NSDeleteCharacter)
 			{
 				if(autoCompletionMode) {
-					if(commonPrefixWasInsertedByAutoComplete) {
-						[theView setSelectedRange:theCharRange];
-						[theView insertText:originalFilterString];
-					}
-					[NSApp sendEvent:event];
-					break;
-				}
+    				if(commonPrefixWasInsertedByAutoComplete) {
+    					[theView setSelectedRange:theCharRange];
+    					[theView insertText:originalFilterString];
+    				}
+    				[NSApp sendEvent:event];
+    				break;
+    			}
 				[NSApp sendEvent:event];
 				if([mutablePrefix length] == 0 || commaInsertionMode)
 					break;
@@ -862,16 +863,16 @@
 			else if([textualInputCharacters characterIsMember:key])
 			{
 
-				if(autoCompletionMode) {
-					[theView setCompletionIsOpen:NO];
-					[self close];
-					if(commonPrefixWasInsertedByAutoComplete) {
-						[theView setSelectedRange:theCharRange];
-						[theView insertText:originalFilterString];
-					}
-					[NSApp sendEvent:event];
-					return;
-				}
+    			if(autoCompletionMode) {
+    				[theView setCompletionIsOpen:NO];
+    				[self close];
+    				if(commonPrefixWasInsertedByAutoComplete) {
+    					[theView setSelectedRange:theCharRange];
+    					[theView insertText:originalFilterString];
+    				}
+    				[NSApp sendEvent:event];
+    				return;
+    			}
 
 				[NSApp sendEvent:event];
 
@@ -901,11 +902,11 @@
 			} else {
 				if(!NSPointInRect([NSEvent mouseLocation], [self frame])) {
 					if(autoCompletionMode) {
-						if(commonPrefixWasInsertedByAutoComplete) {
-							[theView setSelectedRange:theCharRange];
-							[theView insertText:originalFilterString];
-						}
-					}
+    					if(commonPrefixWasInsertedByAutoComplete) {
+    						[theView setSelectedRange:theCharRange];
+    						[theView insertText:originalFilterString];
+    					}
+    				}
 					if(cursorMovedLeft) [theView performSelector:@selector(moveRight:)];
 					[NSApp sendEvent:event];
 					break;

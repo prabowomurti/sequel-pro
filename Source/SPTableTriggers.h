@@ -33,6 +33,7 @@
 	IBOutlet id tableDataInstance;
 	
 	IBOutlet id tableList;
+	IBOutlet id tableWindow;
 	
 	IBOutlet NSButton      *addTriggerButton;
 	IBOutlet NSButton      *removeTriggerButton;	
@@ -52,10 +53,6 @@
 	MCPConnection *connection;
 	
 	NSMutableArray *triggerData;
-	
-	BOOL isEdit;
-	NSString *editTriggerName;
-	NSString *editTriggerStatement;
 }
 
 @property (readwrite, assign) MCPConnection *connection;

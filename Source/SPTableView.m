@@ -25,7 +25,7 @@
 #import "SPTableView.h"
 #import "SPQueryFavoriteManager.h"
 #import "SPArrayAdditions.h"
-#import "SPDatabaseDocument.h"
+#import "TableDocument.h"
 #import "SPConstants.h"
 
 @implementation SPTableView
@@ -37,18 +37,14 @@
 - (NSMenu *)menuForEvent:(NSEvent *)event
 {
 
-	// Try to retrieve a reference to the table document (assuming this is frontmost tab)
-	SPDatabaseDocument *parentTableDocument = nil;
-	if ([[[[[self window] delegate] class] description] isEqualToString:@"SPWindowController"]) {
-		parentTableDocument = [[[self window] delegate] selectedTableDocument];
-	}
-
-	// If SPDatabaseDocument is performing a task suppress any context menu
-	if (parentTableDocument && [parentTableDocument isWorking])
+	// If TableDocument is performing a task suppress any context menu
+	if ([[[[[self window] delegate] class] description] isEqualToString:@"TableDocument"]
+		&& [[[self window] delegate] isWorking])
 		return nil;
 
 	// Check to see whether any edits-in-progress need to be saved before changing selections
-	if (parentTableDocument && ![parentTableDocument couldCommitCurrentViewActions])
+	if ([[[[[self window] delegate] class] description] isEqualToString:@"TableDocument"]
+		&& ![[[self window] delegate] couldCommitCurrentViewActions])
 		return nil;
 
 	// If more than one row is selected only returns the default contextual menu
@@ -59,8 +55,8 @@
 	NSInteger row = [self rowAtPoint:[self convertPoint:[event locationInWindow] fromView:nil]];
 	if(row >= 0 && row < [self numberOfRows]) {
 		
-		// Check for SPTablesList if right-click on header, then suppress context menu
-		if([[[[self delegate] class] description] isEqualToString:@"SPTablesList"]) {
+		// Check for TablesList if right-click on header, then suppress context menu
+		if([[[[self delegate] class] description] isEqualToString:@"TablesList"]) {
 			if([NSArrayObjectAtIndex([[self delegate] valueForKeyPath:@"tableTypes"], row) integerValue] == -1)
 				return nil;
 		}
@@ -90,7 +86,7 @@
 	// Check if ENTER or RETURN is hit and edit the column.
 	if([self numberOfSelectedRows] == 1 && ([theEvent keyCode] == 36 || [theEvent keyCode] == 76))
 	{
-		if (![[[[self delegate] class] description] isEqualToString:@"SPCustomQuery"] &&
+		if (![[[[self delegate] class] description] isEqualToString:@"CustomQuery"] &&
 			![[[[self delegate] class] description] isEqualToString:@"SPQueryFavoriteManager"]){
 			
 			// Ensure that editing is permitted

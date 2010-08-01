@@ -23,8 +23,8 @@
 //
 //  More info at <http://code.google.com/p/sequel-pro/>
 
-#import "SPDatabaseDocument.h"
+#import "TableDocument.h"
 
-@interface SPDatabaseDocument (SPConnectionDelegate)
+@interface TableDocument (SPConnectionDelegate)
 
 @end

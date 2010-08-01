@@ -26,7 +26,7 @@
 #import "SPSQLParser.h"
 #import "RegexKitLite.h"
 
-/**
+/*
  * Include all the extern variables and prototypes required for flex (used for syntax highlighting)
  */
 #import "SPSQLTokenizer.h"
@@ -36,37 +36,13 @@ typedef struct to_buffer_state *TO_BUFFER_STATE;
 void to_switch_to_buffer(TO_BUFFER_STATE);
 TO_BUFFER_STATE to_scan_string (const char *);
 
-@interface SPSQLParser (PrivateAPI)
-
-- (unichar) _charAtIndex:(NSInteger)index;
-- (void) _clearCharCache;
-
-@end
-
-
-/**
+/*
  * Please see the header files for a general description of the purpose of this class,
  * and increased overview detail for the functions below.
  */
 @implementation SPSQLParser : NSMutableString
 
-#pragma mark -
-#pragma mark Parser information
-
-/**
- * Return whether any carriage returns have been encountered during
- * parsing; quoted strings are not included.  May be used to determine
- * whether text needs to be normalised.
- */
-- (BOOL)containsCarriageReturns
-{
-	return containsCRs;
-}
-
-#pragma mark -
-#pragma mark Parser behaviour setting
-
-/**
+/*
  * Control whether comment strings should be skipped during parsing.
  */
 - (void)setIgnoreCommentStrings:(BOOL)ignoringCommentStrings
@@ -74,7 +50,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	ignoreCommentStrings = ignoringCommentStrings;
 }
 
-/**
+/*
  * Control whether DELIMITER commands are recognised and used to override
  * supported characters.
  */
@@ -83,10 +59,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	supportDelimiters = shouldSupportDelimiters;
 }
 
-#pragma mark -
-#pragma mark SQL-aware utility methods
 
-/**
+/*
  * Removes comments within the current string, trimming "#", "--[/s]", and "⁄* *⁄" style strings.
  */
 - (void) deleteComments
@@ -97,7 +71,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	
 	// Walk along the string, processing characters.
 	for (currentStringIndex = 0; currentStringIndex < stringLength; currentStringIndex++) {
-		currentCharacter = CFStringGetCharacterAtIndex(string ,currentStringIndex);
+		currentCharacter = [string characterAtIndex:currentStringIndex];
 		switch (currentCharacter) {
 
 			// When quote characters are encountered walk to the end of the quoted string.
@@ -114,8 +88,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 			// For comments starting "--[\s]", ensure the start syntax is valid before proceeding.
 			case '-':
 				if (stringLength < currentStringIndex + 2) break;
-				if (CFStringGetCharacterAtIndex(string, currentStringIndex+1) != '-') break;
-				if (![[NSCharacterSet whitespaceCharacterSet] characterIsMember:CFStringGetCharacterAtIndex(string, currentStringIndex+2)]) break;
+				if ([string characterAtIndex:currentStringIndex+1] != '-') break;
+				if (![[NSCharacterSet whitespaceCharacterSet] characterIsMember:[string characterAtIndex:currentStringIndex+2]]) break;
 				commentEndIndex = [self endIndexOfCommentOfType:SPDoubleDashComment startingAtIndex:currentStringIndex];
 				
 				// Remove the comment
@@ -136,7 +110,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 			// For comments starting "/*", ensure the start syntax is valid before proceeding.
 			case '/':
 				if (stringLength < currentStringIndex + 1) break;
-				if (CFStringGetCharacterAtIndex(string, currentStringIndex+1) != '*') break;
+				if ([string characterAtIndex:currentStringIndex+1] != '*') break;
 				commentEndIndex = [self endIndexOfCommentOfType:SPCStyleComment startingAtIndex:currentStringIndex];
 				
 				// Remove the comment
@@ -148,7 +122,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	}
 }
 
-/**
+
+/*
  * Removes quotes surrounding the string if present, and un-escapes internal occurrences of the quote character before returning.
  */
 - (NSString *) unquotedString
@@ -160,7 +135,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	if (![string length]) return nil;
 
 	// If the first character is not a quote character, return the entire string.
-	quoteCharacter = CFStringGetCharacterAtIndex(string, 0);
+	quoteCharacter = [string characterAtIndex:0];
 	if (quoteCharacter != '`' && quoteCharacter != '"' && quoteCharacter != '\'') {
 		return [NSString stringWithString:string];
 	}
@@ -189,122 +164,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return returnString;
 }
 
-/**
- * Normalise a string, readying it for queries - trims whitespace from both
- * ends, and ensures line endings which aren't in quotes are LF.
- */
-+ (NSString *) normaliseQueryForExecution:(NSString *)queryString
-{
-	NSUInteger stringLength = [queryString length];
-	NSCharacterSet *trimCharset = [NSCharacterSet whitespaceAndNewlineCharacterSet];
 
-	// Check the ends of the string for whitespace, to determine if it needs removing
-	NSUInteger whitespaceCharsAtStart = 0;
-	NSUInteger whitespaceCharsAtEnd = 0;
-	while (whitespaceCharsAtStart < stringLength && [trimCharset characterIsMember:CFStringGetCharacterAtIndex(queryString, whitespaceCharsAtStart)])
-		whitespaceCharsAtStart++;
-	while (whitespaceCharsAtEnd < stringLength && [trimCharset characterIsMember:CFStringGetCharacterAtIndex(queryString, stringLength - whitespaceCharsAtEnd - 1)])
-		whitespaceCharsAtEnd++;
-
-	// Trim if necessary
-	if (whitespaceCharsAtStart || whitespaceCharsAtEnd) {
-		stringLength -= whitespaceCharsAtStart + whitespaceCharsAtEnd;
-		queryString = [queryString substringWithRange:NSMakeRange(whitespaceCharsAtStart, stringLength)];
-	}
-
-	// Check for carriage returns in the string
-	NSMutableArray *carriageReturnPositions = [NSMutableArray array];
-	NSUInteger currentStringIndex, innerStringIndex, i, quotedStringLength;
-	unichar currentCharacter, innerCharacter;
-	BOOL characterIsEscaped;
-	for (currentStringIndex = 0; currentStringIndex < stringLength; currentStringIndex++) {
-		currentCharacter = CFStringGetCharacterAtIndex(queryString, currentStringIndex);
-		switch (currentCharacter) {
-
-			// When quote characters are encountered walk to the end of the quoted string.
-			case '\'':
-			case '"':
-			case '`':
-				for (innerStringIndex = currentStringIndex+1; innerStringIndex < stringLength; innerStringIndex++) {
-					innerCharacter = CFStringGetCharacterAtIndex(queryString, innerStringIndex);
-
-					// If the string end is a backtick and one has been encountered, treat it as end of string
-					if (innerCharacter == '`' && currentCharacter == '`') {
-					
-						// ...as long as the next character isn't also a backtick, in which case it's being quoted.  Skip both.
-						if ((innerStringIndex + 1) < stringLength && CFStringGetCharacterAtIndex(queryString, innerStringIndex+1) == '`') {
-							innerStringIndex++;
-							continue;
-						}
-						
-						currentStringIndex = innerStringIndex;
-						break;
-
-					// Otherwise, prepare to treat the string as ended when meeting the correct boundary character....
-					} else if (innerCharacter == currentCharacter) {
-
-						// ...but only if the string end isn't escaped with an *odd* number of escaping characters...
-						characterIsEscaped = NO;
-						i = 1;
-						quotedStringLength = innerStringIndex - 1;
-						while ((quotedStringLength - i) > 0 && CFStringGetCharacterAtIndex(queryString, innerStringIndex - i) == '\\') {
-							characterIsEscaped = !characterIsEscaped;
-							i++;
-						}
-
-						// If an even number have been found, it may be the end of the string - as long as the subsequent character
-						// isn't also the same character, in which case it's another form of escaping.
-						if (!characterIsEscaped) {
-							if ((innerStringIndex + 1) < stringLength && CFStringGetCharacterAtIndex(queryString, innerStringIndex+1) == currentCharacter) {
-								innerStringIndex++;
-								continue;
-							}
-
-							// Really is the end of the string.
-							currentStringIndex = innerStringIndex;
-							break;
-						}
-					}
-				}
-
-				// The quoted string has been left open - end processing.
-				currentStringIndex = innerStringIndex;
-				break;
-			
-			case '\r':
-				[carriageReturnPositions addObject:[NSNumber numberWithUnsignedInteger:currentStringIndex]];
-				break;
-		}
-	}
-
-	if ([carriageReturnPositions count]) {
-		NSMutableString *normalisedString = [NSMutableString stringWithString:queryString];
-		BOOL isCRLF;
-		NSUInteger CRLocation;
-		for (NSNumber *position in carriageReturnPositions) {
-			CRLocation = [position unsignedIntegerValue];
-			
-			// Check whether it's a CRLF or just a CR
-			isCRLF = NO;
-			if ([normalisedString length] > CRLocation + 1 && CFStringGetCharacterAtIndex(normalisedString, CRLocation + 1) == '\n') isCRLF = YES;
-
-			// Normalise the line endings
-			if (isCRLF) {
-				[normalisedString deleteCharactersInRange:NSMakeRange(CRLocation, 1)];
-			} else {
-				[normalisedString replaceCharactersInRange:NSMakeRange(CRLocation, 1) withString:@"\n"];
-			}
-		}
-		queryString = normalisedString;
-	}
-
-	return queryString;
-}
-
-#pragma mark -
-#pragma mark Trimming or retrieving strings from the front of the string
-
-/**
+/*
  * Removes characters from the string up to the first occurrence of the supplied character.
  */
 - (BOOL) trimToCharacter:(unichar)character inclusively:(BOOL)inclusive
@@ -312,7 +173,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self trimToCharacter:character inclusively:inclusive ignoringQuotedStrings:YES];
 }
 
-/**
+
+/*
  * As trimToCharacter: ..., but allows control over whether characters within quoted
  * strings are ignored.
  */
@@ -331,7 +193,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return YES;
 }
 
-/**
+
+/*
  * Returns an NSString containing characters from the string up to the first occurrence of the supplied character.
  */
 - (NSString *) stringToCharacter:(unichar)character inclusively:(BOOL)inclusive
@@ -339,7 +202,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self stringToCharacter:character inclusively:inclusive ignoringQuotedStrings:YES];
 }
 
-/**
+
+/*
  * As stringToCharacter: ..., but allows control over whether characters within quoted strings
  * are ignored.
  */
@@ -358,7 +222,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [string substringWithRange:NSMakeRange(returnFromPosition, stringIndex + (inclusive?1:0) - returnFromPosition)];
 }
 
-/**
+
+/*
  * Returns an NSString containing characters from the string up to the first occurrence of the supplied
  * character, also removing them from the string.
  */
@@ -367,7 +232,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self trimAndReturnStringToCharacter:character trimmingInclusively:inclusiveTrim returningInclusively:inclusiveReturn ignoringQuotedStrings:YES];
 }
 
-/**
+
+/*
  * As trimAndReturnStringToCharacter: ..., but allows control over whether characters within quoted
  * strings are ignored.
  */
@@ -395,10 +261,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return resultString;
 }
 
-#pragma mark -
-#pragma mark Trimming or retrieving strings from one specified character to another
 
-/**
+/*
  * Returns characters from the string up to and from the first occurrence of the supplied opening character
  * to the appropriate occurrence of the supplied closing character. "inclusively" controls whether the supplied
  * characters should also be returned.
@@ -408,7 +272,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self stringFromCharacter:fromCharacter toCharacter:toCharacter inclusively:inclusive skippingBrackets:NO ignoringQuotedStrings:YES];
 }
 
-/**
+
+/*
  * As stringFromCharacter: toCharacter: ..., but allows control over whether to skip
  * over bracket-enclosed characters, as in subqueries, enums, definitions or groups
  */
@@ -417,7 +282,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self stringFromCharacter:fromCharacter toCharacter:toCharacter inclusively:inclusive skippingBrackets:skipBrackets ignoringQuotedStrings:YES];
 }
 
-/**
+
+/*
  * As stringFromCharacter: toCharacter: ..., but allows control over whether characters within quoted
  * strings are ignored.
  */
@@ -426,7 +292,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self stringFromCharacter:fromCharacter toCharacter:toCharacter inclusively:inclusive skippingBrackets:NO ignoringQuotedStrings:ignoreQuotedStrings];
 }
 
-/**
+
+/*
  * As stringFromCharacter: toCharacter: ..., but allows control over both bracketing and quoting.
  */
 - (NSString *) stringFromCharacter:(unichar)fromCharacter toCharacter:(unichar)toCharacter inclusively:(BOOL)inclusive skippingBrackets:(BOOL)skipBrackets ignoringQuotedStrings:(BOOL)ignoreQuotedStrings
@@ -450,7 +317,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [string substringWithRange:NSMakeRange(fromCharacterIndex + (inclusive?0:1), toCharacterIndex + (inclusive?1:-1) - fromCharacterIndex)];
 }
 
-/**
+
+/*
  * As stringFromCharacter: toCharacter: ..., but also trims the string up to the "to" character and
  * up to or including the "from" character, depending on whether "trimmingInclusively" is set.
  */
@@ -459,7 +327,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self trimAndReturnStringFromCharacter:fromCharacter toCharacter:toCharacter trimmingInclusively:inclusiveTrim returningInclusively:inclusiveReturn skippingBrackets:NO ignoringQuotedStrings:YES];
 }
 
-/**
+
+/*
  * As trimAndReturnStringFromCharacter: toCharacter: ..., but allows control over whether to
  * skip over bracket-enclosed characters, as in subqueries, enums, definitions or groups.
  */
@@ -469,7 +338,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 }
 
 
-/**
+/*
  * As trimAndReturnStringFromCharacter: toCharacter: ..., but allows control over whether characters
  * within quoted strings are ignored.
  */
@@ -479,7 +348,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 }
 
 
-/**
+/*
  * As trimAndReturnStringFromCharacter: toCharacter: ..., but allows control over both bracketing
  * and quoting.
  */
@@ -507,10 +376,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return resultString;
 }
 
-#pragma mark -
-#pragma mark Splitting strings
-
-/**
+/*
  * Split a string on the boundaries formed by the supplied character, returning an array of strings.
  */
 - (NSArray *) splitStringByCharacter:(unichar)character
@@ -518,7 +384,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self splitStringByCharacter:character skippingBrackets:NO ignoringQuotedStrings:YES];
 }
 
-/**
+/*
  * As splitStringByCharacter: ..., but allows control over whether to skip over bracket-enclosed
  * characters, as in subqueries, enums, definitions or groups.
  */
@@ -527,7 +393,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self splitStringByCharacter:character skippingBrackets:skipBrackets ignoringQuotedStrings:YES];
 }
 
-/**
+
+/*
  * As splitStringByCharacter:, but allows control over whether characters
  * within quoted strings are ignored.
  */
@@ -536,7 +403,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return [self splitStringByCharacter:character skippingBrackets:NO ignoringQuotedStrings:ignoreQuotedStrings];
 }
 
-/**
+/*
  * As splitStringByCharacter: ..., but allows control over both bracketing and quoting.
  */
 - (NSArray *) splitStringByCharacter:(unichar)character skippingBrackets:(BOOL)skipBrackets ignoringQuotedStrings:(BOOL)ignoreQuotedStrings
@@ -580,7 +447,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return resultsArray;
 }
 
-/**
+
+/*
  * As splitStringByCharacter:, but returning only the ranges of queries, stored as NSValues.
  */
 - (NSArray *) splitStringIntoRangesByCharacter:(unichar)character
@@ -624,37 +492,25 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return resultsArray;
 }
 
-#pragma mark -
-#pragma mark SQL-aware character lookups (mostly for internal use)
 
-/**
- * A shortcut method for looking up the first occurrence of a character in
- * the string.  Brackets aren't processed, quoted strings are processed according
- * to the supplied argument, and comments are processed according to the setting on
- * the object.
+/*
+ * A method intended for use by the functions above.
  */
 - (NSUInteger) firstOccurrenceOfCharacter:(unichar)character ignoringQuotedStrings:(BOOL)ignoreQuotedStrings
 {
 	return [self firstOccurrenceOfCharacter:character afterIndex:-1 skippingBrackets:NO ignoringQuotedStrings:ignoreQuotedStrings];
 }
 
-/**
- * A shortcut method for looking up the first occurrence of a character in
- * the string after a specified start index.  Brackets aren't processed, quoted
- * strings are processed according to the supplied argument, and comments are
- * processed according to the setting on the object.
+
+/*
+ * A method intended for use by the functions above.
  */
 - (NSUInteger) firstOccurrenceOfCharacter:(unichar)character afterIndex:(NSInteger)startIndex ignoringQuotedStrings:(BOOL)ignoreQuotedStrings
 {
 	return [self firstOccurrenceOfCharacter:character afterIndex:startIndex skippingBrackets:NO ignoringQuotedStrings:ignoreQuotedStrings];
 }
 
-/**
- * Look for the first occurrence of a character, in SQL-aware form - with support
- * for skipping bracketed or quoted ranges.
- * Comments are also skipped depending on the setting for this object.
- * Mostly intended for internal use, but available externally.
- */
+
 - (NSUInteger) firstOccurrenceOfCharacter:(unichar)character afterIndex:(NSInteger)startIndex skippingBrackets:(BOOL)skipBrackets ignoringQuotedStrings:(BOOL)ignoreQuotedStrings
 {
 	NSUInteger currentStringIndex, quotedStringEndIndex;
@@ -664,7 +520,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	lastMatchIsDelimiter = NO;
 
 	// Cache frequently used selectors, avoiding dynamic binding overhead
-	IMP charAtIndex = [self methodForSelector:@selector(_charAtIndex:)];
+	IMP charAtIndex = [self methodForSelector:@selector(charAtIndex:)];
 	IMP endIndex = [self methodForSelector:@selector(endIndexOfStringQuotedByCharacter:startingAtIndex:)];
 	IMP substringWithRange = [self methodForSelector:@selector(substringWithRange:)];
 
@@ -673,7 +529,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 
 	// Walk along the string, processing characters
 	for (currentStringIndex = startIndex + 1; currentStringIndex < stringLength; currentStringIndex++) {
-		currentCharacter = (unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex);
+		currentCharacter = (unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex);
 
 		// Check for the ending character, and if it has been found and quoting/brackets is valid, return.
 		// If delimiter support is active and a delimiter is set, check for the delimiter
@@ -719,8 +575,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 			// For comments starting "--[\s]", ensure the start syntax is valid before proceeding.
 			case '-':
 				if (stringLength < currentStringIndex + 2) break;
-				if ((unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex+1) != '-') break;
-				if (![[NSCharacterSet whitespaceCharacterSet] characterIsMember:(unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex+2)]) break;
+				if ((unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex+1) != '-') break;
+				if (![[NSCharacterSet whitespaceCharacterSet] characterIsMember:(unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex+2)]) break;
 				currentStringIndex = [self endIndexOfCommentOfType:SPDoubleDashComment startingAtIndex:currentStringIndex];
 				break;
 
@@ -733,13 +589,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 			case '/':
 				if(ignoreCommentStrings) break;
 				if (stringLength < currentStringIndex + 1) break;
-				if ((unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex+1) != '*') break;
+				if ((unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex+1) != '*') break;
 				currentStringIndex = [self endIndexOfCommentOfType:SPCStyleComment startingAtIndex:currentStringIndex];
-				break;
-
-			// Capture whether carriage returns are encountered
-			case '\r':
-				if (!containsCRs) containsCRs = YES;
 				break;
 
 			// Check for delimiter strings, by first checking letter-by-letter to "deli" for speed (as there's no default
@@ -751,15 +602,15 @@ TO_BUFFER_STATE to_scan_string (const char *);
 				// and that the "d" is the start of a word
 				if (supportDelimiters && stringLength >= currentStringIndex + 11
 					&& (currentStringIndex == 0
-						|| [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:(unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex-1)]))
+						|| [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:(unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex-1)]))
 				{
-					switch((unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex+1)) {
+					switch((unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex+1)) {
 						case 'e':
 						case 'E':
-						switch((unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex+2)) {
+						switch((unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex+2)) {
 							case 'l':
 							case 'L':
-							switch((unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex+3)) {
+							switch((unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex+3)) {
 								case 'i':
 								case 'I':
 									if([self isMatchedByRegex:@"^(delimiter[ \\t]+(\\S+))(?=\\s)" 
@@ -800,9 +651,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return NSNotFound;
 }
 
-/**
- * Walk along the string and locate the end of a quoted string, taking
- * into account the various forms of SQL escaping.
+
+/*
  * A method intended for use by the functions above.
  */
 - (NSUInteger) endIndexOfStringQuotedByCharacter:(unichar)quoteCharacter startingAtIndex:(NSInteger)index
@@ -813,19 +663,19 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	unichar currentCharacter;
 
 	// Cache the charAtIndex selector, avoiding dynamic binding overhead
-	IMP charAtIndex = [self methodForSelector:@selector(_charAtIndex:)];
+	IMP charAtIndex = [self methodForSelector:@selector(charAtIndex:)];
 
 	stringLength = [string length];
 
 	// Walk the string looking for the string end
 	for ( currentStringIndex = index; currentStringIndex < stringLength; currentStringIndex++) {
-		currentCharacter = (unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex);
+		currentCharacter = (unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex);
 
 		// If the string end is a backtick and one has been encountered, treat it as end of string
 		if (quoteCharacter == '`' && currentCharacter == '`') {
 		
 			// ...as long as the next character isn't also a backtick, in which case it's being quoted.  Skip both.
-			if ((currentStringIndex + 1) < stringLength && (unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex+1) == '`') {
+			if ((currentStringIndex + 1) < stringLength && (unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex+1) == '`') {
 				currentStringIndex++;
 				continue;
 			}
@@ -839,7 +689,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 			characterIsEscaped = NO;
 			i = 1;
 			quotedStringLength = currentStringIndex - 1;
-			while ((quotedStringLength - i) > 0 && (unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex - i) == '\\') {
+			while ((quotedStringLength - i) > 0 && (unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex - i) == '\\') {
 				characterIsEscaped = !characterIsEscaped;
 				i++;
 			}
@@ -847,7 +697,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 			// If an even number have been found, it may be the end of the string - as long as the subsequent character
 			// isn't also the same character, in which case it's another form of escaping.
 			if (!characterIsEscaped) {
-				if ((currentStringIndex + 1) < stringLength && (unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), currentStringIndex+1) == quoteCharacter) {
+				if ((currentStringIndex + 1) < stringLength && (unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), currentStringIndex+1) == quoteCharacter) {
 					currentStringIndex++;
 					continue;
 				}
@@ -861,7 +711,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return NSNotFound;
 }
 
-/**
+/*
  * A method intended for use by the functions above.
  */
 - (NSUInteger) endIndexOfCommentOfType:(SPCommentType)commentType startingAtIndex:(NSInteger)index
@@ -870,7 +720,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	unichar currentCharacter;
 
 	// Cache the charAtIndex selector, avoiding dynamic binding overhead
-	IMP charAtIndex = [self methodForSelector:@selector(_charAtIndex:)];
+	IMP charAtIndex = [self methodForSelector:@selector(charAtIndex:)];
 
 	switch (commentType) {
 	
@@ -883,8 +733,7 @@ TO_BUFFER_STATE to_scan_string (const char *);
 		case SPHashComment:
 			index++;
 			for ( ; index < stringLength; index++ ) {
-				currentCharacter = (unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), index);
-				if (currentCharacter == '\r') containsCRs = YES;
+				currentCharacter = (unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), index);
 				if (currentCharacter == '\r' || currentCharacter == '\n') {
 					return index-1;
 				}
@@ -896,8 +745,8 @@ TO_BUFFER_STATE to_scan_string (const char *);
 		case SPCStyleComment:
 			index = index+2;
 			for ( ; index < stringLength; index++ ) {
-				if ((unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), index) == '*') {
-					if ((stringLength > index + 1) && (unichar)(long)(*charAtIndex)(self, @selector(_charAtIndex:), index+1) == '/') {
+				if ((unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), index) == '*') {
+					if ((stringLength > index + 1) && (unichar)(long)(*charAtIndex)(self, @selector(charAtIndex:), index+1) == '/') {
 						return (index+1);
 					}
 				}
@@ -908,9 +757,55 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	return (stringLength-1);
 }
 
-#pragma mark -
-#pragma mark Required and primitive methods to allow subclassing the class cluster
+/*
+ * Provide a method to retrieve a character from the local cache.
+ * Does no bounds checking on the underlying string, and so is kept
+ * separate for characterAtIndex:.
+ */
+- (unichar) charAtIndex:(NSInteger)index
+{
 
+	// If the current cache doesn't include the current character, update it.
+	if (index > charCacheEnd || index < charCacheStart) {
+		if (charCacheEnd > -1) {
+			free(stringCharCache);
+		}
+		NSUInteger remainingStringLength = [string length] - index;
+		NSUInteger newcachelength = (CHARACTER_CACHE_LENGTH < remainingStringLength)?CHARACTER_CACHE_LENGTH:remainingStringLength;
+		stringCharCache = (unichar *)calloc(newcachelength, sizeof(unichar));
+		[string getCharacters:stringCharCache range:NSMakeRange(index, newcachelength)];
+		charCacheEnd = index + newcachelength - 1;
+		charCacheStart = index;
+	}
+	return stringCharCache[index - charCacheStart];
+}
+
+/*
+ * Provide a method to cleat the cache, and use it when updating the string.
+ */
+- (void) clearCharCache
+{
+	if (charCacheEnd > -1) {
+		free(stringCharCache);
+	}
+	charCacheEnd = -1;
+	charCacheStart = 0;
+	parsedToChar = '\0';
+	parsedToPosition = -1;
+}
+- (void) deleteCharactersInRange:(NSRange)aRange
+{
+	[super deleteCharactersInRange:aRange];
+	[self clearCharCache];
+}
+- (void) insertString:(NSString *)aString atIndex:(NSUInteger)anIndex
+{
+	[super insertString:aString atIndex:anIndex];
+	[self clearCharCache];
+}
+
+/* Required and primitive methods to allow subclassing class cluster */
+#pragma mark -
 - (id) init {
 
 	if (self = [super init]) {
@@ -988,88 +883,36 @@ TO_BUFFER_STATE to_scan_string (const char *);
 	delimiter = nil;
 	delimiterLengthMinusOne = 0;
 	lastMatchIsDelimiter = NO;
-	containsCRs = NO;
+	
 }
 - (NSUInteger) length {
 	return [string length];
 }
 - (unichar) characterAtIndex:(NSUInteger)index {
-	return CFStringGetCharacterAtIndex(string, index);
+	return [string characterAtIndex:index];
 }
 - (id) description {
 	return [string description];
 }
 - (NSUInteger) replaceOccurrencesOfString:(NSString *)target withString:(NSString *)replacement options:(NSUInteger)options range:(NSRange)searchRange {
 	return [string replaceOccurrencesOfString:target withString:replacement options:options range:searchRange];
-	[self _clearCharCache];
+	[self clearCharCache];
 }
 - (void) setString:(NSString *)aString {
 	[string setString:aString];
 	delimiter = nil;
 	delimiterLengthMinusOne = 0;
 	lastMatchIsDelimiter = NO;
-	[self _clearCharCache];
+	[self clearCharCache];
 }
 - (void) replaceCharactersInRange:(NSRange)range withString:(NSString *)aString {
 	[string replaceCharactersInRange:range withString:aString];
-	[self _clearCharCache];
-}
-- (void) deleteCharactersInRange:(NSRange)aRange {
-	[super deleteCharactersInRange:aRange];
-	[self _clearCharCache];
-}
-- (void) insertString:(NSString *)aString atIndex:(NSUInteger)anIndex {
-	[super insertString:aString atIndex:anIndex];
-	[self _clearCharCache];
+	[self clearCharCache];
 }
 - (void) dealloc {
 	[string release];
 	if (charCacheEnd != -1) free(stringCharCache);
 	[super dealloc];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SPSQLParser (PrivateAPI)
-
-/**
- * Provide a method to retrieve a character from the local cache.
- * Does no bounds checking on the underlying string, and so is kept
- * separate from characterAtIndex:.
- */
-- (unichar) _charAtIndex:(NSInteger)index
-{
-
-	// If the current cache doesn't include the current character, update it.
-	if (index > charCacheEnd || index < charCacheStart) {
-		if (charCacheEnd > -1) {
-			free(stringCharCache);
-		}
-		NSUInteger remainingStringLength = [string length] - index;
-		NSUInteger newcachelength = (CHARACTER_CACHE_LENGTH < remainingStringLength)?CHARACTER_CACHE_LENGTH:remainingStringLength;
-		stringCharCache = (unichar *)calloc(newcachelength, sizeof(unichar));
-		CFStringGetCharacters(string, CFRangeMake(index, newcachelength), stringCharCache);
-		charCacheEnd = index + newcachelength - 1;
-		charCacheStart = index;
-	}
-	return stringCharCache[index - charCacheStart];
-}
-
-/**
- * Provide a method to clear the cache, which should be used whenever
- * the underlying string is updated.
- */
-- (void) _clearCharCache
-{
-	if (charCacheEnd > -1) {
-		free(stringCharCache);
-	}
-	charCacheEnd = -1;
-	charCacheStart = 0;
-	parsedToChar = '\0';
-	parsedToPosition = -1;
 }
 
 @end

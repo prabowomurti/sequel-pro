@@ -26,7 +26,7 @@
 #import <Cocoa/Cocoa.h>
 #import <FeedbackReporter/FRFeedbackReporter.h>
 
-@class SPPreferenceController, SPAboutController, SPDatabaseDocument;
+@class SPPreferenceController, SPAboutController;
 
 @interface SPAppController : NSObject <FRFeedbackReporterDelegate>
 {
@@ -36,16 +36,7 @@
 	SPPreferenceController *prefsController;
 
 	id encodingPopUp;
-
-	NSURL *_sessionURL;
-	NSMutableDictionary *_spfSessionDocData;
-
 }
-
-// Window management
-- (IBAction)newWindow:(id)sender;
-- (IBAction)newTab:(id)sender;
-- (NSWindow *) frontDocumentWindow;
 
 // IBAction methods
 - (IBAction)openAboutPanel:(id)sender;
@@ -61,18 +52,10 @@
 - (IBAction)visitHelpWebsite:(id)sender;
 - (IBAction)visitFAQWebsite:(id)sender;
 - (IBAction)provideFeedback:(id)sender;
-- (IBAction)provideTranslationFeedback:(id)sender;
 - (IBAction)viewKeyboardShortcuts:(id)sender;
 
 // Getters
 - (SPPreferenceController *)preferenceController;
-- (NSArray *)orderedDatabaseConnectionWindows;
-- (SPDatabaseDocument *)frontDocument;
-- (NSURL *)sessionURL;
-- (NSDictionary *)spfSessionDocData;
-
-- (void)setSessionURL:(NSString *)urlString;
-- (void)setSpfSessionDocData:(NSDictionary *)data;
 
 // Feedback controller delegate methods
 - (NSMutableDictionary*) anonymizePreferencesForFeedbackReport:(NSMutableDictionary *)preferences;
