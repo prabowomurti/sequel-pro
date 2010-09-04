@@ -1,4 +1,4 @@
-#summary of Sequel Pro
+#summary Sequel Pro Screenshots
 #labels Featured
 
 *Sequel Pro 0.9.8*
