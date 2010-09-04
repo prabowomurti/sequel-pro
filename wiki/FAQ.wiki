@@ -1,5 +1,0 @@
-#summary Frequently Asked Questions
-
-Sequel Pro doesn't have an FAQ page yet.
-
-If you have any questions, please contact sequelpro@mjmedia.com.au .
