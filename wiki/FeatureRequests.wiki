@@ -1,17 +1,11 @@
 #labels Featured
-Please use this page for any feature requests. Simply use the comment feature at the end of the page to post your feature request, or to discuss the other feature requests. _Note: _your comment may be deleted after your feature is added to the list to keep this page manageable. Please do not be offended.
+Please use this page for any feature requests. Simply use the comment feature at the end of the page to post your feature request, or to discuss other feature requests. _Note: _your comment may be deleted after your feature is added to the list to keep this page manageable. Please do not be offended.
 
 *BUG REPORTS* - Bugs should be [http://code.google.com/p/sequel-pro/issues/entry added] to the [http://code.google.com/p/sequel-pro/issues/list issue tracker]. Please review the [http://code.google.com/p/sequel-pro/issues/list list] to ensure your bug hasn't already been reported.
 
 === Current Feature Requests ===
 
- * Export by right clicking a table (by joe.cairns)
- * Copy/paste for spreadsheet data in browse mode (by joe.cairns)
- * Support re-ordering columns when editing a table (by joe.cairns)
- * Import/Export support for favourites (by cpfusion)
- * Edit Users/Permissions (In the nightlies since r1132 - due in 0.9.8)
- * Tab based Interface
- * SQLite Support
- * Postgres Support
- * Localisation (Waiting for GUI to become stable first)
+ * Copy/paste for spreadsheet data in browse mode
+ * Import/Export support for favourites
+ * Multiple RDMS support (SQLite, Postgres, etc)
  * Content Filtering with stackable filters. (NSRuleEditor)
