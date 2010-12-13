@@ -1,0 +1,185 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>Sequel Pro 0.9.7</title>
+		<meta name="robots" content="anchors">
+		<link href="release.css" type="text/css" rel="stylesheet" media="all">
+	</head>
+
+	<body>
+		<br />
+			<table class="dots" width="100%" border="0" cellspacing="0" cellpadding="0" summary="Two column table with heading">
+				<tr>
+					<td class="blue" colspan="2">
+						<h3>NEW IN VERSION 0.9.7.</h3>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" width="100" style="text-align: center;">
+						<img src="logo-release-notes-new.png" alt="Sequel Pro Application Icon"  width="110" border="0"><br /><br />
+						<script type="text/javascript"> digg_url = 'http://digg.com/apple/Sequel_Pro_releases_0_9_7'; </script>
+						<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script>
+						
+						</td>
+					<td valign="top">
+						<p>The latest stable version of Sequel Pro is v0.9.7, which was released on Decemeber 21, 2009.</p>
+						
+						<p><strong>If you have trouble with the update, try <a href="http://www.sequelpro.com/download.html" title="Download Latest Version of Sequel Pro">downloading a copy manually</a>.</strong></p>
+						<br />
+						
+						<p>Highlights of the new features in this version are: a new <strong>server processes panel</strong>, a <strong>query favourites editor</strong>, a <strong>filter editor</strong>, <strong>improved tooltips</strong> including image previews, a <strong>pagination interface</strong> for the content view, <strong>much faster</strong> and more stable <strong>import and export</strong>, early support for <strong>document-based connections</strong>, the ability to <strong>stop custom query and content loads</strong>, and the introduction of <strong>threading</strong> for some tasks.</p>
+						<p>Once again this version contains too many changes to mention in depth; a selection of the changes includes:</p>
+						<p><strong>Interface</strong></p>
+						<ul>
+							<li>Improve Growl interaction, only Growling if in the background or for long tasks.</li>
+							<li>Addition of a new about panel.</li>
+							<li>The default view can be set in Preferences; by default the last used view will automatically be selected.</li>
+							<li>Addition of new tooltip methods, including multiline previews and image previews.</li>
+							<li>Save the status of &#8220;Check spelling while typing&#8221; in field editor sheets.</li>
+							<li>&#8220;NULL&#8221; and &#8220;(not loaded)&#8221; placeholders are displayed in grey.</li>
+							<li>The preferences interface has been tweaked.</li>
+							<li>Allow insertion of the NULL value via the Edit menu.</li>
+							<li>The monospaced font preference will now apply to more views and use Monaco as the default font.</li>
+							<li>Addition of a new server processes panel (available via the &#8216;Database&#8217; menu).</li>
+							<li>Ability to kill queries and connections from the server processes panel.</li>
+							<li>Ability to filter and save server processes.</li>
+							<li>Addition of a number of menu items to the Dock menu.</li>
+							<li>Follow the OS X user interface guidelines and make the Cancel button the default on destructive tasks.</li>
+							<li>Addition of keyboard shortcuts for the non-default confirmation button on destructive tasks - ⌘D for Delete, ⌘R for Remove, ⌘T for Truncate.</li>
+							<li>Make a number of warning and information dialogs clearer.</li>
+							<li>Make a large number of sheets and dialogs non-modal, allowing use of other windows (eg Add New Index, Add New Database, Create Table syntax, Server Variables, Add Relation, Table editing sheets)</li>
+							<li>Thread initial database loads.</li>
+							<li>Thread view switch loads.</li>
+							<li>Sequel Pro is now an editor for .sql files, opening them in the Custom Query view or offering to import depending on size.</li>
+							<li>Addition of basic procedure and function information in the Table Info pane.</li>
+							<li>Addition of a &#8220;Provide Feedback&#8221; menu item in the Help menu.</li>
+							<li>Allow copying server variables from the server variables sheet.</li>
+							<li>Addition of Copy and Save buttons to the Create Table Syntax sheet.</li>
+							<li>The view History can now be navigated using entries in the View menu, including keyboard shortcuts.</li>
+							<li>Clicking and holding the history buttons will now show a list of history states to select.</li>
+							<li>Improve window cascading, especially for large windows.</li>
+							<li>Allow use of the Return or Enter key to edit some lists and tables, including the table list.</li>
+							<li>Display the name of the field being edited at the top of the field editor sheet for context.</li>
+							<li>Add ⌘-Return as a shortcut to save and close the field editor (in addition to Enter/FnReturn).</li>
+							</ul>
+							<p><strong>Connection</strong></p>
+							<ul>
+							<li>Allow the OS or users&#8217; preferred SSH agent to handle public and private keys.</li>
+							<li>Add ControlMaster compatibility to SSH tunnels.</li>
+							<li>Offer to reconnect directly to the old SSH tunnel if another tunnel is already bound to the remote port.</li>
+							<li>Preserve the &#8216;host&#8217; field when switching to and from Socket connections.</li>
+							<li>Addition of support for saving connections as &#8220;.spf&#8221; connection files.</li>
+							<li>Save window state within .spf connection files, including history.</li>
+							<li>Add Open and Open Recent support for .spf connection files.</li>
+							<li>Improve connection stability on connections with high packet loss or a tendency to drop.</li>
+						</ul>
+						<p><strong>Structure Tab</strong></p>
+						<ul>
+							<li>Allow the deletion of fields which are parts of foreign keys and indexes by deleting dependencies automatically, after prompting the user for confirmation.</li>
+							<li>Allow default values in BIT notation when creating BIT fields, eg b&#8217;1&#8242;.</li>
+							<li>Addition of support for adding BINARY and VARBINARY fields.</li>
+							<li>Preserve any comments and column details unsupported by the interface when editing or moving columns.</li>
+							<li>Fix checkbox display on Mac OS X 10.6.</li>
+						</ul>
+						<p><strong>Content Tab</strong></p>
+						<ul>
+							<li>Addition of a new pagination interface, replacing the old LIMIT text box.</li>
+							<li>Allow easy jump to deep pages and control of pagination preferences by clicking on the pagination text.</li>
+							<li>Content loads, content filters, and content sorts can be stopped during loading.</li>
+							<li>Content loads, content filters, and content sorts are threaded and show progress where data is available.</li>
+							<li>All content loads are faster and use less memory.</li>
+							<li>A content filter editor is available via the Filter comparsion dropdown, allowing the creation of custom filters which can be saved either globally or per-document in .spfs.</li>
+							<li>Placeholder support in the custom filter editor, including up to two arguments.</li>
+							<li>Addition of a BETWEEN filter operator and fixes to other filter types.</li>
+							<li>Correctly display content within BINARY/VARBINARY fields.</li>
+							<li>Improve the display of the row count and update row counts as table contents change.</li>
+							<li>Vastly improve deletion of large numbers of rows.</li>
+							<li>Fix crashes when switching tables after re-sorting the content view.</li>
+							<li>Columns with &#8220;on update CURRENT_TIMESTAMP&#8221; now have the timestamp inserted when performing GUI edits.</li>
+							<li>Improve &#8216;(not loaded)&#8217; deferred loading text/blob placeholder usage.</li>
+							<li>Maximum field lengths are now respected in the interface to improve usability and reduce double entry.</li>
+							<li>Fix double content reloads in some circumstances (including filtering).</li>
+						</ul>
+						<p><strong>Query Tab</strong></p>
+						<ul>
+							<li>Custom queries can now be stopped during execution.</li>
+							<li>Custom queries are now threaded, allowing the use of other windows and displaying results incrementally.</li>
+							<li>Custom query loads are faster and use less memory.</li>
+							<li>Improve error highlighting.</li>
+							<li>Addition of a query favourite manager, allowing naming of favourite queries, filtering by name, and much improved editing of favourite queries.</li>
+							<li>Allow the query history list to be filtered within the menu.</li>
+							<li>Add options to allow history and favourites to replace editor content or to be inserted.</li>
+							<li>Fix crashes on certain types of queries.</li>
+							<li>Correctly quote database names when saving edits of custom query result rows.</li>
+							<li>Fix issues when running multiple queries when the last query is empty.</li>
+							<li>Allow saving the contents of the custom query field to a SQL file.</li>
+							<li>Custom query error text is now selectable.</li>
+							<li>Improve custom font saving.</li>
+						</ul>
+						<p><strong>Table Relations Tab</strong></p>
+						<ul>
+							<li>Support foreign keys within the same table.</li>
+							<li>Improve ON UPDATE and ON DELETE lists and support.</li>
+							<li>The table relations table view will now observe the monospaced font and vertical gridlines preferences.</li>
+						</ul>
+						<p><strong>Import / Export</strong></p>
+						<ul>
+							<li>Exports are now threaded, allowing interaction with other windows during export.</li>
+							<li>Exports can now be cancelled.</li>
+							<li>All imports and exports have been rewritten to work in streaming fashion, resulting in much lower memory usage and the ability to work with very large datasets without crashing.</li>
+							<li>Make all imports and exports much faster.</li>
+							<li>Improve speed and stability when setting Field Mapping before CSV imports, and display the Field Mapping much earlier in the import.</li>
+							<li>Improve progress reporting for import and export for both feedback and accuracy.</li>
+							<li>Improve parsing of CSV and SQL files.</li>
+							<li>Fix crashes caused by the connection disappearing during imports.</li>
+							<li>Improve SQL export of views.</li>
+							<li>Fix a syntax error in exported ER dot files.</li>
+							<li>Addition of the UTF-8 BOM to exported SQL files to improve editor compatibility.</li>
+						</ul>
+						<p><strong>Query Console Log</strong></p>
+						<ul>
+							<li>The query console now includes an optional connection column.</li>
+							<li>Table headers are now displayed.</li>
+							<li>Console columns can be reordered and observe the vertical gridlines preference.</li>
+							<li>Timestamps are now shown using the format set in System Preferences.</li>
+							<li>Logging can now be controlled in the Preferences to work at different levels (Interface, Custom Queries, Import &amp; Export, Errors) with Import &amp; Export logging disabled by default.</li>
+							<li>Make copying large numbers of queries from the Console Log window much faster.</li>
+						</ul>
+						<p><strong>Other</strong></p>
+						<ul>
+							<li>Addition of some AppleScript support, fixing compatibility of standard commands and adding some Sequel Pro commands.</li>
+							<li>Correctly support editing in &#8220;UTF-8 via Latin1&#8243; connections</li>
+							<li>Improve compatiblity with table definitions.</li>
+							<li>Reset the AUTO_INCREMENT value when duplicating tables without their contents.</li>
+							<li>When duplicating tables duplicate foreign key references correctly.</li>
+							<li>Fix Quick Look in the field editing sheet on Mac OS X 10.6.</li>
+							<li>Table renames, duplicates and additions perform more error checking and handle errors more gracefully.</li>
+							<li>Improve deletion of multiple tables including much better error handling.</li>
+							<li>Handle very large table sizes, row counts, and free space.</li>
+							<li>When error occurs when saving items to the Keychain, alert the user and suggest a keychain repair.</li>
+							<li>Fix a bug in the field editor sheet causing changes to not be saved if the content length never changed.</li>
+							<li>Improve undo in the field editor sheet.</li>
+							<li>Added code signing - all future releases of Sequel Pro will be signed to avoid keychain access prompts.</li>
+						</ul>
+
+						<br />
+						
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6477524-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+	</body>
+
+</html>

@@ -1,0 +1,247 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>Sequel Pro 0.9.6</title>
+		<meta name="robots" content="anchors">
+		<link href="release.css" type="text/css" rel="stylesheet" media="all">
+	</head>
+
+	<body>
+		<br />
+			<table class="dots" width="100%" border="0" cellspacing="0" cellpadding="0" summary="Two column table with heading">
+				<tr>
+					<td class="blue" colspan="2">
+						<h3>NEW IN VERSION 0.9.6.</h3>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" width="100" style="text-align: center;">
+						<img src="logo-release-notes.png" alt="Sequel Pro Application Icon"  width="92" border="0"><br /><br />
+						<script type="text/javascript"> digg_url = 'http://digg.com/apple/Sequel_Pro_releases_0_9_6'; </script>
+						<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script>
+						
+						</td>
+					<td valign="top">
+						<p>The latest stable version of Sequel Pro is v0.9.6, which was released on August 11, 2009.</p>
+						
+						<p><strong>If you have trouble with the update, try <a href="http://www.sequelpro.com/download.html" title="Download Latest Version of Sequel Pro">downloading a copy manually</a>.</strong></p>
+						<br />
+						
+            <p><strong>Highlights of the new features</strong> in this version are: overhauled connection including SSH tunnel support, updated interface, filterable tables list, foreign key support, sortable and editable custom query results, native MySQL help support and significant speed and memory usage improvements.</p>
+            
+            <p>New <a href="http://www.sequelpro.com/docs/Keyboard_Shortcuts" title="Keyboard Shortcuts - Sequel Pro Wiki">full keyboard shortcut list</a>.</p>
+            
+            <p>The below list only shows a selection of the enormous list of changes in this version:<strong></strong></p>
+            <p><strong>Interface</strong></p>
+            <ul>
+            <li>Customised toolbar items will be reset to the new defaults to ensure new additions are visible</li>
+            <li>Contextual menus have been added to many views</li>
+            <li>Updated a large number of interface elements for improved appearance and behaviour</li>
+            <li>Updated toolbar icon appearances</li>
+            <li>Added a shortcut for the Choose Database menu (<span>⇧+ ⌘ + D)</span></li>
+            <li>Added a table history memory and navigation feature; new entries are created on table change or filter application</li>
+            <li>CREATE TABLE syntax is now formatted before display</li>
+            <li>It is now possible to remember up to 100 queries in the query history</li>
+            <li>Added the ability to copy table information with column names in both Content and Query views</li>
+            <li>Added a preference for whether new fields should be created as NULL/NOT NULL by default</li>
+            <li>Improved warning dialogs including when deleting content rows, fields, and indexes</li>
+            <li>Improved interface updates according to actions in other parts of the interface</li>
+            <li>Add the ability to export server variables to a file in MySQL config format</li>
+            <li>Improved the display of names and values in the server variables dialog</li>
+            <li>Improved the display of filter settings for long column names</li>
+            <li>When Growl is enabled, remind the user that some options can be set in the Growl System Preference prefpane</li>
+            <li>Added a preference to allow the display of vertical grid lines in table views</li>
+            <li>The text/blob edit sheet has been significantly improved, including speedups and Quick Look support</li>
+            <li>Improved future automatic update behaviour when dialogs are showing</li>
+            <li>Fixed issues with the &#8220;Default favorite&#8221; selection</li>
+            <li>Added a preference to allow control of frequency of autoupdate check</li>
+            <li>Added position cascading for new windows</li>
+            </ul>
+            <p><strong>Connection</strong></p>
+            <ul>
+            <li>Redesign the connection interface and functionality
+            <ul>
+            <li>Replace the connection sheet with a connection view within the main window</li>
+            <li>Allow explicit selection of the connection type, and hide fields not appropriate to selection type</li>
+            <li>If the user tries to use &#8220;localhost&#8221; for a TCP/IP connection, ask them what they meant to do</li>
+            <li>Improve autodetection for default socket location, including default MAMP location</li>
+            </ul>
+            </li>
+            <li>Added support for connections via native SSH tunnels
+            <ul>
+            <li>Password and public/private key authentication support</li>
+            <li>Automatic local port assignment</li>
+            <li>Display SSH tunnel use and use in the title bar</li>
+            </ul>
+            </li>
+            <li>Fix occasional corruption of old favourites (automatically fixes any broken old favourites)</li>
+            <li>The help button on the connection interface now links to online help</li>
+            <li>Overall connection lag has been significantly improved</li>
+            <li>Attempt to automatically recover from and bypass errors caused by MAX_ALLOWED_PACKET for large blob object support</li>
+            <li>Add support for servers running in ANSI/ANSI_QUOTES mode</li>
+            <li>Improve password storage reliability</li>
+            <li>Improved favourite name editing and the use of default names</li>
+            <li>Improve connection error dialogs to more closely reflect the error that occurred</li>
+            </ul>
+            <p><strong>Tables list</strong></p>
+            <ul>
+            <li>Added a table list filter which is automatically shown when many tables are present</li>
+            <li>Sort tables in the list alphabetically by OS X locale</li>
+            <li>Added initial support for listing, duplicating, and removing Functions and Procedures</li>
+            <li>It is now possible to duplicate or delete Views</li>
+            <li>Added a menu option and dialog for renaming tables, views, procedures and functions in addition to click-to-edit</li>
+            <li>Improve the table duplication sheet</li>
+            <li>Allow the storage engine of new tables to be specified in the create table dialog</li>
+            <li>Added support for truncating tables</li>
+            <li>Improved the display of the row count in the table information pane</li>
+            <li>Saved the collapsed state of the table information pane</li>
+            <li>Fixed initially displayed position for newly added or duplicated tables</li>
+            </ul>
+            <p><strong>Structure tab</strong></p>
+            <ul>
+            <li>No longer send needless query when nothing is changed after editing a field</li>
+            <li>When adding a field insert it after the currently selected row</li>
+            <li>Improve compatibility with more table structures</li>
+            <li>When adding indexes default to INDEX if a primary key already exists</li>
+            <li>Replaced editable table type with a link to the table info tab with more options</li>
+            <li>Fixed behaviour when attempting to remove the last table field</li>
+            <li>Improved saving of rows including improved default values behaviour and improved support for viewing/editing &#8220;on update CURRENT_TIMESTAMP&#8221;</li>
+            <li>Use a checkbox for the &#8220;Allow Null&#8221; setting</li>
+            </ul>
+            <p><strong></strong></p>
+            <p><strong>Content tab</strong></p>
+            <ul>
+            <li>Added the ability to copy content as an SQL INSERT command for easy use with other tables/databases</li>
+            <li>Improved display after errors</li>
+            <li>Significantly reduced the amount of memory required to show large tables and speed up processing of results</li>
+            <li>Added LIKE support for numeric data fields to the filter options</li>
+            <li>Allow &#8220;NOW()&#8221; to be entered in date or time columns</li>
+            <li>Display link arrows in columns with foreign key references, allowing automatic table selection and filter setting for clicked cell</li>
+            <li>Any part of the table cell can now be clicked on to edit the contents</li>
+            <li>Content tab state is reset less often; for example, row selections will no longer be lost just after making an edit</li>
+            </ul>
+            <p><strong></strong></p>
+            <p><strong>Query tab</strong></p>
+            <ul>
+            <li>Make query results editable where they can safely be edited</li>
+            <li>Allow custom query results to be sorted by clicking on the column header</li>
+            <li>Improved &#8220;Run Current&#8221;/&#8221;Run Previous&#8221; button behaviour</li>
+            <li>Errors when running multiple queries via &#8220;Run All&#8221; now ask the user whether they want to proceed</li>
+            <li>Errors highlight the correct line</li>
+            <li>Improved auto-completion support
+            <ul>
+            <li>Add a new narrow-down completion style menu using F5 (ESC triggers old implemention)</li>
+            <li>Add icon and spelling completion for narrow-down completion</li>
+            <li>Improved separator detection</li>
+            <li>Added core functions</li>
+            <li>Added database names</li>
+            <li>Added procedure and function names where available</li>
+            <li>Only autocomplete database, table or column names inside backticks</li>
+            </ul>
+            </li>
+            <li>Added support for selecting lines by on the line numbers</li>
+            <li>Added MySQL help functionality
+            <ul>
+            <li>Lookup based on the connected server</li>
+            <li>Ability to update reference as you type</li>
+            <li>Full search functionality</li>
+            <li>Back/forwards navigation through search results</li>
+            </ul>
+            </li>
+            <li>Improved syntax highlighting</li>
+            <li>Improved indenting/outdenting behaviour</li>
+            <li>Added find/replace support for the custom query editor</li>
+            <li>Added a section to the preferences to customise the query editor behaviour
+            <ul>
+            <li>Added the ability to customise syntax highlighting colours</li>
+            <li>Added the ability to customise foreground/background colours</li>
+            <li>Added the ability to highlight the current query with a customisable colour</li>
+            </ul>
+            </li>
+            <li>Performance improvements when working with large quantities of text in the query editor</li>
+            <li>Added the ability to drag files onto the query editor to add their contents to the text view for editing</li>
+            <li>Improve auto-pairing behaviour next to words</li>
+            <li>Added keyboard shortcuts for easily increasing and decreasing the font size and multitouch increase support (⌘ + +/-)</li>
+            <li>Added initial DELIMITER support</li>
+            <li>Added the ability to copy content as an editable SQL INSERT command</li>
+            <li>Custom queries which fail are no longer automatically retried if they do not fail as the result of a connection error</li>
+            <li>Improved accuracy of query timing</li>
+            <li>History and favourites selection now perform standard text entry/replacement instead of overwriting the entire editor</li>
+            <li>Added ability to comment out or uncomment the current selection or lines in the query editor using <span>⌘ + </span><span>/</span></li>
+            <li>Added ability to copy a selection as RTF ( ^ + C )</li>
+            <li>Added ability to select the current query ( ^ + Y )</li>
+            <li>Queries beginning with USE, CREATE, DROP, RENAME, or ALTER update the table list</li>
+            <li>Remember the width of custom query result columns which map to real fields</li>
+            </ul>
+            <p><strong></strong></p>
+            <p><strong>Table relations tab </strong></p>
+            <ul>
+            <li>Added a table relations tab for viewing and adding constraints where supported by the current table</li>
+            <li>Lists current constraints in a table</li>
+            <li>Allow addition of new relations
+            <ul>
+            <li>Easy linking of columns in the current table to indexed columns of the appropriate type in other tables</li>
+            <li>Supports ON UPDATE and ON DELETE actions</li>
+            </ul>
+            </li>
+            <li>Allow removal of constraints</li>
+            </ul>
+            <p><strong></strong></p>
+            <p><strong>Import / Export</strong></p>
+            <ul>
+            <li>Added the ability to export the schema as a basic Graphviz .dot file</li>
+            <li>Fixed crash when importing without a table selected</li>
+            <li>Import and Export of CSV and SQL formats have been significantly sped up</li>
+            <li>Improve import/export progress dialog interface</li>
+            <li>Correctly export views with dependencies on other tables/views occurring after the original view in the table list</li>
+            <li>Added automatic line ending detection for CSV imports</li>
+            <li>Fixed CSV imports to more accurately import a range of files, including newlines in quoted strings and quote characters escaped by quote characters</li>
+            </ul>
+            <p><strong></strong></p>
+            <p><strong>Printing</strong></p>
+            <ul>
+            <li>Printing layout and appearance has been improved</li>
+            <li>Blob data representing images will be shown as thumbnails</li>
+            <li>Added a paper size dropdown to the print dialog</li>
+            <li>Added optional background printing</li>
+            </ul>
+            <p><strong></strong></p>
+            <p><strong>Other</strong></p>
+            <ul>
+            <li>The query logging option to hide SELECT/SHOW statements now functions more reliably</li>
+            <li>Query log exports now saved as .sql files by default</li>
+            <li>Fixed multibyte support in favourite details when storing/retrieving passwords</li>
+            <li>Improved interaction with table names containing backquotes (`)</li>
+            <li>Table storage engines are now read from the server rather than using a generic hardcoded list</li>
+            <li>Fixes a number of crashes</li>
+            <li>Fixes a large quantity of memory leaks</li>
+            <li>Significant underlying code overhaul, including recent SQL client libraries, significant speedups, and updating the underlying MCPKit framework to include all the recent Sequel Pro updates in a generic and reusable method</li>
+            <li>In/decreasing the font size ( ⌘ + +/- ) works on several text views</li>
+            <li>Drag and drop of a text file to insert its content works on several text views (by holding the ⌘ key it inserts the file path instead)</li>
+            </ul>
+
+
+
+
+
+						<br />
+						
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6477524-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+	</body>
+
+</html>

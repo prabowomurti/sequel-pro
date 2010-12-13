@@ -1,0 +1,135 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>Sequel Pro 0.9.4</title>
+		<meta name="robots" content="anchors">
+		<link href="release.css" type="text/css" rel="stylesheet" media="all">
+	</head>
+
+	<body>
+		<br />
+			<table class="dots" width="100%" border="0" cellspacing="0" cellpadding="0" summary="Two column table with heading">
+				<tr>
+					<td class="blue" colspan="2">
+						<h3>NEW IN VERSION 0.9.4.</h3>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" width="100" style="text-align: center;">
+						<img src="logo-release-notes.png" alt="Sequel Pro Application Icon"  width="92" border="0"><br /><br />
+						<script type="text/javascript"> digg_url = 'http://digg.com/software/Sequel_Pro_releases_0_9_4'; </script>
+						<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script>
+						
+						</td>
+					<td valign="top">
+						<p>The latest stable version of Sequel Pro is v0.9.4, which was released on March 12, 2009.</p>
+						
+            <h3>Interface</h3>
+            <ul>
+              <li>Improve interface responsiveness, especially on slower connections</li>
+              <li>Fixes a problem where many columns in a table are shown with a tiny width</li>
+              <li>Added a pagination stepper for use when LIMIT is enabled</li>
+              <li>Added very basic printing support for the currently selected view</li>
+              <li>The log console has been moved to its own window in preparation for future changes</li>
+              <li>The log console can now export its contents to a file</li>
+              <li>Allow the database encoding to be specified when creating a new database</li>
+              <li>Varchar and char length limits are now enforced in the interface for clarity</li>
+              <li>Rows which have been edited without any changes being made are no longer saved back to the database</li>
+              <li>Row editing has been improved to allow clicking on other fields within the row without forcing a save</li>
+              <li>Row editing has been improved to allow reediting if the row fails to save</li>
+              <li>Field editing has been improved to allow reediting if the field details fail to save</li>
+              <li>Fixed a number of crashers related to opening, deleting, and saving in the binary edit sheet</li>
+              <li>Improved image drag and drop compatibility in the edit sheet</li>
+              <li>A Refresh Databases option has been added to the Database list in addition to the current menu</li>
+              <li>Added many more keywords and columns in the current table to the custom query autocompletion lists</li>
+              <li>Custom query favorites, history and run buttons have been moved below the splitter to allow the pane to be collapsed</li>
+              <li>Speed up table loading and scrolling when large quantities of data are present in fields</li>
+              <li>Status tab interface improvements</li>
+              <li>Improved support for viewing Views</li>
+              <li>Show the state of the toggle to edit all fields in sheets</li>
+              <li>Deselect favorites in the connection sheet as soon as they are edited for clarity and improved connection error recovery</li>
+              <li>Fixes an issue causing the row count to be displayed as zero</li>
+              <li>Dates in table info pane and status tab use the user’s date and time display formats</li>
+              <li>The custom query favorites editor has been redesigned</li>
+              <li>Reduces the minimum width of the tables list a little and prevents it from disappearing</li>
+            </ul>
+
+
+            <h3>Connection</h3>
+            <ul>
+              <li>Disconnections or network errors are automatically recovered from more often</li>
+              <li>Instead of hanging when a serious networking problem is detected the user is notified and asked how to proceed</li>
+              <li>Supports reconnection while maintaining the current window state on connection failure</li>
+              <li>Run a connection keepalive in a background thread to maintain the connection to the server</li>
+            </ul>
+
+            <h3>Field type improvements</h3>
+            <ul>
+              <li>Improved support and added filtering for DECIMAL field types</li>
+              <li>BLOB and binary field types are fully viewable and editable</li>
+              <li>BLOB and binary field types show a preview of their content as text when viewing the table</li>
+              <li>Added support for BIT field viewing, editing, and filtering</li>
+              <li>Filtering using “IN” has been improved</li>
+              <li>Date filter order has been fixed</li>
+            </ul>
+
+            <h3>Table structure</h3>
+            <ul>
+              <li>Creation of datetime columns has been improved</li>
+              <li>Reordering columns now preserves unsigned/null/default attributes correctly</li>
+            </ul>
+
+            <h3>Import / Export</h3>
+            <ul>
+              <li>Numeric data in string column types is now correctly exported as a string to avoid leading zero loss</li>
+              <li>Imports have been threaded and can now be cancelled while they are in progress</li>
+              <li>SQL import speed has been improved</li>
+              <li>SQL and CSV export speed have been improved</li>
+              <li>The tables list is automatically refreshed after importing an SQL file</li>
+              <li>Fixes a crash when importing a CSV file into an empty database</li>
+              <li>Improved error handling when reading import files</li>
+              <li>The import window menu now remembers the last import type used and also recognises CSV and SQL extensions</li>
+              <li>Fixes a crash when exporting an empty table to CSV or XML, singly or as part of selected tables</li>
+            </ul>
+
+            <h3>Encodings</h3>
+            <ul>
+              <li>Improved table encoding autodetection</li>
+              <li>Ensure consistent encoding usage when viewing tables and data</li>
+              <li>The “Database Encoding” menu item in the Databases menu has been renamed for clarity</li>
+              <li>Added support for the EUC-KR Korean encoding</li>
+              <li>Added a special encoding option (UTF-8 Unicode via Latin 1) for utf8 tables containing utf8 data which has been saved via a Latin1 connection, for compatibility with older clients and a number of older website scripts</li>
+            </ul>
+
+            <h3>Other</h3>
+            <ul>
+              <li>Overall application size has been reduced</li>
+              <li>Improved SQL compatibility for importing and custom queries</li>
+              <li>Fixes a number of memory leaks</li>
+              <li>Slight speedup on COUNTing tables</li>
+              <li>Lots of minor interface improvements</li>
+              <li>Huge code cleanup and improvements</li>
+            </ul>
+
+
+						<br />
+						
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6477524-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+	</body>
+
+</html>

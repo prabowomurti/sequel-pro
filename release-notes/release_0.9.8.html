@@ -1,0 +1,211 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>Sequel Pro 0.9.8</title>
+		<meta name="robots" content="anchors">
+		<link href="release.css" type="text/css" rel="stylesheet" media="all">
+	</head>
+
+	<body>
+		<br />
+			<table class="dots" width="100%" border="0" cellspacing="0" cellpadding="0" summary="Two column table with heading">
+				<tr>
+					<td class="blue" colspan="2">
+						<h3>NEW IN VERSION 0.9.8.</h3>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" width="100" style="text-align: center;">
+						<img src="logo-release-notes-new.png" alt="Sequel Pro Application Icon"  width="110" border="0"><br /><br />
+						<script type="text/javascript"> digg_url = 'http://digg.com/software/Sequel_Pro_0_9_8_Sequel_Pro_Blog'; </script>
+						<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script>
+						
+						</td>
+					<td valign="top">
+						
+						<p>Highlights of the new features in this version are: <strong>user management</strong>, table <strong>triggers support</strong>, <strong>custom query placeholder support</strong> including lists, custom query <strong>text macros</strong> and <strong>tab triggers</strong>, much improved <strong>custom query autocomplete including table and field names</strong>, an <strong>overhauled CSV mapping interface</strong> including defaults and updates, <strong>improved printing</strong> support, a <strong>64 bit build</strong>, and <strong>much improved stability</strong> including the addition of a crash reporter.</p>
+
+            <p>Some of the changes in this version include:</p>
+
+            <p><strong>Interface</strong></p>
+
+            <ul>
+            <li>MySQL system databases (i.e. mysql and information_schema) are now visually separated from user databases at the top of the list.</li>
+            <li>Fix for occasional overlapping alert sheets.</li>
+            <li>Addition of inline table, view, procedure and function renaming.</li>
+            <li>Further reduction in the number of sheets that are run in an application-modal fashion that would subsequently prevent access to other connections.</li>
+            <li>Addition of a preference to set the font (and size) of all result set tables that display MySQL content.</li>
+            <li>Fix an issue where the background colour of the table list search field would appear different to that of the rest of the list.</li>
+            <li>Ability to display or hide the MySQL server version in connection window titles via a hidden preference.</li>
+            <li>Addition of a &#8216;Filter Content&#8217; menu item to the &#8216;Table&#8217; menu which places focus on the table content filter field.</li>
+            <li>Addition of a &#8216;Filter Tables&#8217; menu item to the &#8216;Table&#8217; menu which places focus on the table list filter field if visible or the first table if not visible.</li>
+            <li>Addition of a &#8216;Keyboard Shortcuts&#8217; menu item in the Help menu that links to the online documentation wiki.</li>
+            <li>Addition of a new table triggers toolbar icon.</li>
+            <li>Addition of a help button on the query favorites editor that links to the online documentation wiki.</li>
+            <li>Fix keyboard tab behaviour when selecting connection detail fields (standard, socket and SSH) on the connection view.</li>
+            <li>Addition of a contextual menu in the connection favorites table view allowing the deletion and duplication of the selected favorite.</li>
+            <li>Addition of a gear menu in the connection favorites table view allowing the sorting of favorites by name, host and type as well as in reverse order.</li>
+            <li>Addition of a contextual menu in the connection view allowing the user to edit the selected favorite.</li>
+            <li>Addition of a new preference to control whether or not anonymous system information is provided when checking for updates.</li>
+            <li>Add a &#8216;Show create syntax...&#8217; menu item to the table list &#8216;gear&#8217; and contextual menus.</li>
+            <li>Display CREATE syntax's for tables and views with a trailing semi-colon for easier copying and pasting.</li>
+            <li>No longer append semi-colons to console error messages.</li>
+            </ul>
+            <p><strong>Connection</strong></p>
+            <ul>
+            <li>Improved handling of server variable requests from certain versions of MySQL (specifically 4).</li>
+            <li>Fix the hanging of secondary SSH tunnels when running in 64-bit mode.</li>
+            <li>Fix for failed connections caused by whitespace and newline characters in the host and SSH host fields.</li>
+            <li>Significantly improved connection loss and reconnection behaviour.</li>
+            <li>Improved connection timeout behaviour.</li>
+            <li>Allow arbitrary questions from SSH in order to support keyboard-interactive authentication methods, such as those used by RSA SecurID.</li>
+            <li>Improved SSH tunnel proxy behaviour.</li>
+            <li>Improved SSH tunnel behaviour of connections that don&#8217;t have a password in the user&#8217;s keychain.</li>
+            <li>Improved stability of disconnections when switching tables.</li>
+            <li>Improved CPU usage of SSH tunnel question/password dialogs.</li>
+            <li>Improved connection failure handling.</li>
+            </ul>
+            <p><strong>Structure Tab</strong></p>
+            <ul>
+            <li>Improved error handling when adding, removing and editing table fields.</li>
+            <li>Ability to reset the AUTO_INCREMENT value of primary key fields by right clicking the primary key index.</li>
+            <li>Fix an issue caused by duplicating table fields that are yet to be saved to the database.</li>
+            <li>Adding and removing table indexes as well as removing table fields is now performed on a separate thread allowing the user to cancel the operation.</li>
+            <li>Fix an issue that prevented the addition of multi-column table indexes because of leading and trailing whitespace.</li>
+            </ul>
+            <p><strong>Content Tab</strong></p>
+            <ul>
+            <li>Improve large InnoDB table loading by replacing the &#8216;Fetch correct row count&#8217; preference with the option of specifying a new table row count query level in relation to whether additional queries should be used. Options are never, only for small tables (&lt;5MB) and always.</li>
+            <li>Fix an issue caused by selecting &#8216;Copy as SQL INSERT&#8217; after a table content filter has been applied.</li>
+            <li>Fix for incorrectly escaping MySQL special characters when applying table content filters.</li>
+            <li>Improved speed and lower memory usage when loading very large data sets.</li>
+            <li>Fix for incorrectly encoding BLOB and binary TEXT fields when copying.</li>
+            <li>Table sorting, filter criteria, scroll position and row selection are now preserved when switching between tables.</li>
+            <li>Addition of the ability to reset the AUTO_INCREMENT value when deleting all records from a table.</li>
+            <li>Fix an issue that caused the progress indicator and bezel not to disappear once a table sort operation was complete.</li>
+            <li>Fix an issue that caused the following of table relation links when the initial mouse click was not on the link arrow.</li>
+            <li>Duplicating table content rows now correctly loads deferred BLOBs and sets auto increment fields to NULL.</li>
+            <li>Fix errors when deleting content rows which are currently being edited.</li>
+            <li>Fix errors deleting multiple content rows on certain servers.</li>
+            </ul>
+            <p><strong>Query Tab</strong></p>
+            <ul>
+            <li>Improved handling and stability of line selection for MySQL errors ending in numbers.</li>
+            <li>Improved behaviour of editing query results.</li>
+            <li>Ability to save the custom query history to disk as well as copy to the pasteboard.</li>
+            <li>Ability to select filtered query history and favorite items using arrow keys.</li>
+            <li>Significantly improved auto-completion for all database objects, including information about all tables and fields in any selected database.</li>
+            <li>Ability to insert query favorites via user definable tab triggers.</li>
+            <li>Ability to define nested snippets within query favorites (text macros).</li>
+            <li>Ability to select predefined dynamic variables within nested snippets that are expanded upon use.</li>
+            <li>Speed improvements when working with large amounts of text.</li>
+            <li>Fix for partial syntax highlighting for very long lines.</li>
+            <li>Fix for the synchronisation of query history lists if more than one instance of the same connection document (.spf) file is open.</li>
+            <li>Ability to run any shell commands and scripts (Perl, Ruby, AppleScript, etc) within query favorite text snippet macros.</li>
+            <li>Scroll position and selection are now preserved when editing custom query results.</li>
+            <li>Option to enable auto-completion after a pause while typing in &#8216;Query Editor&#8217; preferences and custom query gear menu.</li>
+            <li>Option to specify the time delay of auto-completion.</li>
+            <li>For untitled connections (non-SPF based documents) saving query favorites now defaults to saving them globally.</li>
+            <li>Significantly improved thread safety when running queries.</li>
+            <li>Fix an issue where selecting the &#8216;Clear Global History&#8217; menu item would fail to do so in some circumstances.</li>
+            <li>When switching to the custom query view always set the focus to the custom query editor.</li>
+            </ul>
+            <p><strong>Relations Tab</strong></p>
+            <ul>
+            <li>Fix an issue when creating foreign key relationships with names that included reserved characters and names.</li>
+            <li>Fix an issue that prevented the addition of foreign key relationships immediately after changing a table&#8217;s storage engine to InnoDB.</li>
+            <li>Fix field relation referential actions not showing in certain circumstances.</li>
+            </ul>
+            <p><strong>Triggers Tab</strong></p>
+            <ul>
+            <li>New triggers tab.</li>
+            <li>Ability to add and remove triggers.</li>
+            </ul>
+            <p><strong>Information Tab</strong></p>
+            <ul>
+            <li>Ability to reset or set to a specific value the primary AUTO_INCREMENT field of a table.</li>
+            <li>Improve permissions error checking and handling when gathering various types of table information.</li>
+            </ul>
+            <p><strong>Import / Export</strong></p>
+            <ul>
+            <li>Table triggers and functions are now included in MySQL dumps.</li>
+            <li>Fix for save panel export options disappearing when exporting a custom query result.</li>
+            <li>SQL import and export now correctly support the use of DELIMITERs.</li>
+            <li>Procedures and functions are now included as an option when performing SQL dumps.</li>
+            <li>Completely redesigned CSV field import mapper, allowing the choice of whether specific fields should be imported as well as the import method used, INSERT, REPLACE or UPDATE.</li>
+            <li>Ability to set global variables in new CSV import field mapper.</li>
+            <li>Fix for incorrectly displaying the read file size of CSV and SQL imports greater than 4GB in size.</li>
+            </ul>
+            <p><strong>Server Processes Panel</strong></p>
+            <ul>
+            <li>Panel is now a separate window rather than a sheet on the current connection to enable active process monitoring.</li>
+            <li>Ability to hide the process ID column.</li>
+            <li>Ability to enable the use of SHOW FULL PROCESSLIST instead of SHOW PROCESSLIST.</li>
+            </ul>
+            <p><strong>User Manager</strong></p>
+            <ul>
+            <li>New database user accounts manager.</li>
+            <li>Ability to add and remove users and hosts.</li>
+            <li>Ability to manage usernames and passwords</li>
+            <li>Ability to manage global and schema privileges.</li>
+            <li>Ability to manage resource limits.</li>
+            </ul>
+            <p><strong>Printing Support</strong></p>
+            <ul>
+            <li>Significantly improved printing support, including:</li>
+            <li>The inclusion of table names on print outs.</li>
+            <li>If present the inclusion of table indexes when printing a table&#8217;s structure.</li>
+            <li>The use of monospaced fonts in print outs to be consistent with user preferences.</li>
+            <li>The inclusion of vertical grid lines in printed tables to be consistent with user preferences.</li>
+            <li>Ability to print the table relations view.</li>
+            <li>Ability to print the table triggers view.</li>
+            <li>Ability to print the extended table information view.</li>
+            <li>The inclusion of NULL values represented as the user&#8217;s NULL value placeholder when printing a table&#8217;s structure and indexes.</li>
+            <li>Dynamic calculation of the size of page margins based on the paper size of the selected printer.</li>
+            <li>The generation of print outs on a separate thread giving the user a chance to cancel the operation for large data sets.</li>
+            <li>Present a warning to the user when attempting to print a large number of table rows. Current threshold is set to 1000 rows and can be changed via a hidden preference.</li>
+            <li>Lots of print out style enhancements.</li>
+            </ul>
+            <p><strong>Other</strong></p>
+            <ul>
+            <li>Sequel Pro is now fully 64-bit compatible on Intel systems running Mac OS X 10.6 (Snow Leopard).</li>
+            <li>Restore default OS X behaviour of bringing the most recent window to the front when clicking the dock icon.</li>
+            <li>Fix an issue where the renaming of a table failed when only the case changed.</li>
+            <li>Bound three finger multi-touch right/left swipe event to trigger back/forward in table selection history.</li>
+            <li>Restore the default standard shortcut of ⌥⌘H to hide all other applications.</li>
+            <li>CHECK, OPTIMIZE, REPAIR, FLUSH, CHECKSUM and ANALYZE TABLE can now all be applied to multiple tables at once.</li>
+            <li>Addition of in app crash and exception reporting to a new online repository viewable at <a href="http://log.sequelpro.com/">http://log.sequelpro.com/</a> to improve the stability of Sequel Pro.</li>
+            <li>Updated MySQL client libraries to version 5.1.44.</li>
+            <li>Updated Sparkle auto-update framework to address a number of issues.</li>
+            <li>Fix a stability issue caused when gathering table information and the user chooses to close the connection when the reconnect sheet appears.</li>
+            <li>Fix an issue that prevented the addition of new tables with a CSV storage engine because of an initial nullable field.</li>
+            <li>Lots of memory leak fixes.</li>
+            <li>Lots of stability improvements and exception fixes.</li>
+            <li>Ask for confirmation before deleting connection favourites.</li>
+            <li>Allow .spfs to be saved with empty passwords or sockets.</li>
+            <li>Fixed display of Growl notifications for long-running tasks.</li>
+            </ul>
+
+            
+						
+						
+						
+					</td>
+				</tr>
+			</table>
+			<br>
+			
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6477524-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+	</body>
+
+</html>
