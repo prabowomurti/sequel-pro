@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresError.m 3794 2012-09-03 10:53:23Z stuart02 $
 //
 //  FLXPostgresError.m
 //  PostgresKit
@@ -33,8 +33,8 @@
 
 @interface FLXPostgresError ()
 
-- (void)_extractErrorDetailsFromResult:(const PGresult *)result;
-- (NSString *)_extractErrorField:(int)field fromResult:(const PGresult *)result;
+- (void)_extractErrorDetailsFromResult:(PGresult *)result;
+- (NSString *)_extractErrorField:(int)field fromResult:(PGresult *)result;
 
 @end
 
@@ -57,7 +57,7 @@
 	return nil;
 }
 
-- (id)initWithResult:(const void *)result
+- (id)initWithResult:(PGresult *)result
 {
 	if ((self = [super init])) {
 		
@@ -68,7 +68,7 @@
 		_errorMessageHint = nil;
 		_errorStatementPosition = -1;
 		
-		if (result) [self _extractErrorDetailsFromResult:(const PGresult *)result];
+		if (result) [self _extractErrorDetailsFromResult:result];
 	}
 	
 	return self;
@@ -87,7 +87,7 @@
  *
  * @param result The Postgres result to extract the information from.
  */
-- (void)_extractErrorDetailsFromResult:(const PGresult *)result
+- (void)_extractErrorDetailsFromResult:(PGresult *)result
 {
 	// Note that we don't expose all the fields that are available.
 	// The ones we don't mostly include information internal to Postgres 
@@ -97,7 +97,12 @@
 	_errorPrimaryMessage = [self _extractErrorField:PG_DIAG_MESSAGE_PRIMARY fromResult:result];
 	_errorDetailMessage = [self _extractErrorField:PG_DIAG_MESSAGE_DETAIL fromResult:result];
 	_errorMessageHint = [self _extractErrorField:PG_DIAG_MESSAGE_HINT fromResult:result];
-	_errorStatementPosition = [[self _extractErrorField:PG_DIAG_STATEMENT_POSITION fromResult:result] integerValue];
+	
+	NSString *statementPosition = [self _extractErrorField:PG_DIAG_STATEMENT_POSITION fromResult:result];
+	
+	_errorStatementPosition = [statementPosition integerValue];
+	
+	[statementPosition release];
 }
 
 /**
@@ -108,9 +113,9 @@
  *
  * @return A string representing the error value. The caller is responsible for freeing the associated memory.
  */
-- (NSString *)_extractErrorField:(int)field fromResult:(const PGresult *)result
+- (NSString *)_extractErrorField:(int)field fromResult:(PGresult *)result
 {	
-	return [[[NSString alloc] initWithUTF8String:PQresultErrorField(result, field)] autorelease];
+	return [[NSString alloc] initWithUTF8String:PQresultErrorField(result, field)];
 }
 
 #pragma mark -

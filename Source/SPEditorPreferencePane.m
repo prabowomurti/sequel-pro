@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPEditorPreferencePane.m 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPEditorPreferencePane.m
 //  sequel-pro

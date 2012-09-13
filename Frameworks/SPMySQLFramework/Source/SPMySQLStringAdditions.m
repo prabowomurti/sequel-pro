@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLStringAdditions.m 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  SPMySQLStringAdditions.h
 //  SPMySQLFramework
@@ -52,6 +52,33 @@
 - (NSString *)mySQLTickQuotedString
 {
 	return [NSString stringWithFormat: @"'%@'", [self stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
+}
+
+- (NSString *)stringByEscapingForURLQuery
+{
+    static CFStringRef leaveAlone = CFSTR(" ");
+	static CFStringRef toEscape = CFSTR("\n\r:/=,!$&'()*+;[]@#?%");
+    
+    NSString *result = self;
+	CFStringRef escapedStr = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)self, leaveAlone, toEscape, kCFStringEncodingUTF8);
+    
+	if (escapedStr) {
+		NSMutableString *mutable = [NSMutableString stringWithString:(NSString *)escapedStr];
+		CFRelease(escapedStr);
+        
+		[mutable replaceOccurrencesOfString:@" " withString:@"+" options:0 range:NSMakeRange(0, [mutable length])];
+		result = mutable;
+	}
+    
+	return result;  
+	
+}
+
+- (NSString *)stringByUnescapingFromURLQuery
+{
+    static CFStringRef space = CFSTR(" ");
+    
+    return [(NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault, (CFStringRef)self, space, kCFStringEncodingUTF8) autorelease];
 }
 
 @end

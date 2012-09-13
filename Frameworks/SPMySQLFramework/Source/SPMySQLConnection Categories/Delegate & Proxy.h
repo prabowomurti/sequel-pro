@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: Delegate & Proxy.h 3563 2012-03-29 23:55:09Z rowanb@gmail.com $
 //
 //  Delegate & Proxy.h
 //  SPMySQLFramework

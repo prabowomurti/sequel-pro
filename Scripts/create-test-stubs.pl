@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 
 #
-#  $Id$
+#  $Id: create-test-stubs.pl 3758 2012-08-01 09:46:03Z stuart02 $
 #
 #  create-test-stubs.pl
 #  sequel-pro

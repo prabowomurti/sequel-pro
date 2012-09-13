@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: PostgresKit-Prefix.pch 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  PostgresKit-Prefix.pch
 //  PostgresKit
@@ -23,15 +23,9 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
 
-    // libpq interface
+    // PostgreSQL interface
     #import "libpq-fe.h"
-
-    // libpqtypes interface
-    #import "libpqtypes.h"
 
     // Framework constants
     #import "FLXConstants.h"
-
-    // Global types
-    #import "FLXPostgresTypes.h"
 #endif

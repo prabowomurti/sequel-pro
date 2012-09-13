@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPDocumentController.m 3790 2012-08-30 00:43:40Z rowanb@gmail.com $
 //
 //  SPDocumentController.m
 //  sequel-pro

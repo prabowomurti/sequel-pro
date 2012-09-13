@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPConnectionHandler.m 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPConnectionHandler.m
 //  sequel-pro
@@ -77,7 +77,14 @@ static NSString *SPLocalhostAddress = @"127.0.0.1";
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	mySQLConnection = [[SPMySQLConnection alloc] init];
+	if ([self useHTTPTunnel])
+	{
+		mySQLConnection = [[SPMySQLConnection alloc] initUsingHTTPTunnelURL:[self httpTunnelURL]];
+	}
+	else
+	{
+		mySQLConnection = [[SPMySQLConnection alloc] init];
+	}
 
 	// Set up shared details
 	[mySQLConnection setUsername:[self user]];

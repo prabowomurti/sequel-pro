@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKUpdateQueryTests.h 3732 2012-07-18 11:24:06Z stuart02 $
 //
 //  QKUpdateQueryTests.h
 //  QueryKit

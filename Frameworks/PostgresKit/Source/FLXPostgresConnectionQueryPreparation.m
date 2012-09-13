@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnectionQueryPreparation.m 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresConnectionQueryPreparation.m
 //  PostgresKit
@@ -22,11 +22,34 @@
 
 #import "FLXPostgresConnectionQueryPreparation.h"
 #import "FLXPostgresConnectionTypeHandling.h"
-#import "FLXPostgresKitPrivateAPI.h"
+#import "FLXPostgresConnectionPrivateAPI.h"
 #import "FLXPostgresStatement.h"
 #import "FLXPostgresException.h"
 
 @implementation FLXPostgresConnection (FLXPostgresConnectionQueryPreparation)
+
+/**
+ * Quotes the supplied object in accordance with it's data type.
+ *
+ * @param object The object to quote.
+ *
+ * @return A string representation of the quoted object.
+ */
+- (NSString *)quote:(NSObject *)object 
+{	
+	if (!object || [object isKindOfClass:[NSNull class]]) return @"NULL";
+	
+	id <FLXPostgresTypeHandlerProtocol> handler = [self typeHandlerForClass:[object class]];
+	
+	if (!handler) {
+		[FLXPostgresException raise:FLXPostgresConnectionErrorDomain 
+							 reason:[NSString stringWithFormat:@"Unsupported class '%@'", NSStringFromClass([object class])]];
+		
+		return nil;
+	}
+	
+	return [handler quotedStringFromObject:object];
+}
 
 /**
  * Creates a prepared statment from the supplied query.
@@ -80,13 +103,13 @@
  *
  * @return A BOOL indicating succes. Returns NO if there's no statement, statement name or current connection.
  */
-- (BOOL)_prepare:(FLXPostgresStatement *)statement num:(NSInteger)paramNum types:(FLXPostgresOid *)paramTypes 
+- (BOOL)_prepare:(FLXPostgresStatement *)statement num:(int)paramNum types:(FLXPostgresOid *)paramTypes 
 {
 	if (!statement || ![statement name] || ![self isConnected]) return NO;
 	
 	NSString *name = [[NSProcessInfo processInfo] globallyUniqueString];
 	
-	PGresult *result = PQprepare(_connection, [name UTF8String], [statement UTF8Statement], (int)paramNum, paramTypes);
+	PGresult *result = PQprepare(_connection, [name UTF8String], [statement UTF8Statement], paramNum, paramTypes);
 	
 	if (!result) return NO;
 	

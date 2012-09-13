@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLUtilities.h 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  Locking.h
 //  SPMySQLFramework

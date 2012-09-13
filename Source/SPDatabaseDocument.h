@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPDatabaseDocument.h 3789 2012-08-30 00:28:56Z rowanb@gmail.com $
 //
 //  SPDatabaseDocument.h
 //  sequel-pro

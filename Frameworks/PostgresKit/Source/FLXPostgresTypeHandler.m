@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresTypeHandler.m 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresTypeHandler.h
 //  PostgresKit
@@ -25,8 +25,6 @@
 
 @synthesize connection = _connection;
 
-#pragma mark -
-
 - (id)initWithConnection:(FLXPostgresConnection *)connection 
 {	
 	if ((self = [super init])) {
@@ -39,7 +37,7 @@
 #pragma mark -
 
 - (void)dealloc 
-{	
+{
 	if (_connection) [_connection release], _connection = nil;
 	
 	[super dealloc];

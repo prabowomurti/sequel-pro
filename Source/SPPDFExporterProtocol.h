@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPPDFExporterProtocol.h 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPPDFExporterProtocol.h
 //  sequel-pro

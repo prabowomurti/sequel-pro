@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPFileHandle.m 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPFileHandle.m
 //  sequel-pro

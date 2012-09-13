@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPExtendedTableInfo.m 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPExtendedTableInfo.m
 //  sequel-pro

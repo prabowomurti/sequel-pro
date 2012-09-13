@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnectionQueryPreparation.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresConnectionQueryPreparation.h
 //  PostgresKit
@@ -23,6 +23,8 @@
 #import "FLXPostgresConnection.h"
 
 @interface FLXPostgresConnection (FLXPostgresConnectionQueryPreparation)
+
+- (NSString *)quote:(NSObject *)object;
 
 - (FLXPostgresStatement *)prepare:(NSString *)query;
 - (FLXPostgresStatement *)prepareWithFormat:(NSString *)query, ...;

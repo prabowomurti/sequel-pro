@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKSelectQueryTests.m 3735 2012-07-21 05:37:48Z stuart02 $
 //
 //  QKSelectQueryTests.m
 //  QueryKit

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPBundleEditorController.h 3751 2012-07-29 23:33:59Z rowanb@gmail.com $
 //
 //  SPBundleEditorController.h
 //  sequel-pro

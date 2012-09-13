@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKQueryConstants.h 3732 2012-07-18 11:24:06Z stuart02 $
 //
 //  QKQueryConstants.h
 //  QueryKit

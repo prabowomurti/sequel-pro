@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPConstants.h 3777 2012-08-15 10:47:43Z stuart02 $
 //
 //  SPConstants.h
 //  sequel-pro
@@ -457,6 +457,8 @@ extern NSString *SPFavoriteDatabaseKey;
 extern NSString *SPFavoriteHostKey;
 extern NSString *SPFavoritePortKey;
 extern NSString *SPFavoriteUserKey;
+extern NSString *SPFavoriteUseHTTPTunnelKey;
+extern NSString *SPFavoriteHTTPTunnelURLKey;
 extern NSString *SPFavoriteTypeKey;
 extern NSString *SPFavoriteSocketKey;
 extern NSString *SPFavoriteSSHHostKey;

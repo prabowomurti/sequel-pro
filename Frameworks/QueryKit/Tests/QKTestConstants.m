@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKTestConstants.m 3738 2012-07-21 06:28:09Z stuart02 $
 //
 //  QKTestConstants.m
 //  QueryKit

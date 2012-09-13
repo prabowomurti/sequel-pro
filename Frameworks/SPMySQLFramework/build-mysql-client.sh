@@ -1,7 +1,7 @@
 #! /bin/ksh
 
 #
-#  $Id$
+#  $Id: build-mysql-client.sh 3758 2012-08-01 09:46:03Z stuart02 $
 #
 #  build-mysql-client.sh
 #  sequel-pro

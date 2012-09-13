@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: Encoding.m 3791 2012-08-31 00:14:37Z rowanb@gmail.com $
 //
 //  Encoding.m
 //  SPMySQLFramework
@@ -97,8 +97,14 @@
 	}
 
 	// Run a query to set the connection encoding
-	[self queryString:[NSString stringWithFormat:@"SET NAMES %@", [theEncoding mySQLTickQuotedString]]];
+	NSString *query = [NSString stringWithFormat:@"SET NAMES %@", [theEncoding mySQLTickQuotedString]];
+	
+	enablePersistentQueries = NO;
+	[self queryString:query];
+	enablePersistentQueries = YES;
 
+	[persistentQueries setObject:query forKey:@"set_names"];
+	
 	// If the query errored, no encoding change occurred - return failure.
 	if ([self queryErrored]) return NO;
 

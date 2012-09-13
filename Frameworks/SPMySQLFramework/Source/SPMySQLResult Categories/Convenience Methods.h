@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: Convenience Methods.h 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  Convenience Methods.h
 //  SPMySQLFramework

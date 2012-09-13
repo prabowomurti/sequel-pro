@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLResult.m 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  SPMySQLResult.m
 //  SPMySQLFramework
@@ -121,11 +121,11 @@ static id NSNullPointer;
 		// Cache the field definitions and build up an array of cached field names and types
 		fieldDefinitions = mysql_fetch_fields(resultSet);
 		fieldNames = malloc(sizeof(NSString *) * numberOfFields);
-		fieldTypes = malloc(sizeof(unsigned int) * numberOfFields);
+		//fieldTypes = malloc(sizeof(unsigned int) * numberOfFields);
 		for (NSUInteger i = 0; i < numberOfFields; i++) {
 			MYSQL_FIELD aField = fieldDefinitions[i];
 			fieldNames[i] = [[self _stringWithBytes:aField.name length:aField.name_length] retain];
-			fieldTypes[i] = aField.type;
+			//fieldTypes[i] = aField.type;
 		}
 
 		defaultRowReturnType = SPMySQLResultRowAsDictionary;
@@ -134,15 +134,136 @@ static id NSNullPointer;
 	return self;
 }
 
+- (id)initWithMySQLHTTPTunnelResponseData:(SPMySQLHTTPTunnelResponseData *)data stringEncoding:(NSStringEncoding)theStringEncoding
+{
+	if (!data) return nil;
+	
+	if (self = [super init])
+	{
+		sourceType = SPMySQLResultSourceData;
+		resultData = [data retain];
+		
+		stringEncoding = theStringEncoding;
+		queryExecutionTime = -1;
+		
+		numberOfFields = (int)[resultData readLong];
+		numberOfRows = [resultData readLong];
+		currentRowIndex = 0;
+		
+		NSString *databaseNameString = [resultData readBlockAsString];
+		const char *databaseName = "";
+		
+		if (databaseNameString)
+		{
+			databaseName = [databaseNameString cStringUsingEncoding:NSUTF8StringEncoding];
+		}
+		
+		//NSLog(@"START FETCHING numberOfFields: %li, numberOfRows: %lli", numberOfFields, numberOfRows);
+		
+		fieldDefinitions = malloc(sizeof(struct st_mysql_field) * numberOfFields);
+		fieldNames = malloc(sizeof(NSString *) * numberOfFields);
+		rowsDataStartPos = malloc(sizeof(NSUInteger) * numberOfRows);
+		
+		if (numberOfFields > 0)
+		{
+			for (NSUInteger i = 0; i < numberOfFields; i++)
+			{
+				MYSQL_FIELD aField;
+				
+				const char *fieldName = [[resultData readBlockAsString] cStringUsingEncoding:NSUTF8StringEncoding];
+				const char *tableName = [[resultData readBlockAsString] cStringUsingEncoding:NSUTF8StringEncoding];
+				
+				aField.name = (char *)fieldName;
+				aField.name_length = (unsigned int)strlen(fieldName);
+				
+				aField.org_name = aField.name;
+				aField.org_name_length = aField.name_length;
+				
+				aField.org_table = aField.table = (char *)tableName;
+				aField.org_table_length = aField.table_length = (unsigned int)strlen(tableName);
+				
+				if (databaseNameString)
+				{
+					aField.db = (char *)databaseName;
+					aField.db_length = (unsigned int)strlen(databaseName);
+				}
+				else
+				{
+					aField.db = (char *)"";
+					aField.db_length = 0;
+				}
+				
+				aField.catalog = (char *)"";
+				aField.catalog_length = 0;
+				
+				aField.decimals = 0;
+				
+				aField.def = (char *)"";
+				aField.def_length = 0;
+				
+				aField.type = [resultData readLong];
+				aField.flags = [resultData readLong];
+				aField.length = [resultData readLong];
+				
+				
+				fieldNames[i] = [[self _stringWithBytes:aField.name length:aField.name_length] retain];
+				
+				fieldDefinitions[i] = aField;
+				
+				//NSLog(@"fieldName: %@, type: %i, flags: %i, length %lu", fieldNames[i], fieldDefinitions[i].type, fieldDefinitions[i].flags, fieldDefinitions[i].length);
+			}
+			
+			//NSLog(@"loop trough response: %lu %lu", *pos, [data length]);
+			
+			//NSUInteger rowStartPos = [data position];
+			for (NSUInteger i = 0; i < numberOfRows; i++)
+			{
+				rowsDataStartPos[i] = [resultData position];
+				
+				//NSLog(@"rowIndex: %lu, dataPos: %lu ", i, rowStartPos);
+				
+				//Skip data
+				for (NSUInteger j = 0; j < numberOfFields; j++)
+				{
+					[resultData skipBlock];
+					//unsigned int dataLength = [data readLongAtPos:&rowStartPos];
+					
+					//NSLog(@"ROW FIELD %u %s", dataLength, [data readBlock:&rowStartPos length:&dataLength]);
+					
+					//rowStartPos += dataLength;
+				}
+			}
+		}
+		
+		//NSLog(@"DONE");
+		
+		currentRowIndex = numberOfRows > 0 ? 0 : NSNotFound;
+		
+		defaultRowReturnType = SPMySQLResultRowAsArray;
+	}
+	
+	return self;
+}
+
 - (void)dealloc
 {
-	mysql_free_result(resultSet);
-
+	if (sourceType == SPMySQLResultSourceSet)
+	{
+		mysql_free_result(resultSet);
+	}
+	
 	for (NSUInteger i = 0; i < numberOfFields; i++) {
 		[fieldNames[i] release];
 	}
 	free(fieldNames);
-	free(fieldTypes);
+	
+	if (sourceType == SPMySQLResultSourceData)
+	{
+		free(rowsDataStartPos);
+		free(fieldDefinitions);
+		
+		[resultData release];
+	}
 
 	[super dealloc];
 }
@@ -204,7 +325,11 @@ static id NSNullPointer;
 		targetRow = numberOfRows - 1;
 	}
 
-	mysql_data_seek(resultSet, targetRow);
+	if (sourceType == SPMySQLResultSourceSet)
+	{
+		mysql_data_seek(resultSet, targetRow);
+	}
+	
 	currentRowIndex = targetRow;
 }
 
@@ -249,12 +374,24 @@ static id NSNullPointer;
 	unsigned long *theRowDataLengths;
 	id theReturnData;
 
-	// Retrieve the row in MySQL format, and the length of the data within the row
-	theRow = mysql_fetch_row(resultSet);
-	theRowDataLengths = mysql_fetch_lengths(resultSet);
-
-	// If no row was returned, likely at the end of the result set - return nil
-	if (!theRow) return nil;
+	if (sourceType == SPMySQLResultSourceSet)
+	{
+		// Retrieve the row in MySQL format, and the length of the data within the row
+		theRow = mysql_fetch_row(resultSet);
+		theRowDataLengths = mysql_fetch_lengths(resultSet);
+		
+		// If no row was returned, likely at the end of the result set - return nil
+		if (!theRow) return nil;
+	}
+	else
+	{
+		if (currentRowIndex == NSNotFound)
+		{
+			return nil;
+		}
+		
+		[resultData seekToPos:rowsDataStartPos[currentRowIndex]];
+	}
 
 	// If the target type was unspecified, use the instance default
 	if (theType == SPMySQLResultRowAsDefault) theType = defaultRowReturnType;
@@ -268,11 +405,25 @@ static id NSNullPointer;
 
 	// Convert each of the cells in the row in turn
 	for (NSUInteger i = 0; i < numberOfFields; i++) {
-		id cellData = SPMySQLResultGetObject(self, theRow[i], theRowDataLengths[i], fieldTypes[i], i);
-
+		id cellData;
+		
+		if (sourceType == SPMySQLResultSourceSet)
+		{
+			cellData = SPMySQLResultGetObject(self, theRow[i], theRowDataLengths[i], fieldDefinitions[i].type, i);
+		}
+		else
+		{
+			unsigned long length;
+			char *bytes = [resultData readBlockGettingLength:&length];
+			
+			cellData = SPMySQLResultGetObject(self, bytes, length, fieldDefinitions[i].type, i);
+			
+			free(bytes);
+		}
+		
 		// If object creation failed, display a null
 		if (!cellData) cellData = NSNullPointer;
-
+		
 		// Add to the result array/dictionary
 		if (theType == SPMySQLResultRowAsArray) {
 			SPMySQLMutableArrayInsertObject(theReturnData, cellData, i);

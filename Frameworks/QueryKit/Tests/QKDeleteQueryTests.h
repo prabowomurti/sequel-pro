@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKDeleteQueryTests.h 3738 2012-07-21 06:28:09Z stuart02 $
 //
 //  QKDeleteQueryTests.h
 //  QueryKit

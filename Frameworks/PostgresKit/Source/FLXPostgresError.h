@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresError.h 3795 2012-09-03 11:23:32Z stuart02 $
 //
 //  FLXPostgresError.h
 //  PostgresKit
@@ -69,6 +69,6 @@
  */ 
 @property (readonly) NSUInteger errorStatementPosition;
 
-- (id)initWithResult:(const void *)result;
+- (id)initWithResult:(PGresult *)result;
 
 @end

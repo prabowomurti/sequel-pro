@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPTextView.m 3783 2012-08-21 23:49:48Z rowanb@gmail.com $
 //
 //  SPTextView.m
 //  sequel-pro

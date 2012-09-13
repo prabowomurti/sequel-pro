@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresTypeNumberHandler.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresTypeNumberHandler.h
 //  PostgresKit
@@ -23,34 +23,6 @@
 #import "FLXPostgresTypeHandler.h"
 
 @interface FLXPostgresTypeNumberHandler : FLXPostgresTypeHandler <FLXPostgresTypeHandlerProtocol>
-{
-	NSUInteger _row;
-	NSUInteger _column;
-	
-	const PGresult *_result;
-	
-	FLXPostgresOid _type;
-}
-
-/**
- * @property The row within the result the handler is being queried about.
- */
-@property (readwrite, assign) NSUInteger row;
-
-/**
- * @property The column within the result the handler is being queried about.
- */
-@property (readwrite, assign) NSUInteger column;
-
-/**
- * @property The type of data within the result the handler is being queried about.
- */
-@property (readwrite, assign) FLXPostgresOid type;
-
-/**
- * @property The result the handler is being asked to operate on.
- */
-@property (readwrite, assign) const PGresult *result;
 
 @end
 

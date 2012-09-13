@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLResult.h 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  SPMySQLResult.h
 //  SPMySQLFramework
@@ -30,6 +30,7 @@
 //
 //  More info at <http://code.google.com/p/sequel-pro/>
 
+@class SPMySQLHTTPTunnelResponseData;
 
 typedef enum {
 	SPMySQLResultFieldAsUnhandled    = 0,
@@ -41,8 +42,17 @@ typedef enum {
 	SPMySQLResultFieldAsNull         = 6
 } SPMySQLResultFieldProcessor;
 
+typedef enum {
+	SPMySQLResultSourceSet	= 0,
+	SPMySQLResultSourceData	= 1
+} SPMySQLResultSourceType;
+
 @interface SPMySQLResult : NSObject <NSFastEnumeration> {
 
+	SPMySQLResultSourceType sourceType;
+	
+	SPMySQLHTTPTunnelResponseData *resultData;
+	
 	// Wrapped MySQL result set and its encoding
 	struct st_mysql_res *resultSet;
 	NSStringEncoding stringEncoding;
@@ -50,8 +60,10 @@ typedef enum {
 	// Number of fields in the result set, and the field names and information
 	NSUInteger numberOfFields;
 	struct st_mysql_field *fieldDefinitions;
-	unsigned int *fieldTypes;
+	//unsigned int *fieldTypes;
 	NSString **fieldNames;
+	
+	NSUInteger *rowsDataStartPos;
 	
 	// Number of rows in the result set and an internal data position counter
 	unsigned long long numberOfRows;
@@ -69,6 +81,7 @@ typedef enum {
 
 // Master init method
 - (id)initWithMySQLResult:(void *)theResult stringEncoding:(NSStringEncoding)theStringEncoding;
+- (id)initWithMySQLHTTPTunnelResponseData:(SPMySQLHTTPTunnelResponseData *)data stringEncoding:(NSStringEncoding)theStringEncoding;
 
 // Result set information
 - (NSUInteger)numberOfFields;

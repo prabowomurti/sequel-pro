@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKTestCase.m 3733 2012-07-18 11:40:45Z stuart02 $
 //
 //  QKTestCase.m
 //  QueryKit

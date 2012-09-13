@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLConnection.m 3779 2012-08-18 14:18:29Z rowanb@gmail.com $
 //
 //  SPMySQLConnection.m
 //  SPMySQLFramework
@@ -193,6 +193,101 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
 	return self;
 }
 
+- (id)initUsingHTTPTunnelURL:(NSString *)url
+{
+	if ((self = [super init])) {
+		mySQLConnection = NULL;
+		state = SPMySQLDisconnected;
+		userTriggeredDisconnect = NO;
+		reconnectingThread = NULL;
+		mysqlConnectionThreadId = 0;
+		initialConnectTime = 0;
+		
+		port = 3306;
+		
+		// Set up http tunnel
+		useHTTPTunnel = YES;
+		httpTunnelURL = [url copy];
+		persistentQueries = [[NSMutableDictionary alloc] init];
+		enablePersistentQueries = YES;
+		
+		useSocket = NO;
+		proxy = nil;
+		proxyStateChangeNotificationsIgnored = NO;
+		
+		// Start with no selected database
+		database = nil;
+		databaseToRestore = nil;
+		
+		// Set a timeout of 30 seconds, with keepalive on and acting every sixty seconds
+		timeout = 30;
+		useKeepAlive = NO;
+		keepAliveInterval = 60;
+		keepAlivePingFailures = 0;
+		lastKeepAliveTime = 0;
+		keepAliveThread = nil;
+		keepAlivePingThread_t = NULL;
+		keepAlivePingThreadActive = NO;
+		keepAliveLastPingSuccess = NO;
+		keepAliveLastPingBlocked = NO;
+		
+		// Set up default encoding variables
+		encoding = [[NSString alloc] initWithString:@"utf8"];
+		stringEncoding = NSUTF8StringEncoding;
+		encodingUsesLatin1Transport = NO;
+		encodingToRestore = nil;
+		encodingUsesLatin1TransportToRestore = NO;
+		previousEncoding = nil;
+		previousEncodingUsesLatin1Transport = NO;
+		
+		// Initialise default delegate settings
+		delegate = nil;
+		delegateSupportsWillQueryString = NO;
+		delegateSupportsConnectionLost = NO;
+		delegateQueryLogging = YES;
+		
+		// Delegate disconnection decisions
+		reconnectionRetryAttempts = 0;
+		lastDelegateDecisionForLostConnection = SPMySQLConnectionLostDisconnect;
+		delegateDecisionLock = nil;
+		
+		// Set up the connection lock
+		connectionLock = nil;
+		//[connectionLock setName:@"SPMySQLConnection query lock"];
+		
+		// Ensure the server detail records are initialised
+		serverVersionString = nil;
+		
+		// Start with a blank error state
+		queryErrorID = 0;
+		queryErrorMessage = nil;
+		
+		// Start with empty cancellation details
+		lastQueryWasCancelled = NO;
+		lastQueryWasCancelledUsingReconnect = NO;
+		
+		// Empty or reset the timing variables
+		lastConnectionUsedTime = 0;
+		lastQueryExecutionTime = 0;
+		
+		// Default to editable query size of 1MB
+		maxQuerySize = 1048576;
+		maxQuerySizeIsEditable = YES;
+		maxQuerySizeEditabilityChecked = NO;
+		queryActionShouldRestoreMaxQuerySize = NSNotFound;
+		
+		// Default to allowing queries to be automatically retried if the connection drops
+		// while running them
+		retryQueriesOnConnectionFailure = YES;
+		
+		// Start the ping keepalive timer
+		//keepAliveTimer = [[SPMySQLKeepAliveTimer alloc] initWithInterval:10 target:self selector:@selector(_keepAlive)];
+		keepAliveTimer = nil;
+	}
+	
+	return self;
+}
+
 /**
  * Object deallocation.
  */
@@ -234,7 +329,10 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
 	if (serverVersionString) [serverVersionString release], serverVersionString = nil;
 	if (queryErrorMessage) [queryErrorMessage release], queryErrorMessage = nil;
 	[delegateDecisionLock release];
-
+	
+	if (httpTunnelURL) [httpTunnelURL release], httpTunnelURL = nil;
+	if (persistentQueries) [persistentQueries release], persistentQueries = nil;
+	
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 
 	[super dealloc];
@@ -260,22 +358,42 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
 
 	// Lock the connection for safety
 	[self _lockConnection];
-
-	// Attempt the connection
-	mySQLConnection = [self _makeRawMySQLConnectionWithEncoding:encoding isMasterConnection:YES];
-
-	// If the connection failed, reset state and return
-	if (!mySQLConnection) {
-		[self _unlockConnection];
-		state = SPMySQLDisconnected;
-		return NO;
+	
+	if (useHTTPTunnel)
+	{
+		state = SPMySQLConnecting;
+		
+		isCheckingHTTPTunnelConnection = YES;
+		id result = [self queryString:@""];
+		isCheckingHTTPTunnelConnection = NO;
+		
+		if (![result isKindOfClass:[NSNumber class]] || [result boolValue] == NO)
+		{
+			state = SPMySQLDisconnected;
+			return NO;
+		}
+		
+		state = SPMySQLConnected;
 	}
+	else
+	{
+		// Attempt the connection
+		mySQLConnection = [self _makeRawMySQLConnectionWithEncoding:encoding isMasterConnection:YES];
 
+		// If the connection failed, reset state and return
+		if (!mySQLConnection) {
+			[self _unlockConnection];
+			state = SPMySQLDisconnected;
+			return NO;
+		}
+
+		mysqlConnectionThreadId = mySQLConnection->thread_id;
+	}
+		
 	// Successfully connected - record connected state and reset tracking variables
 	state = SPMySQLConnected;
 	userTriggeredDisconnect = NO;
 	initialConnectTime = mach_absolute_time();
-	mysqlConnectionThreadId = mySQLConnection->thread_id;
 	lastConnectionUsedTime = 0;
 
 	// Update SSL state
@@ -353,14 +471,17 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
 	}
 	[self _unlockConnection];
 	[self _cancelKeepAlives];
-
-	// Close the underlying MySQL connection if it still appears to be active, and not reading
-	// or writing.  While this may result in a leak of the MySQL object, it prevents crashes
-	// due to attempts to close a blocked/stuck connection.
-	if (!mySQLConnection->net.reading_or_writing && mySQLConnection->net.vio && mySQLConnection->net.buff) {
-		mysql_close(mySQLConnection);
+	
+	if (!useHTTPTunnel)
+	{	
+		// Close the underlying MySQL connection if it still appears to be active, and not reading
+		// or writing.  While this may result in a leak of the MySQL object, it prevents crashes
+		// due to attempts to close a blocked/stuck connection.
+		if (!mySQLConnection->net.reading_or_writing && mySQLConnection->net.vio && mySQLConnection->net.buff) {
+			mysql_close(mySQLConnection);
+		}
+		mySQLConnection = NULL;
 	}
-	mySQLConnection = NULL;
 
 	// If using a connection proxy, disconnect that too
 	if (proxy) {
@@ -409,7 +530,11 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
  */
 - (BOOL)checkConnection
 {
-
+	if (useHTTPTunnel && state == SPMySQLConnected)
+	{
+		return YES;
+	}
+	
 	// If the connection is not seen as active, don't proceed
 	if (state != SPMySQLConnected) return NO;
 
@@ -612,7 +737,12 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
 {
 	if (userTriggeredDisconnect) return NO;
 	BOOL reconnectSucceeded = NO;
-
+	
+	if (useHTTPTunnel)
+	{
+		return YES;
+	}
+	
 	NSAutoreleasePool *reconnectionPool = [[NSAutoreleasePool alloc] init];
 
 	// Check whether a reconnection attempt is already being made - if so, wait
@@ -896,15 +1026,18 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
 	encoding = [[NSString alloc] initWithString:retrievedEncoding];
 	stringEncoding = [SPMySQLConnection stringEncodingForMySQLCharset:[self _cStringForString:encoding]];
 	encodingUsesLatin1Transport = NO;
-
-	// Check the interactive timeout - if it's below five minutes, increase it to ten
-	// to improve timeout/keepalive behaviour.  Note that wait_timeout also has be
-	// increased; current versions effectively populate the wait timeout from the
-	// interactive_timeout for interactive clients, but don't pick up changes.
-	if ([variables objectForKey:@"interactive_timeout"]) {
-		if ([[variables objectForKey:@"interactive_timeout"] integerValue] < 300) {
-			[self queryString:@"SET interactive_timeout=600"];
-			[self queryString:@"SET wait_timeout=600"];
+	
+	if (!useHTTPTunnel)
+	{
+		// Check the interactive timeout - if it's below five minutes, increase it to ten
+		// to improve timeout/keepalive behaviour.  Note that wait_timeout also has be
+		// increased; current versions effectively populate the wait timeout from the
+		// interactive_timeout for interactive clients, but don't pick up changes.
+		if ([variables objectForKey:@"interactive_timeout"]) {
+			if ([[variables objectForKey:@"interactive_timeout"] integerValue] < 300) {
+				[self queryString:@"SET interactive_timeout=600"];
+				[self queryString:@"SET wait_timeout=600"];
+			}
 		}
 	}
 
@@ -917,7 +1050,11 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
  */
 - (void)_restoreConnectionVariables
 {
-	mysqlConnectionThreadId = mySQLConnection->thread_id;
+	if (!useHTTPTunnel)
+	{
+		mysqlConnectionThreadId = mySQLConnection->thread_id;
+	}
+	
 	initialConnectTime = mach_absolute_time();
 
 	[self selectDatabase:database];
@@ -936,7 +1073,11 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
  */
 - (BOOL)_checkConnectionIfNecessary
 {
-
+	if (useHTTPTunnel)
+	{
+		return YES;
+	}
+	
 	// If the connection has been dropped in the background, trigger a
 	// reconnect and return the success state here
 	if (state == SPMySQLConnectionLostInBackground) {
@@ -959,18 +1100,21 @@ const char *SPMySQLSSLPermissibleCiphers = "DHE-RSA-AES256-SHA:AES256-SHA:DHE-RS
  */
 - (void)_validateThreadSetup
 {
+	if (!useHTTPTunnel)
+	{
+		
+		// Check to see whether the handler has already been installed
+		if (pthread_getspecific(mySQLThreadInitFlagKey)) return;
 
-	// Check to see whether the handler has already been installed
-	if (pthread_getspecific(mySQLThreadInitFlagKey)) return;
+		// If not, install it
+		mysql_thread_init();
 
-	// If not, install it
-	mysql_thread_init();
+		// Mark the thread to avoid multiple installs
+		pthread_setspecific(mySQLThreadInitFlagKey, &mySQLThreadFlag);
 
-	// Mark the thread to avoid multiple installs
-	pthread_setspecific(mySQLThreadInitFlagKey, &mySQLThreadFlag);
-
-	// Set up the notification handler to deregister it
-	[(NSNotificationCenter *)[NSNotificationCenter defaultCenter] addObserver:[self class] selector:@selector(_removeThreadVariables:) name:NSThreadWillExitNotification object:[NSThread currentThread]];
+		// Set up the notification handler to deregister it
+		[(NSNotificationCenter *)[NSNotificationCenter defaultCenter] addObserver:[self class] selector:@selector(_removeThreadVariables:) name:NSThreadWillExitNotification object:[NSThread currentThread]];
+	}
 }
 
 /**

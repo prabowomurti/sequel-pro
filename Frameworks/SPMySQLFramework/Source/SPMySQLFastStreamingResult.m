@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLFastStreamingResult.m 3578 2012-04-09 16:37:31Z rowanb@gmail.com $
 //
 //  SPMySQLFastStreamingResult.m
 //  SPMySQLFramework
@@ -204,7 +204,7 @@ typedef struct st_spmysqlstreamingrowdata {
 			copiedDataLength += fieldLength;
 
 			// Convert to the correct object type
-			cellData = SPMySQLResultGetObject(self, rawCellData, fieldLength, fieldTypes[i], i);
+			cellData = SPMySQLResultGetObject(self, rawCellData, fieldLength, fieldDefinitions[i].type, i);
 		}
 
 		// If object creation failed, display a null

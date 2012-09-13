@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKQueryStringAdditions.m 3739 2012-07-21 07:03:02Z stuart02 $
 //
 //  QKQueryStringAdditions.m
 //  QueryKit
@@ -43,7 +43,7 @@
 {
 	NSString *escapedVersion = [NSString stringWithFormat:@"%@%@", character, character];
 	
-	return [NSString stringWithFormat: @"%1$@2$%@%1$@", character, [self stringByReplacingOccurrencesOfString:character withString:escapedVersion]];
+	return [NSString stringWithFormat: @"%1$@%2$@%1$@", character, [self stringByReplacingOccurrencesOfString:character withString:escapedVersion]];
 }
 
 @end

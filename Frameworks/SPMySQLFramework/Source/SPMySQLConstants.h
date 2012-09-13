@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLConstants.h 3631 2012-05-08 01:03:31Z rowanb@gmail.com $
 //
 //  SPMySQLConstants.h
 //  SPMySQLFramework

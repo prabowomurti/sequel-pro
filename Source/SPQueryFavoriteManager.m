@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPQueryFavoriteManager.m 3762 2012-08-03 00:01:13Z rowanb@gmail.com $
 //
 //  SPQueryFavoriteManager.m
 //  sequel-pro

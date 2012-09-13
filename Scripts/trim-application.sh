@@ -1,7 +1,7 @@
 #! /bin/ksh 
 
 #
-#  $Id$
+#  $Id: trim-application.sh 3758 2012-08-01 09:46:03Z stuart02 $
 #
 #  trim-application.sh
 #  sequel-pro

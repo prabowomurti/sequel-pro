@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresTypeHandlerProtocol.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresTypeHandlerProtocol.h
 //  PostgresKit
@@ -20,32 +20,14 @@
 //  License for the specific language governing permissions and limitations under
 //  the License.
 
+#import "FLXPostgresTypes.h"
+
 @class FLXPostgresConnection;
 
 /**
  * @protocol FLXPostgresTypeHandlerProtocol
  */
 @protocol FLXPostgresTypeHandlerProtocol
-
-/**
- * @property The row within the result the handler is being queried about.
- */
-@property (readwrite, assign) NSUInteger row;
-
-/**
- * @property The column within the result the handler is being queried about.
- */
-@property (readwrite, assign) NSUInteger column;
-
-/**
- * @property The type of data within the result the handler is being queried about.
- */
-@property (readwrite, assign) FLXPostgresOid type;
-
-/**
- * @property The result the handler is being asked to operate on.
- */
-@property (readwrite, assign) const PGresult *result;
 
 /**
  * The remote type values handled by this class (terminated by 0).
@@ -69,10 +51,34 @@
 - (NSArray *)classAliases;
 
 /**
- * Convert the value at the specified row and column in the supplied result to a native object.
+ * Return a transmittable data representation from the supplied object,
+ * and set the remote type for the data.
+ *
+ * @param object The object to produce the data for.
+ * @param type   The type of object we're supplying.
+ *
+ * @return The data represenation as an NSData instance.
+ */
+- (NSData *)remoteDataFromObject:(id)object type:(FLXPostgresOid *)type;
+
+/**
+ * Convert the supplied remote data into an object.
+ *
+ * @param bytes  The remote data to convert.
+ * @param length The length of the data.
+ * @param type   The type of data.
  *
  * @return An object represenation of the data.
  */
-- (id)objectFromResult;
+- (id)objectFromRemoteData:(const void *)bytes length:(NSUInteger)length type:(FLXPostgresOid)type;
+
+/**
+ * Return a quoted string from an object.
+ *
+ * @param object The object to quote.
+ *
+ * @return A string represenation of the object quoted.
+ */
+- (NSString *)quotedStringFromObject:(id)object;
 
 @end

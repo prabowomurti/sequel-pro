@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnection.m 3797 2012-09-04 09:05:14Z stuart02 $
 //
 //  FLXPostgresConnection.m
 //  PostgresKit
@@ -23,22 +23,38 @@
 #import "FLXPostgresConnection.h"
 #import "FLXPostgresConnectionParameters.h"
 #import "FLXPostgresConnectionTypeHandling.h"
-#import "FLXPostgresKitPrivateAPI.h"
-#import "FLXPostgresTypeHandlerProtocol.h"
+#import "FLXPostgresConnectionPrivateAPI.h"
 #import "FLXPostgresTypeNumberHandler.h"
 #import "FLXPostgresTypeStringHandler.h"
 #import "FLXPostgresException.h"
 #import "FLXPostgresStatement.h"
 #import "FLXPostgresResult.h"
 
-#import <pthread.h>
-#import <poll.h>
+#import "pthread.h"
+
+// Connection default constants
+static NSUInteger FLXPostgresConnectionDefaultTimeout = 30;
+static NSUInteger FLXPostgresConnectionDefaultServerPort = 5432;
+static NSUInteger FLXPostgresConnectionDefaultKeepAlive = 60;
+
+// libpq connection parameters
+static const char *FLXPostgresApplicationName = "PostgresKit";
+static const char *FLXPostgresApplicationParam = "application_name";
+static const char *FLXPostgresUserParam = "user";
+static const char *FLXPostgresHostParam = "host";
+static const char *FLXPostgresPasswordParam = "password";
+static const char *FLXPostgresPortParam = "port";
+static const char *FLXPostgresDatabaseParam = "dbname";
+static const char *FLXPostgresConnectionTimeoutParam = "conect_timeout";
+static const char *FLXPostgresClientEncodingParam = "client_encoding";
+static const char *FLXPostgresKeepAliveParam = "keepalives";
+static const char *FLXPostgresKeepAliveIntervalParam = "keepalives_interval";
 
 @interface FLXPostgresConnection ()
 
+- (void)_pollConnection;
 - (void)_loadDatabaseParameters;
 - (void)_createConnectionParameters;
-- (void)_pollConnection:(NSNumber *)isReset;
 
 // libpq callback
 static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message);
@@ -61,10 +77,8 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
 @synthesize lastQueryWasCancelled = _lastQueryWasCancelled;
 @synthesize lastError = _lastError;
 @synthesize encoding = _encoding;
-@synthesize connectionError = _connectionError;
 @synthesize stringEncoding = _stringEncoding;
 @synthesize parameters = _parameters;
-@synthesize applicationName = _applicationName;
 
 #pragma mark -
 #pragma mark Initialisation
@@ -95,13 +109,12 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
 		
 		_lastError = nil;
 		_connection = nil;
-		_connectionError = nil;
 		_lastQueryWasCancelled = NO;
 		
 		_stringEncoding = FLXPostgresConnectionDefaultStringEncoding;
 		_encoding = [NSString stringWithString:FLXPostgresConnectionDefaultEncoding];
 		
-		_delegateSupportsWillExecute = [_delegate respondsToSelector:@selector(connection:willExecute:withValues:)];
+		_delegateSupportsWillExecute = [_delegate respondsToSelector:@selector(connection:willExecute:values:)];
 		
 		_typeMap = [[NSMutableDictionary alloc] init];
 		
@@ -176,18 +189,11 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
 	
 	if (!_connection || PQstatus(_connection) == CONNECTION_BAD) {
 		
-		if (_connectionError) [_connectionError release];
-		
-		_connectionError = [[NSString alloc] initWithUTF8String:PQerrorMessage(_connection)];
-		
-		PQfinish(_connection);
-		
-		_connection = nil;
-		
+		// TODO: implement reconnection attempt
 		return NO;
 	}
 	
-	[self performSelectorInBackground:@selector(_pollConnection:) withObject:nil];
+	[self performSelectorInBackground:@selector(_pollConnection) withObject:nil];
 	
 	return YES;
 }
@@ -196,9 +202,9 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
  * Attempts the reset the underlying connection.
  *
  * @note A return value of NO means that the connection is not currently 
- *       connected or the request to reset it failed. YES means the reset request was successful, 
- *       not that the connection re-establishment has succeeded. Wait for the
- *       delegate connection reset method to be called and check -isConnected.
+ *       connected to be reset and YES means the reset request was successful, 
+ *       not that the connection re-establishment has succeeded. Use -isConnected
+ *       to check this.
  *
  * @return A BOOL indicating the success of the call.
  */
@@ -206,9 +212,7 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
 {
 	if (![self isConnected]) return NO;
 	
-	if (!PQresetStart(_connection)) return NO;
-	
-	[self performSelectorInBackground:@selector(_pollConnection:) withObject:[NSNumber numberWithBool:YES]];
+	PQreset(_connection);
 	
 	return YES;
 }
@@ -291,62 +295,41 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
  *
  * @note This method should be called on a background thread as it will block waiting for the connection.
  */
-- (void)_pollConnection:(NSNumber *)isReset
+- (void)_pollConnection
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	BOOL reset = [isReset boolValue];
-	
-	int sock = PQsocket(_connection);
-	
-	if (sock == -1) {
-		[pool release];
-		return;
-	}
-	
-	struct pollfd fdinfo[1];
-	
-	fdinfo[0].fd = sock;
-	fdinfo[0].events = POLLIN|POLLOUT;
-	
-	PostgresPollingStatusType status;
-	
-	do
-	{
-		status = reset ? PQresetPoll(_connection) : PQconnectPoll(_connection);
 		
-		if (status == PGRES_POLLING_READING || status == PGRES_POLLING_WRITING) {			
-			if (poll(fdinfo, 1, -1) < 0) break;
+	BOOL failed = NO;
+	BOOL connected = NO;
+	
+	while (!connected && !failed)
+	{		
+		switch (PQconnectPoll(_connection))
+		{
+			case PGRES_POLLING_READING:
+			case PGRES_POLLING_WRITING:
+			case PGRES_POLLING_ACTIVE: // Obsolete so we don't really care about it
+				break;
+			case PGRES_POLLING_OK:
+				connected = YES;
+				break;
+			case PGRES_POLLING_FAILED:
+				failed = YES;
+				break;
 		}
 	}
-	while (status != PGRES_POLLING_OK && status != PGRES_POLLING_FAILED);
 	
-	if (status == PGRES_POLLING_OK && [self isConnected]) {
+	if (connected) {
 		
 		// Increase error verbosity
 		PQsetErrorVerbosity(_connection, PQERRORS_VERBOSE);
 		
-		// Set notice processor
 		PQsetNoticeProcessor(_connection, _FLXPostgresConnectionNoticeProcessor, self);
-		
-		NSInteger success = reset ? PQclearTypes(_connection) : PQinitTypes(_connection);
-		
-		// Register type extensions
-		if (!success) {
-			NSLog(@"PostgresKit: Error: Failed to initialise (or clear) type extensions. Connection might return unexpected results!");
-		}
 		
 		[self _loadDatabaseParameters];
 		
-		if (reset) {
-			if (_delegate && [_delegate respondsToSelector:@selector(connectionReset:)]) {
-				[_delegate performSelectorOnMainThread:@selector(connectionReset:) withObject:self waitUntilDone:NO];
-			}
-		}
-		else{
-			if (_delegate && [_delegate respondsToSelector:@selector(connectionEstablished:)]) {
-				[_delegate performSelectorOnMainThread:@selector(connectionEstablished:) withObject:self waitUntilDone:NO];
-			}
+		if (_delegate && [_delegate respondsToSelector:@selector(connectionEstablished:)]) {
+			[_delegate performSelectorOnMainThread:@selector(connectionEstablished:) withObject:self waitUntilDone:NO];
 		}
 	}
 		
@@ -398,7 +381,7 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
 	if (_connectionParamNames) free(_connectionParamNames);
 	if (_connectionParamValues) free(_connectionParamValues);
 	
-	int paramCount = 5;
+	int paramCount = 6;
 	
 	if (_user && [_user length]) paramCount++, hasUser = YES;
 	if (_host && [_host length]) paramCount++, hasHost = YES;
@@ -409,21 +392,24 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
 	_connectionParamValues = malloc(paramCount * sizeof(*_connectionParamValues));
 	
 	_connectionParamNames[0] = FLXPostgresApplicationParam;
-	_connectionParamValues[0] = !_applicationName ? [_applicationName UTF8String] : FLXPostgresKitApplicationName;
+	_connectionParamValues[0] = FLXPostgresApplicationName;
 	
 	_connectionParamNames[1] = FLXPostgresPortParam;
 	_connectionParamValues[1] = [[[NSNumber numberWithUnsignedInteger:_port] stringValue] UTF8String];
 	
-	_connectionParamNames[2] = FLXPostgresClientEncodingParam;
-	_connectionParamValues[2] = [_encoding UTF8String];
+	_connectionParamNames[2] = FLXPostgresConnectionTimeoutParam;
+	_connectionParamValues[2] = [[[NSNumber numberWithUnsignedInteger:_timeout] stringValue] UTF8String];
 	
-	_connectionParamNames[3] = FLXPostgresKeepAliveParam;
-	_connectionParamValues[3] = _useKeepAlive ? "1" : "0";
+	_connectionParamNames[3] = FLXPostgresClientEncodingParam;
+	_connectionParamValues[3] = [_encoding UTF8String];
 	
-	_connectionParamNames[4] = FLXPostgresKeepAliveIntervalParam;
-	_connectionParamValues[4] = [[[NSNumber numberWithUnsignedInteger:_keepAliveInterval] stringValue] UTF8String];
+	_connectionParamNames[4] = FLXPostgresKeepAliveParam;
+	_connectionParamValues[4] = _useKeepAlive ? "1" : "0";
 	
-	NSUInteger i = 5;
+	_connectionParamNames[5] = FLXPostgresKeepAliveIntervalParam;
+	_connectionParamValues[5] = [[[NSNumber numberWithUnsignedInteger:_keepAliveInterval] stringValue] UTF8String];
+	
+	NSUInteger i = 6;
 	
 	if (hasUser) {
 		_connectionParamNames[i] = FLXPostgresUserParam;
@@ -449,12 +435,7 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
 	if (hasDatabase) {
 		_connectionParamNames[i] = FLXPostgresDatabaseParam;
 		_connectionParamValues[i] = [_database UTF8String];
-		
-		i++;
 	}
-	
-	_connectionParamNames[i] = '\0';
-	_connectionParamValues[i] = '\0';
 }
 
 #pragma mark -
@@ -474,8 +455,6 @@ static void _FLXPostgresConnectionNoticeProcessor(void *arg, const char *message
 	
 	if (_lastError) [_lastError release], _lastError = nil;
 	if (_parameters) [_parameters release], _parameters = nil;
-	if (_connectionError) [_connectionError release], _connectionError = nil;
-	if (_applicationName) [_applicationName release], _applicationName = nil;
 	
 	[super dealloc];
 }

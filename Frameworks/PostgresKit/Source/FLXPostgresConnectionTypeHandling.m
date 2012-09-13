@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnectionTypeHandling.m 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresConnectionTypeHandling.m
 //  PostgresKit
@@ -22,7 +22,6 @@
 #import "FLXPostgresConnectionTypeHandling.h"
 #import "FLXPostgresTypeStringHandler.h"
 #import "FLXPostgresTypeNumberHandler.h"
-#import "FLXPostgresTypeDateTimeHandler.h"
 #import "FLXPostgresException.h"
 
 @implementation FLXPostgresConnection (FLXPostgresConnectionTypeHandling)
@@ -39,8 +38,7 @@
 	}
 	
 	[self registerTypeHandler:[FLXPostgresTypeStringHandler class]];
-	[self registerTypeHandler:[FLXPostgresTypeNumberHandler class]];
-	[self registerTypeHandler:[FLXPostgresTypeDateTimeHandler class]];
+	[self registerTypeHandler:[FLXPostgresTypeNumberHandler class]];	
 }
 
 /**

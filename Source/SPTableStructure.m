@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPTableStructure.m 3774 2012-08-14 10:30:24Z stuart02 $
 //
 //  SPTableStructure.m
 //  sequel-pro

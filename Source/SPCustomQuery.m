@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPCustomQuery.m 3779 2012-08-18 14:18:29Z rowanb@gmail.com $
 //
 //  SPCustomQuery.m
 //  sequel-pro

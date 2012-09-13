@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresResult.m 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresResult.m
 //  PostgresKit
@@ -25,11 +25,13 @@
 #import "FLXPostgresConnection.h"
 #import "FLXPostgresConnectionTypeHandling.h"
 
+static NSString *FLXPostgresResultError = @"FLXPostgresResultError";
+
 @interface FLXPostgresResult ()
 
 - (void)_populateFields;
-- (id)_objectForRow:(NSUInteger)row column:(NSUInteger)column; 
-- (id <FLXPostgresTypeHandlerProtocol>)_typeHandlerForColumn:(NSUInteger)column withType:(FLXPostgresOid)type;
+- (id)_objectForRow:(unsigned int)row column:(unsigned int)column; 
+- (id <FLXPostgresTypeHandlerProtocol>)_typeHandlerForColumn:(unsigned int)column;
 
 @end
 
@@ -62,8 +64,10 @@
  *
  * @return The result wrapper.
  */
-- (id)initWithResult:(void *)result connection:(FLXPostgresConnection *)connection 
-{		
+- (id)initWithResult:(PGresult *)result connection:(FLXPostgresConnection *)connection 
+{	
+	NSParameterAssert(result);
+	
 	if ((self = [super init])) {
 		
 		_row = 0;
@@ -147,7 +151,7 @@
 	
 	data = (type == FLXPostgresResultRowAsArray) ? [NSMutableArray arrayWithCapacity:_numberOfFields] : [NSMutableDictionary dictionaryWithCapacity:_numberOfFields];
 	
-	for (NSUInteger i = 0; i < _numberOfFields; i++) 
+	for (unsigned int i = 0; i < _numberOfFields; i++) 
 	{
 		id object = [self _objectForRow:(int)_row column:i];
 		
@@ -174,9 +178,9 @@
 {	
 	_fields = malloc(sizeof(NSString *) * _numberOfFields);
 	
-	for (NSUInteger i = 0; i < _numberOfFields; i++) 
+	for (unsigned int i = 0; i < _numberOfFields; i++) 
 	{
-		const char *bytes = PQfname(_result, (int)i);
+		const char *bytes = PQfname(_result, i);
 		
 		if (!bytes) continue;
 		
@@ -192,39 +196,29 @@
  *
  * @return The native object or nil if out of this result's range.
  */
-- (id)_objectForRow:(NSUInteger)row column:(NSUInteger)column 
+- (id)_objectForRow:(unsigned int)row column:(unsigned int)column 
 {	
 	if (row >= _numberOfRows || column >= _numberOfFields) return nil;
 	
 	// Check for null
-	if (PQgetisnull(_result, (int)row, (int)column)) return [NSNull null];
+	if (PQgetisnull(_result, row, column)) return [NSNull null];
 	
-	FLXPostgresOid type = PQftype(_result, (int)column);
+	// Get bytes and length
+	const void *bytes = PQgetvalue(_result, row, column);
+	
+	NSUInteger length = PQgetlength(_result, row, column);
+	FLXPostgresOid type = PQftype(_result, column);
 	
 	// Get handler for this type
-	id <FLXPostgresTypeHandlerProtocol> handler = [self _typeHandlerForColumn:column withType:type];
+	id <FLXPostgresTypeHandlerProtocol> handler = [self _typeHandlerForColumn:column];
 	
 	if (!handler) {
 		NSLog(@"PostgresKit: Warning: No type handler found for type %d, return NSData.", type);
 		
-		const void *bytes = PQgetvalue(_result, (int)row, (int)column);
-		NSUInteger length = PQgetlength(_result, (int)row, (int)column);
-	
-		if (!bytes || !length) return nil;
-		
 		return [NSData dataWithBytes:bytes length:length];
-	}
+	} 
 	
-	[handler setRow:row];
-	[handler setType:type];
-	[handler setColumn:column];
-	[handler setResult:_result];
-	
-	id object = [handler objectFromResult];
-	
-	[handler setResult:nil];
-	
-	return object;
+	return [handler objectFromRemoteData:bytes length:length type:type];
 }
 
 /**
@@ -234,16 +228,18 @@
  *
  * @return The type handler or nil if out of this result's range.
  */
-- (id <FLXPostgresTypeHandlerProtocol>)_typeHandlerForColumn:(NSUInteger)column withType:(FLXPostgresOid)type
+- (id <FLXPostgresTypeHandlerProtocol>)_typeHandlerForColumn:(unsigned int)column 
 {
 	if (column >= _numberOfFields) return nil;
 	
 	id handler = _typeHandlers[column];
 		
-	if (!handler) {		
-		handler = [_connection typeHandlerForRemoteType:type];
+	if (!handler) {
+		FLXPostgresOid type = PQftype(_result, column);
 		
-		_typeHandlers[column] = handler;
+		_typeHandlers[column] = [_connection typeHandlerForRemoteType:type];
+		
+		handler = _typeHandlers[column]; 
 	}
 	
 	return handler;
@@ -255,7 +251,7 @@
 {
 	PQclear(_result);
 	
-	for (NSUInteger i = 0; i < _numberOfFields; i++) [_fields[i] release];
+	for (unsigned int i = 0; i < _numberOfFields; i++) [_fields[i] release];
 	
 	free(_fields);
 	free(_typeHandlers);

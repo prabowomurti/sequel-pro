@@ -40,7 +40,7 @@
 #import "SPSplitView.h"
 
 #import <SPMySQL/SPMySQL.h>
-#import <QueryKit/QueryKit.h>
+//#import <QueryKit/QueryKit.h>
 
 static const NSString *SPTableViewNameColumnID = @"NameColumn";
 
@@ -121,7 +121,7 @@ static const NSString *SPTableViewNameColumnID = @"NameColumn";
 	[splitView setMinSize:120.f ofSubviewAtIndex:0];
 	[splitView setMinSize:620.f ofSubviewAtIndex:1];
 
-	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:SPTableViewNameColumnID];
+	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:(NSString *)SPTableViewNameColumnID];
 	ImageAndTextCell *imageAndTextCell = [[[ImageAndTextCell alloc] init] autorelease];
 	
 	[imageAndTextCell setEditable:NO];
@@ -1350,31 +1350,43 @@ static const NSString *SPTableViewNameColumnID = @"NameColumn";
 					   [newHost tickQuotedString]];
 	}
 	else {
+		[connection selectDatabase:SPMySQLDatabase];
+		
+		NSString *query = [NSString stringWithFormat:@"SELECT count(1) FROM user where User = %@ and Host = %@",
+						   [originalUser tickQuotedString],
+						   [originalHost tickQuotedString]];
+		
 		// mysql.user is keyed on user and host so there should only ever be one result, 
 		// but double check before we do the update.
-		QKQuery *query = [QKQuery selectQueryFromTable:@"user"];
+		/*QKQuery *query = [QKQuery selectQueryFromTable:@"user"];
+		 
+		 [query setDatabase:SPMySQLDatabase];
+		 [query addField:@"COUNT(1)"];
+		 
+		 [query addParameter:@"User" operator:QKEqualityOperator value:originalUser];
+		 [query addParameter:@"Host" operator:QKEqualityOperator value:originalHost];*/
 		
-		[query setDatabase:SPMySQLDatabase];
-		[query addField:@"COUNT(1)"];
-		
-		[query addParameter:@"User" operator:QKEqualityOperator value:originalUser];
-		[query addParameter:@"Host" operator:QKEqualityOperator value:originalHost];
-		
-		SPMySQLResult *result = [connection queryString:[query query]];
+		SPMySQLResult *result = [connection queryString:query];
 		
 		if ([[[result getRowAsArray] objectAtIndex:0] integerValue] == 1) {
-			QKQuery *updateQuery = [QKQuery queryTable:@"user"];
+			/*QKQuery *updateQuery = [QKQuery queryTable:@"user"];
+			 
+			 [updateQuery setQueryType:QKUpdateQuery];
+			 [updateQuery setDatabase:SPMySQLDatabase];
+			 
+			 [updateQuery addFieldToUpdate:@"User" toValue:newUser];
+			 [updateQuery addFieldToUpdate:@"Host" toValue:newHost];
+			 
+			 [updateQuery addParameter:@"User" operator:QKEqualityOperator value:originalUser];
+			 [updateQuery addParameter:@"Host" operator:QKEqualityOperator value:originalHost];
+			 
+			 renameQuery = [updateQuery query];*/
 			
-			[updateQuery setQueryType:QKUpdateQuery];
-			[updateQuery setDatabase:SPMySQLDatabase];
-			
-			[updateQuery addFieldToUpdate:@"User" toValue:newUser];
-			[updateQuery addFieldToUpdate:@"Host" toValue:newHost];
-			
-			[updateQuery addParameter:@"User" operator:QKEqualityOperator value:originalUser];
-			[updateQuery addParameter:@"Host" operator:QKEqualityOperator value:originalHost];
-			
-			renameQuery = [updateQuery query];
+			renameQuery = [NSString stringWithFormat:@"UPDATE user SET User = %@, Host = %@ WHERE User = %@ and Host = %@",
+						   [newUser tickQuotedString],
+						   [newHost tickQuotedString],
+						   [originalUser tickQuotedString],
+						   [originalHost tickQuotedString]];
 		}
 	}
 	

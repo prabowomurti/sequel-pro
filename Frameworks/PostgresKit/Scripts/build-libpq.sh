@@ -1,9 +1,9 @@
 #! /bin/ksh
 
 #
-#  $Id$
+#  $Id: build-libpq.sh 3793 2012-09-03 10:22:17Z stuart02 $
 #
-#  build-libpq.sh
+#  build-
 #  sequel-pro
 #
 #  Created by Stuart Connolly (stuconnolly.com) on August 1, 2012.

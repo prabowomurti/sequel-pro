@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: Max Packet Size.m 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  Max Packet Size.m
 //  SPMySQLFramework
@@ -78,7 +78,13 @@
 	if (newMaxSize > (1024 * 1024 * 1024)) newMaxSize = 1024 * 1024 * 1024;
 
 	// Perform a standard query to set the new size
-	[self queryString:[NSString stringWithFormat:@"SET GLOBAL max_allowed_packet = %lu", newMaxSize]];
+	NSString *query = [NSString stringWithFormat:@"SET GLOBAL max_allowed_packet = %lu", newMaxSize];
+	
+	enablePersistentQueries = NO;
+	[self queryString:query];
+	enablePersistentQueries = YES;
+	
+	[persistentQueries setObject:query forKey:@"max_allowed_packet"];
 
 	// On failure, return NSNotFound - error state will have automatically been set
 	if ([self queryErrored]) return NSNotFound;
@@ -132,7 +138,14 @@
  */
 - (void)_updateMaxQuerySizeEditability
 {
-	[self queryString:@"SET GLOBAL max_allowed_packet = @@global.max_allowed_packet"];
+	NSString *query = @"SET GLOBAL max_allowed_packet = @@global.max_allowed_packet";
+	
+	enablePersistentQueries = NO;
+	[self queryString:query];
+	enablePersistentQueries = YES;
+	
+	[persistentQueries setObject:query forKey:@"max_allowed_packet"];
+	
 	maxQuerySizeIsEditable = ![self queryErrored];
 	maxQuerySizeEditabilityChecked = YES;
 }

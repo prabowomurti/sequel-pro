@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKQueryDatabases.h 3722 2012-07-14 10:26:44Z stuart02 $
 //
 //  QKQueryDatabases.h
 //  QueryKit

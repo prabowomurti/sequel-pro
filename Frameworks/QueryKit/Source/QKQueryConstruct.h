@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKQueryConstruct.h 3727 2012-07-15 11:50:55Z stuart02 $
 //
 //  QKQueryConstruct.h
 //  QueryKit

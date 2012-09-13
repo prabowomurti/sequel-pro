@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPPDFExporterDelegate.m 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPPDFExporterDelegate.m
 //  sequel-pro

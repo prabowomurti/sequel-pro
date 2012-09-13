@@ -1,55 +1,35 @@
 //
-//  $Id$
+//  $Id: FLXPostgresTypeDateTimeHandler.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresTypeDateTimeHandler.h
 //  PostgresKit
 //
-//  Copyright (c) 2008-2009 David Thorpe, djt@mutablelogic.com
+//  Created by Stuart Connolly (stuconnolly.com) on September 1, 2012.
+//  Copyright (c) 2012 Stuart Connolly. All rights reserved.
 //
-//  Forked by the Sequel Pro Team on July 22, 2012.
-// 
-//  Licensed under the Apache License, Version 2.0 (the "License"); you may not 
-//  use this file except in compliance with the License. You may obtain a copy of 
-//  the License at
-// 
-//  http://www.apache.org/licenses/LICENSE-2.0
-// 
-//  Unless required by applicable law or agreed to in writing, software 
-//  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-//  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
-//  License for the specific language governing permissions and limitations under
-//  the License.
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the "Software"), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
 
 #import "FLXPostgresTypeHandler.h"
 
-@interface FLXPostgresTypeDateTimeHandler : FLXPostgresTypeHandler <FLXPostgresTypeHandlerProtocol>
-{
-	NSUInteger _row;
-	NSUInteger _column;
-	
-	const PGresult *_result;
-	
-	FLXPostgresOid _type;
-}
-
-/**
- * @property The row within the result the handler is being queried about.
- */
-@property (readwrite, assign) NSUInteger row;
-
-/**
- * @property The column within the result the handler is being queried about.
- */
-@property (readwrite, assign) NSUInteger column;
-
-/**
- * @property The type of data within the result the handler is being queried about.
- */
-@property (readwrite, assign) FLXPostgresOid type;
-
-/**
- * @property The result the handler is being asked to operate on.
- */
-@property (readwrite, assign) const PGresult *result;
+@interface FLXPostgresTypeDateTimeHandler : FLXPostgresTypeHandler <FLXPostgresTypeHandlerProtocol> 
 
 @end

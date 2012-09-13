@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPFileManagerAdditions.m 3781 2012-08-19 21:13:28Z rowanb@gmail.com $
 //
 //  SPFileManagerAdditions.m
 //  sequel-pro

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresTypeNumberHandler.m 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresTypeNumberHandler.m
 //  PostgresKit
@@ -21,6 +21,7 @@
 //  the License.
 
 #import "FLXPostgresTypeNumberHandler.h"
+#import "FLXPostgresTypes.h"
 
 static FLXPostgresOid FLXPostgresTypeNumberTypes[] = 
 { 
@@ -29,33 +30,205 @@ static FLXPostgresOid FLXPostgresTypeNumberTypes[] =
 	FLXPostgresOidInt4,
 	FLXPostgresOidFloat4,
 	FLXPostgresOidFloat8,
-	FLXPostgresOidBool,
-	FLXPostgresOidOid,
-	FLXPostgresOidMoney,
+	FLXPostgresOidBool,  
 	0 
 };
 
-@interface FLXPostgresTypeNumberHandler ()
-
-- (SInt16)_int16FromBytes:(const void *)bytes;
-- (SInt32)_int32FromBytes:(const void *)bytes;
-- (SInt64)_int64FromBytes:(const void *)bytes;
-
-- (Float32)_float32FromBytes:(const void *)bytes;
-- (Float64)_float64FromBytes:(const void *)bytes;
-
-- (id)_integerObjectFromBytes:(const void *)bytes length:(NSUInteger)length;
-- (id)_floatObjectFromBytes:(const void *)bytes length:(NSUInteger)length;
-- (id)_booleanObjectFromBytes:(const void *)bytes length:(NSUInteger)length;
-
-@end
-
 @implementation FLXPostgresTypeNumberHandler
 
-@synthesize row = _row;
-@synthesize type = _type;
-@synthesize column = _column;
-@synthesize result = _result;
+#pragma mark -
+#pragma mark Integer & Unsigned Integer
+
+- (SInt16)int16FromBytes:(const void *)bytes 
+{
+	if (!bytes) return 0;
+	
+	return EndianS16_BtoN(*((SInt16 *)bytes));
+}
+
+- (SInt32)int32FromBytes:(const void *)bytes 
+{
+	if (!bytes) return 0;
+
+	return EndianS32_BtoN(*((SInt32 *)bytes));
+}
+
+- (SInt64)int64FromBytes:(const void *)bytes 
+{
+	if (!bytes) return 0;
+	
+	return EndianS64_BtoN(*((SInt64 *)bytes));		
+}
+
+- (UInt16)unsignedInt16FromBytes:(const void *)bytes 
+{
+	if (!bytes) return 0;
+	
+	return EndianU16_BtoN(*((UInt16 *)bytes));
+}
+
+- (UInt32)unsignedInt32FromBytes:(const void *)bytes 
+{
+	if (!bytes) return 0;
+	
+	return EndianU32_BtoN(*((UInt32 *)bytes));		
+}
+
+- (UInt64)unsignedInt64FromBytes:(const void *)bytes 
+{
+	if (!bytes) return 0;
+	
+	return EndianU64_BtoN(*((UInt64 *)bytes));		
+}
+
+- (NSNumber *)integerObjectFromBytes:(const void *)bytes length:(NSUInteger)length 
+{
+	if (!bytes) return nil;
+	
+	switch (length) 
+	{
+		case 2:
+			return [NSNumber numberWithShort:[self int16FromBytes:bytes]];
+		case 4:
+			return [NSNumber numberWithInteger:[self int32FromBytes:bytes]];
+		case 8:
+			return [NSNumber numberWithLongLong:[self int64FromBytes:bytes]];
+	}
+	
+	return nil;
+}
+
+- (NSNumber *)unsignedIntegerObjectFromBytes:(const void *)bytes length:(NSUInteger)length 
+{
+	if (!bytes) return nil;
+	
+	switch (length) 
+	{
+		case 2:
+			return [NSNumber numberWithUnsignedShort:[self unsignedInt16FromBytes:bytes]];
+		case 4:
+			return [NSNumber numberWithUnsignedInteger:[self unsignedInt32FromBytes:bytes]];
+		case 8:
+			return [NSNumber numberWithUnsignedLongLong:[self unsignedInt64FromBytes:bytes]];
+	}
+	
+	return nil;
+}
+
+- (NSData *)remoteDataFromInt64:(SInt64)value 
+{
+	if (sizeof(SInt64) != 8) return nil;
+
+	value = EndianS64_NtoB(value);
+
+	return [NSData dataWithBytes:&value length:sizeof(value)];
+}
+
+- (NSData *)remoteDataFromInt32:(SInt32)value 
+{
+	if (sizeof(SInt32) != 4) return nil;
+
+	value = EndianS32_NtoB(value);
+	
+	return [NSData dataWithBytes:&value length:sizeof(value)];
+}
+
+- (NSData *)remoteDataFromInt16:(SInt16)value 
+{
+	if (sizeof(SInt16) != 2) return nil;
+	
+	value = EndianS16_NtoB(value);
+
+	return [NSData dataWithBytes:&value length:sizeof(value)];
+}
+
+#pragma mark -
+#pragma mark Floating Point
+
+- (Float32)float32FromBytes:(const void *)bytes 
+{
+	if (!bytes) return 0;
+
+    union { Float32 r; UInt32 i; } u32;
+	
+	u32.r = *((Float32 *)bytes);		
+	u32.i = CFSwapInt32HostToBig(u32.i);			
+	
+	return u32.r;
+}
+
+- (Float64)float64FromBytes:(const void *)bytes 
+{
+	if (!bytes) return 0;
+	
+    union { Float64 r; UInt64 i; } u64;
+	
+	u64.r = *((Float64 *)bytes);		
+	u64.i = CFSwapInt64HostToBig(u64.i);			
+	
+	return u64.r;		
+}
+
+- (NSNumber *)realObjectFromBytes:(const void *)bytes length:(NSUInteger)length 
+{	
+	switch (length) 
+	{
+		case 4:
+			return [NSNumber numberWithFloat:[self float32FromBytes:bytes]];
+		case 8:
+			return [NSNumber numberWithDouble:[self float64FromBytes:bytes]];
+	}
+	
+	return nil;
+}
+
+
+- (NSData *)remoteDataFromFloat32:(Float32)value 
+{
+	if (sizeof(Float32) != 4) return nil;
+	
+	union { Float32 r; UInt32 i; } u32;
+	
+	u32.r = value;
+	u32.i = CFSwapInt32HostToBig(u32.i);			
+	
+	return [NSData dataWithBytes:&u32 length:sizeof(u32)];
+}
+
+- (NSData *)remoteDataFromFloat64:(Float64)value 
+{
+	if (sizeof(Float64) != 8) return nil;
+	
+	union { Float64 r; UInt64 i; } u64;
+	
+	u64.r = value;
+	u64.i = CFSwapInt64HostToBig(u64.i);			
+
+	return [NSData dataWithBytes:&u64 length:sizeof(u64)];
+}
+
+#pragma mark -
+#pragma mark Boolean
+
+- (BOOL)booleanFromBytes:(const void *)bytes 
+{
+	if (!bytes) return NO;
+	
+	return (*((const int8_t *)bytes) ? YES : NO);
+}
+
+- (NSNumber *)booleanObjectFromBytes:(const void *)bytes length:(NSUInteger)length 
+{
+	if (!bytes || length != 1) return nil;
+	
+	return [NSNumber numberWithBool:[self booleanFromBytes:bytes]];
+}
+
+
+- (NSData *)remoteDataFromBoolean:(BOOL)value 
+{
+	return [NSData dataWithBytes:&value length:1];
+}
 
 #pragma mark -
 #pragma mark Protocol Implementation
@@ -75,108 +248,78 @@ static FLXPostgresOid FLXPostgresTypeNumberTypes[] =
 	return nil;
 }
 
-- (id)objectFromResult
+- (NSData *)remoteDataFromObject:(id)object type:(FLXPostgresOid *)type 
+{
+	if (!object || !type || ![object isKindOfClass:[NSNumber class]]) return nil;
+
+	NSNumber *number = (NSNumber *)object;
+	
+	const char *objectType = [number objCType];
+	
+	switch (objectType[0]) 
+	{
+		case 'c':
+		case 'C':
+		case 'B': // Boolean
+			(*type) = FLXPostgresOidBool;
+			return [self remoteDataFromBoolean:[(NSNumber *)object boolValue]];
+		case 'i': // Integer
+		case 'l': // Long
+		case 'S': // Unsigned short
+			(*type) = FLXPostgresOidInt4;
+			return [self remoteDataFromInt32:[(NSNumber *)object shortValue]];
+		case 's':
+			(*type) = FLXPostgresOidInt2;
+			return [self remoteDataFromInt16:[(NSNumber *)object shortValue]];
+		case 'q': // Long long
+		case 'Q': // Unsigned long long
+		case 'I': // Unsigned integer
+		case 'L': // Unsigned long
+			(*type) = FLXPostgresOidInt8;
+			return [self remoteDataFromInt64:[(NSNumber *)object longLongValue]];
+		case 'f': // Float
+			(*type) = FLXPostgresOidFloat4;
+			return [self remoteDataFromFloat32:[(NSNumber *)object floatValue]];
+		case 'd': // Double
+			(*type) = FLXPostgresOidFloat8;
+			return [self remoteDataFromFloat64:[(NSNumber *)object doubleValue]];
+	}
+	
+	return nil;
+}
+
+- (id)objectFromRemoteData:(const void *)bytes length:(NSUInteger)length type:(FLXPostgresOid)type 
 {	
-	if (!_result || !_type || !_row || !_column) return [NSNull null];
+	if (!bytes || !length || !type) return nil;
 	
-	NSUInteger length = PQgetlength(_result, (int)_row, (int)_column);
-	const void *bytes = PQgetvalue(_result, (int)_row, (int)_column);
-	
-	if (!bytes || !length) return [NSNull null];
-	
-	switch (_type) 
+	switch (type) 
 	{
 		case FLXPostgresOidInt8:
 		case FLXPostgresOidInt2:
 		case FLXPostgresOidInt4:
-			return [self _integerObjectFromBytes:bytes length:length];
+			return [self integerObjectFromBytes:bytes length:length];
 		case FLXPostgresOidFloat4:
 		case FLXPostgresOidFloat8:
-			return [self _floatObjectFromBytes:bytes length:length];
+			return [self realObjectFromBytes:bytes length:length];
 		case FLXPostgresOidBool:
-			return [self _booleanObjectFromBytes:bytes length:length];
+			return [self booleanObjectFromBytes:bytes length:length];
 		default:
-			return [NSNull null];
-	}
+			return nil;
+	}	
 }
 
-#pragma mark -
-#pragma mark Integer
-
-- (id)_integerObjectFromBytes:(const void *)bytes length:(NSUInteger)length 
-{	
-	switch (length) 
-	{
-		case 2:
-			return [NSNumber numberWithShort:[self _int16FromBytes:bytes]];
-		case 4:
-			return [NSNumber numberWithInteger:[self _int32FromBytes:bytes]];
-		case 8:
-			return [NSNumber numberWithLongLong:[self _int64FromBytes:bytes]];
-	}
-	
-	return [NSNull null];
-}
-
-- (SInt16)_int16FromBytes:(const void *)bytes 
-{	
-	return EndianS16_BtoN(*((SInt16 *)bytes));
-}
-
-- (SInt32)_int32FromBytes:(const void *)bytes 
+- (NSString *)quotedStringFromObject:(id)object 
 {
-	return EndianS32_BtoN(*((SInt32 *)bytes));
-}
-
-- (SInt64)_int64FromBytes:(const void *)bytes 
-{	
-	return EndianS64_BtoN(*((SInt64 *)bytes));		
-}
-
-#pragma mark -
-#pragma mark Floating Point
-
-- (id)_floatObjectFromBytes:(const void *)bytes length:(NSUInteger)length 
-{	
-	switch (length) 
-	{
-		case 4:
-			return [NSNumber numberWithFloat:[self _float32FromBytes:bytes]];
-		case 8:
-			return [NSNumber numberWithDouble:[self _float64FromBytes:bytes]];
+	if (!object || ![object isKindOfClass:[NSNumber class]]) return nil;
+	
+	const char *type = [object objCType];
+	
+	if (type[0] == 'c' || type[0] == 'C' || type[0] == 'B') {
+		return ([(NSNumber *)object boolValue] ? @"true" : @"false");
+	} 
+	else {
+		return [(NSNumber *)object stringValue];
 	}
-	
-	return [NSNull null];
-}
-
-- (Float32)_float32FromBytes:(const void *)bytes 
-{
-    union { Float32 r; UInt32 i; } u32;
-	
-	u32.r = *((Float32 *)bytes);		
-	u32.i = CFSwapInt32HostToBig(u32.i);			
-	
-	return u32.r;
-}
-
-- (Float64)_float64FromBytes:(const void *)bytes 
-{	
-    union { Float64 r; UInt64 i; } u64;
-	
-	u64.r = *((Float64 *)bytes);		
-	u64.i = CFSwapInt64HostToBig(u64.i);			
-	
-	return u64.r;		
-}
-
-#pragma mark -
-#pragma mark Boolean
-
-- (id)_booleanObjectFromBytes:(const void *)bytes length:(NSUInteger)length 
-{
-	if (length != 1) return [NSNull null];
-	
-	return [NSNumber numberWithBool:*((const int8_t *)bytes) ? YES : NO];
 }
 
 @end

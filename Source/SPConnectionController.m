@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPConnectionController.m 3755 2012-08-01 00:17:54Z rowanb@gmail.com $
 //
 //  SPConnectionHandler.m
 //  sequel-pro
@@ -101,6 +101,8 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
 @synthesize database;
 @synthesize socket;
 @synthesize port;
+@synthesize useHTTPTunnel;
+@synthesize httpTunnelURL;
 @synthesize useSSL;
 @synthesize sslKeyFileLocationEnabled;
 @synthesize sslKeyFileLocation;
@@ -163,7 +165,13 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
 			return;
 		}
 	}
-
+	
+	if ([self useHTTPTunnel] && ![[self httpTunnelURL] length])
+	{
+		SPBeginAlertSheet(NSLocalizedString(@"Insufficient connection details", @"insufficient details message"), NSLocalizedString(@"OK", @"OK button"), nil, nil, [dbDocument parentWindow], self, nil, nil, NSLocalizedString(@"Insufficient details provided to establish a connection. Please enter the url for the HTTP Tunnel, or disable the HTTP Tunnel.", @"insufficient HTTP tunnel details informative message"));
+		return;
+	}
+	
 	// Ensure that a socket connection is not inadvertently used
 	if (![self _checkHost]) return;
 
@@ -401,6 +409,15 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
  */
 - (IBAction)updateSSLInterface:(id)sender
 {
+	if ([sender tag] == 101)
+	{
+		[self setUseSSL:NO];
+	}
+	else if ([sender tag] == 100)
+	{
+		[self setUseHTTPTunnel:NO];
+	}
+	
 	[self resizeTabViewToConnectionType:[self type] animating:YES];
 }
 
@@ -444,6 +461,7 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
 		case SPTCPIPConnection:
 			targetResizeRect = [standardConnectionFormContainer frame];
 			if ([self useSSL]) additionalFormHeight += [standardConnectionSSLDetailsContainer frame].size.height;
+			if ([self useHTTPTunnel]) additionalFormHeight += [standardConnectionHTTPTunnelDetailsContainer frame].size.height;
 			break;
 		case SPSocketConnection:
 			targetResizeRect = [socketConnectionFormContainer frame];
@@ -542,6 +560,10 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
 	[self setUser:([fav objectForKey:SPFavoriteUserKey] ? [fav objectForKey:SPFavoriteUserKey] : @"")];
 	[self setPort:([fav objectForKey:SPFavoritePortKey] ? [fav objectForKey:SPFavoritePortKey] : @"")];
 	[self setDatabase:([fav objectForKey:SPFavoriteDatabaseKey] ? [fav objectForKey:SPFavoriteDatabaseKey] : @"")];
+	
+	// HTTP Tunnel details
+	[self setUseHTTPTunnel:[([fav objectForKey:SPFavoriteUseHTTPTunnelKey] ? [fav objectForKey:SPFavoriteUseHTTPTunnelKey] : @"0") boolValue]];
+	[self setHttpTunnelURL:([fav objectForKey:SPFavoriteHTTPTunnelURLKey] ? [fav objectForKey:SPFavoriteHTTPTunnelURLKey] : @"")];
 	
 	// SSL details
 	[self setUseSSL:([fav objectForKey:SPFavoriteUseSSLKey] ? [[fav objectForKey:SPFavoriteUseSSLKey] intValue] : NSOffState)];
@@ -646,7 +668,9 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
 	NSNumber *favoriteID = [self _createNewFavoriteID];
 	
 	NSArray *objects = [NSArray arrayWithObjects:NSLocalizedString(@"New Favorite", @"new favorite name"), 
-						[NSNumber numberWithInteger:0], @"", @"", @"", @"", 
+						[NSNumber numberWithInteger:0], 
+						[NSNumber numberWithInt:NSOffState], @"",
+						@"", @"", @"", @"", 
 						[NSNumber numberWithInt:NSOffState], 
 						[NSNumber numberWithInt:NSOffState], 
 						[NSNumber numberWithInt:NSOffState], 
@@ -659,7 +683,9 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
 					 SPFavoriteHostKey, 
 					 SPFavoriteSocketKey, 
 					 SPFavoriteUserKey, 
-					 SPFavoritePortKey, 
+					 SPFavoritePortKey,
+					 SPFavoriteUseHTTPTunnelKey,
+					 SPFavoriteHTTPTunnelURLKey,
 					 SPFavoriteUseSSLKey, 
 					 SPFavoriteSSLKeyFileLocationEnabledKey,
 					 SPFavoriteSSLCertificateFileLocationEnabledKey, 
@@ -738,6 +764,10 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
 	if ([self user])     [newFavorite setObject:[self user] forKey:SPFavoriteUserKey];
 	if ([self port])     [newFavorite setObject:[self port] forKey:SPFavoritePortKey];
 	if ([self database]) [newFavorite setObject:[self database] forKey:SPFavoriteDatabaseKey];
+	
+	// HTTP Tunnel details
+	if ([self useHTTPTunnel])     [newFavorite setObject:[NSNumber numberWithBool:[self useHTTPTunnel]] forKey:SPFavoriteUseHTTPTunnelKey];
+	if ([self httpTunnelURL])     [newFavorite setObject:[self httpTunnelURL] forKey:SPFavoriteHTTPTunnelURLKey];
 	
 	// SSL details
 	if ([self useSSL]) [newFavorite setObject:[NSNumber numberWithInteger:[self useSSL]] forKey:SPFavoriteUseSSLKey];
@@ -1603,6 +1633,8 @@ static NSComparisonResult _compareFavoritesUsingKey(id favorite1, id favorite2, 
 	[self removeObserver:self forKeyPath:SPFavoriteDatabaseKey];
 	[self removeObserver:self forKeyPath:SPFavoriteSocketKey];
 	[self removeObserver:self forKeyPath:SPFavoritePortKey];
+	[self removeObserver:self forKeyPath:SPFavoriteUseHTTPTunnelKey];
+	[self removeObserver:self forKeyPath:SPFavoriteHTTPTunnelURLKey];
 	[self removeObserver:self forKeyPath:SPFavoriteUseSSLKey];
 	[self removeObserver:self forKeyPath:SPFavoriteSSHHostKey];
 	[self removeObserver:self forKeyPath:SPFavoriteSSHUserKey];

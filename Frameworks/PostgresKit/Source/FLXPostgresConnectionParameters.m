@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnectionParameters.m 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresConnectionParameters.m
 //  PostgresKit
@@ -29,7 +29,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 
 #import "FLXPostgresConnectionParameters.h"
-#import "FLXPostgresKitPrivateAPI.h"
+#import "FLXPostgresConnectionPrivateAPI.h"
 #import "FLXPostgresConnection.h"
 
 @interface FLXPostgresConnectionParameters ()
@@ -156,7 +156,7 @@
 		
 		NSString *stringValue = [NSString stringWithUTF8String:value];
 
-		id paramObject = [self _isBooleanParameterValue:stringValue] ? (id)[NSNumber numberWithBool:[self _booleanForParameterValue:stringValue]] : stringValue;
+		id paramObject = [self _isBooleanParameterValue:stringValue] ? [NSNumber numberWithBool:[self _booleanForParameterValue:stringValue]] : stringValue;
 		
 		[_parameters setObject:paramObject forKey:parameter];
 	}

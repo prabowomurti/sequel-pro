@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLStringAdditions.h 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  SPMySQLStringAdditions.h
 //  SPMySQLFramework
@@ -35,5 +35,8 @@
 
 - (NSString *)mySQLBacktickQuotedString;
 - (NSString *)mySQLTickQuotedString;
+
+- (NSString *)stringByEscapingForURLQuery;
+- (NSString *)stringByUnescapingFromURLQuery;
 
 @end

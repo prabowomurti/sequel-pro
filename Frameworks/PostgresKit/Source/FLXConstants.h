@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXConstants.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXConstants.h
 //  PostgresKit
@@ -20,11 +20,15 @@
 //  License for the specific language governing permissions and limitations under
 //  the License.
 
-// Connection defaults
-extern const NSUInteger FLXPostgresConnectionDefaultTimeout;
-extern const NSUInteger FLXPostgresConnectionDefaultServerPort;
-extern const NSUInteger FLXPostgresConnectionDefaultKeepAlive;
+// Result set row types
+typedef enum 
+{
+	FLXPostgresResultRowAsArray      = 1,
+	FLXPostgresResultRowAsDictionary = 2
+} 
+FLXPostgresResultRowType;
 
+// Defaults
 extern NSString *FLXPostgresConnectionDefaultEncoding;
 extern NSString *FLXPostgresConnectionErrorDomain;
 extern NSStringEncoding FLXPostgresConnectionDefaultStringEncoding;
@@ -35,26 +39,3 @@ extern NSString *FLXPostgresParameterClientEncoding;
 extern NSString *FLXPostgresParameterSuperUser;
 extern NSString *FLXPostgresParameterTimeZone;
 extern NSString *FLXPostgresParameterIntegerDateTimes;
-
-// Result value specifiers
-extern const char *FLXPostgresResultValueMacAddr;
-extern const char *FLXPostgresResultValueInet;
-extern const char *FLXPostgresResultValueCidr;
-extern const char *FLXPostgresResultValueDate;
-extern const char *FLXPostgresResultValueTime;
-extern const char *FLXPostgresResultValueTimeTZ;
-extern const char *FLXPostgresResultValueTimestamp;
-extern const char *FLXPostgresResultValueTimestmpTZ;
-extern const char *FLXPostgresResultValueInterval;
-
-// Connection parameters
-extern const char *FLXPostgresKitApplicationName;
-extern const char *FLXPostgresApplicationParam;
-extern const char *FLXPostgresUserParam;
-extern const char *FLXPostgresHostParam;
-extern const char *FLXPostgresPasswordParam;
-extern const char *FLXPostgresPortParam;
-extern const char *FLXPostgresDatabaseParam;
-extern const char *FLXPostgresClientEncodingParam;
-extern const char *FLXPostgresKeepAliveParam;
-extern const char *FLXPostgresKeepAliveIntervalParam;

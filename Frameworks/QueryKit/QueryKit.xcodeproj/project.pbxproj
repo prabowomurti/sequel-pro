@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,14 +32,14 @@
 		17E5952514F301DF0054EE08 /* QKQueryUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 17E5951C14F301DF0054EE08 /* QKQueryUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17E5952614F301DF0054EE08 /* QKQueryUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 17E5951D14F301DF0054EE08 /* QKQueryUtilities.m */; };
 		17E5952714F301DF0054EE08 /* QueryKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 17E5951E14F301DF0054EE08 /* QueryKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		17E595F214F3058F0054EE08 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17E595F114F3058F0054EE08 /* Foundation.framework */; };
 		17E596A814F308160054EE08 /* QKSelectQueryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 17E5969814F307B70054EE08 /* QKSelectQueryTests.m */; };
-		17E596A914F308250054EE08 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17E595F114F3058F0054EE08 /* Foundation.framework */; };
 		17F48BA815B27F6400C6455B /* QKQueryOrderBy.h in Headers */ = {isa = PBXBuildFile; fileRef = 17F48BA615B27F6400C6455B /* QKQueryOrderBy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17F48BA915B27F6500C6455B /* QKQueryOrderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 17F48BA715B27F6400C6455B /* QKQueryOrderBy.m */; };
 		17F48BC315B289C100C6455B /* QKQueryConstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 17F48BC115B289C100C6455B /* QKQueryConstruct.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17F48BC415B289C100C6455B /* QKQueryConstruct.m in Sources */ = {isa = PBXBuildFile; fileRef = 17F48BC215B289C100C6455B /* QKQueryConstruct.m */; };
 		17F620BE14F961C1003E7290 /* QueryKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* QueryKit.framework */; };
+		F66D911A15F7B15900F6B187 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66D911915F7B15900F6B187 /* Foundation.framework */; };
+		F66D911B15F7B16000F6B187 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F66D911915F7B15900F6B187 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +96,7 @@
 		32DBCF5E0370ADEE00C91783 /* QueryKit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "QueryKit-Prefix.pch"; path = "Source/QueryKit-Prefix.pch"; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* QueryKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QueryKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F66D911915F7B15900F6B187 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,7 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17E596A914F308250054EE08 /* Foundation.framework in Frameworks */,
+				F66D911A15F7B15900F6B187 /* Foundation.framework in Frameworks */,
 				17F620BE14F961C1003E7290 /* QueryKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -112,7 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17E595F214F3058F0054EE08 /* Foundation.framework in Frameworks */,
+				F66D911B15F7B16000F6B187 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +132,7 @@
 		0867D691FE84028FC02AAC07 /* QueryKit */ = {
 			isa = PBXGroup;
 			children = (
+				F66D911915F7B15900F6B187 /* Foundation.framework */,
 				32DBCF5E0370ADEE00C91783 /* QueryKit-Prefix.pch */,
 				08FB77AEFE84172EC02AAC07 /* Source */,
 				17E5969614F3079E0054EE08 /* Tests */,
@@ -357,11 +359,8 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			attributes = {
-				LastUpgradeCheck = 0440;
-			};
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "QueryKit" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -466,7 +465,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_PREFIX_HEADER = "";
-				SDKROOT = macosx;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
 				VALID_ARCHS = "i386 ppc x86_64";
 			};
 			name = Distribution;
@@ -475,7 +475,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_VERSION = A;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -508,6 +507,7 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				PRODUCT_NAME = QueryKit;
+				SDKROOT = macosx;
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -517,10 +517,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -534,7 +534,9 @@
 					"-framework",
 					SenTestingKit,
 				);
+				PREBINDING = NO;
 				PRODUCT_NAME = Tests;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -543,10 +545,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -559,7 +561,9 @@
 					"-framework",
 					SenTestingKit,
 				);
+				PREBINDING = NO;
 				PRODUCT_NAME = Tests;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = octest;
 				ZERO_LINK = NO;
 			};
@@ -569,8 +573,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -583,7 +587,9 @@
 					"-framework",
 					SenTestingKit,
 				);
+				PREBINDING = NO;
 				PRODUCT_NAME = Tests;
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Distribution;
@@ -592,17 +598,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Source/QueryKit-Prefix.pch";
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = YES;
@@ -630,6 +637,7 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				PRODUCT_NAME = QueryKit;
+				SDKROOT = macosx;
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -639,7 +647,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_VERSION = A;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -672,6 +680,7 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				PRODUCT_NAME = QueryKit;
+				SDKROOT = macosx;
 				WARNING_CFLAGS = "-Wmost";
 				WRAPPER_EXTENSION = framework;
 			};
@@ -695,7 +704,8 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_PREFIX_HEADER = "";
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
 				VALID_ARCHS = "i386 ppc x86_64";
 			};
 			name = Debug;
@@ -716,7 +726,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_PREFIX_HEADER = "";
-				SDKROOT = macosx;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
 				VALID_ARCHS = "i386 ppc x86_64";
 			};
 			name = Release;

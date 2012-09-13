@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPConstants.m 3777 2012-08-15 10:47:43Z stuart02 $
 //
 //  SPConstants.m
 //  sequel-pro
@@ -272,6 +272,8 @@ NSString *SPFavoriteDatabaseKey                          = @"database";
 NSString *SPFavoriteHostKey                              = @"host";
 NSString *SPFavoritePortKey                              = @"port";
 NSString *SPFavoriteUserKey                              = @"user";
+NSString *SPFavoriteUseHTTPTunnelKey                     = @"useHTTPTunnel";
+NSString *SPFavoriteHTTPTunnelURLKey                     = @"httpTunnelURL";
 NSString *SPFavoriteTypeKey                              = @"type";
 NSString *SPFavoriteSocketKey                            = @"socket";
 NSString *SPFavoriteSSHHostKey                           = @"sshHost";

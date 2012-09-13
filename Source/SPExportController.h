@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPExportController.h 3760 2012-08-02 00:08:50Z rowanb@gmail.com $
 //
 //  SPExportController.h
 //  sequel-pro

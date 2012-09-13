@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKQueryGenericParameter.m 3727 2012-07-15 11:50:55Z stuart02 $
 //
 //  QKQueryGenericParameter.m
 //  QueryKit

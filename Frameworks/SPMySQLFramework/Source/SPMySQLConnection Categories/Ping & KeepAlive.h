@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: Ping & KeepAlive.h 3658 2012-05-15 23:40:08Z rowanb@gmail.com $
 //
 //  Ping & KeepAlive.h
 //  SPMySQLFramework

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnection.h 3794 2012-09-03 10:53:23Z stuart02 $
 //
 //  FLXPostgresConnection.h
 //  PostgresKit
@@ -20,6 +20,7 @@
 //  License for the specific language governing permissions and limitations under
 //  the License.
 
+#import "FLXPostgresTypeHandlerProtocol.h"
 #import "FLXPostgresConnectionDelegate.h"
 
 @class FLXPostgresError;
@@ -29,7 +30,7 @@
 
 @interface FLXPostgresConnection : NSObject 
 {
-	void *_connection;
+	PGconn *_connection;
 	
 	NSString *_host;
 	NSString *_user;
@@ -37,8 +38,6 @@
 	NSString *_password;
 	NSString *_socketPath;
 	NSString *_encoding;
-	NSString *_connectionError;
-	NSString *_applicationName;
 	
 	const char **_connectionParamNames;
 	const char **_connectionParamValues;
@@ -69,10 +68,8 @@
 @property (readwrite, retain) NSString *database;
 @property (readwrite, retain) NSString *password;
 @property (readwrite, retain) NSString *socketPath;
-@property (readwrite, retain) NSString *applicationName;
 
 @property (readonly) NSString *encoding;
-@property (readonly) NSString *connectionError;
 @property (readonly) FLXPostgresError *lastError;
 @property (readonly) NSStringEncoding stringEncoding;
 @property (readonly) FLXPostgresConnectionParameters *parameters;

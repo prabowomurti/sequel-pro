@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnectionTypeHandling.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresConnectionTypeHandling.h
 //  PostgresKit
@@ -20,7 +20,6 @@
 //  the License.
 
 #import "FLXPostgresConnection.h"
-#import "FLXPostgresTypeHandlerProtocol.h"
 
 @interface FLXPostgresConnection (FLXPostgresConnectionTypeHandling)
 

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresTypes.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresTypes.h
 //  PostgresKit
@@ -29,91 +29,52 @@ typedef Oid FLXPostgresOid;
 
 enum 
 {
-	// BOOL
-	FLXPostgresOidBool         = 16,  // NumberHandler              => NSNumber
-	FLXPostgresOidByteData     = 17,  // Currently not supported    
-	
-	// Text
-	FLXPostgresOidName         = 19,  // StringHandler              => NSString   
-	
-	// Integers
-	FLXPostgresOidInt8         = 20,  // NumberHandler              => NSNumber
-	FLXPostgresOidInt2         = 21,  // NumberHandler              => NSNumber
-	FLXPostgresOidInt4         = 23,  // NumberHandler              => NSNumber
-	
-	// Text
-	FLXPostgresOidText         = 25,  // StringHandler              => NSString
-	
-	// OID
-	FLXPostgresOidOid          = 26,  // NumberHandler              => NSNumber
-	
-	// XML
-	FLXPostgresOidXML          = 142, // StringHandler              => NSString
-	
-	// Geometric
-	FLXPostgresOidPoint        = 600, // Currently not supported
-	FLXPostgresOidLSeg         = 601, // Currently not supported
-	FLXPostgresOidPath         = 602, // Currently not supported
-	FLXPostgresOidBox          = 603, // Currently not supported
-	FLXPostgresOidPolygon      = 604, // Currently not supported
-	
-	// Network
-	FLXPostgresOidCidrAddr     = 650, // StringHandler              => NSString
-	
-	// Float
-	FLXPostgresOidFloat4       = 700, // NumberHandler              => NSNumber
-	FLXPostgresOidFloat8       = 701, // NumberHandler              => NSNumber 
-	
-	// ABS Time
-	FLXPostgresOidAbsTime      = 702, // DateHandler                => NSDate
-	
-	// What!
-	FLXPostgresOidUnknown      = 705, // StringHandler              => NSString
-	
-	// Geometric
-	FLXPostgresOidCircle       = 718, // Currently not supported
-	
-	// Monetary
-	FLXPostgresOidMoney        = 790, // NumberHandler              => NSNumber
-	
-	// Network
-	FLXPostgresOidMacAddr      = 829, // StringHandler              => NSString 
-	FLXPostgresOidInetAddr     = 869, // StringHandler              => NSString
-	
-	// Arrays
-	FLXPostgresOidArrayBool    = 1000, // Currently not supported
-	FLXPostgresOidArrayData    = 1001, // Currently not supported   
-	FLXPostgresOidArrayChar    = 1002, // Currently not supported
-	FLXPostgresOidArrayName    = 1003, // Currently not supported
-	FLXPostgresOidArrayInt2    = 1005, // Currently not supported
-	FLXPostgresOidArrayInt4    = 1007, // Currently not supported
-	FLXPostgresOidArrayText    = 1009, // Currently not supported
-	FLXPostgresOidArrayVarchar = 1015, // Currently not supported
-	FLXPostgresOidArrayInt8    = 1016, // Currently not supported
-	FLXPostgresOidArrayFloat4  = 1021, // Currently not supported
-	FLXPostgresOidArrayFloat8  = 1022, // Currently not supported
-	FLXPostgresOidArrayMacAddr = 1040, // Currently not supported
-	FLXPostgresOidArrayIPAddr  = 1041, // Currently not supported
-	
-	// Text
-	FLXPostgresOidChar         = 1042, // StringHandler              => NSString 
-	FLXPostgresOidVarChar      = 1043, // StringHandler              => NSString
-	
-	// Date/time
-	FLXPostgresOidDate         = 1082, // DateHandler                => NSDate
-	FLXPostgresOidTime         = 1083, // DateHandler                => NSDate
-	FLXPostgresOidTimestamp    = 1114, // DateHandler                => NSDate
-	FLXPostgresOidTimestampTZ  = 1184, // DateHandler                => FLXPostgresTimeTZ
-	FLXPostgresOidInterval     = 1186, // DateHandler                => FLXPostgresTimeInterval
-	FLXPostgresOidTimeTZ       = 1266, // DateHandler                => FLXPostgresTimeTZ
-	
-	// Bit strings
-	FLXPostgresOidBit          = 1560, // StringHandler              => NSString
-	FLXPostgresOidVarBit       = 1562, // StringHandler              => NSString
-	
-	// Numeric
-	FLXPostgresOidNumeric      = 1700, // StringHandler              => NSString
-	
-	// UUID
-	FLXPostgresOidUUID         = 2950  // StringHandler              => NSString
+	FLXPostgresOidBool         = 16,
+	FLXPostgresOidData         = 17,
+	FLXPostgresOidName         = 19,
+	FLXPostgresOidInt8         = 20,
+	FLXPostgresOidInt2         = 21,
+	FLXPostgresOidInt4         = 23,
+	FLXPostgresOidText         = 25,
+	FLXPostgresOidOid          = 26,
+	FLXPostgresOidXML          = 142,
+	FLXPostgresOidPoint        = 600,
+	FLXPostgresOidLSeg         = 601,
+	FLXPostgresOidPath         = 602,
+	FLXPostgresOidBox          = 603,
+	FLXPostgresOidPolygon      = 604,
+	FLXPostgresOidFloat4       = 700,
+	FLXPostgresOidFloat8       = 701,
+	FLXPostgresOidAbsTime      = 702,
+	FLXPostgresOidUnknown      = 705,
+	FLXPostgresOidCircle       = 718,
+	FLXPostgresOidMoney        = 790,
+	FLXPostgresOidMacAddr      = 829,
+	FLXPostgresOidIPAddr       = 869,
+	FLXPostgresOidNetAddr      = 869,
+	FLXPostgresOidArrayBool    = 1000,
+	FLXPostgresOidArrayData    = 1001,
+	FLXPostgresOidArrayChar    = 1002,
+	FLXPostgresOidArrayName    = 1003,
+	FLXPostgresOidArrayInt2    = 1005,
+	FLXPostgresOidArrayInt4    = 1007,
+	FLXPostgresOidArrayText    = 1009,
+	FLXPostgresOidArrayVarchar = 1015,
+	FLXPostgresOidArrayInt8    = 1016,
+	FLXPostgresOidArrayFloat4  = 1021,
+	FLXPostgresOidArrayFloat8  = 1022,
+	FLXPostgresOidArrayMacAddr = 1040,
+	FLXPostgresOidArrayIPAddr  = 1041,
+	FLXPostgresOidChar         = 1042,
+	FLXPostgresOidVarchar      = 1043,
+	FLXPostgresOidDate         = 1082,
+	FLXPostgresOidTime         = 1083,
+	FLXPostgresOidTimestamp    = 1114,
+	FLXPostgresOidTimestampTZ  = 1184,
+	FLXPostgresOidInterval     = 1186,
+	FLXPostgresOidTimeTZ       = 1266,
+	FLXPostgresOidBit          = 1560,
+	FLXPostgresOidVarbit       = 1562,
+	FLXPostgresOidNumeric      = 1700,
+	FLXPostgresOidMax          = 1700
 };

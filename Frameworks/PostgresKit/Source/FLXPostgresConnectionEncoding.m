@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnectionEncoding.m 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresConnectionEncoding.m
 //  PostgresKit
@@ -29,7 +29,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 
 #import "FLXPostgresConnectionEncoding.h"
-#import "FLXPostgresKitPrivateAPI.h"
+#import "FLXPostgresConnectionPrivateAPI.h"
 
 @implementation FLXPostgresConnection (FLXPostgresConnectionEncoding)
 

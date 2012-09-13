@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPContentFilterManager.m 3759 2012-08-01 22:50:16Z rowanb@gmail.com $
 //
 //  SPContentFilterManager.m
 //  sequel-pro

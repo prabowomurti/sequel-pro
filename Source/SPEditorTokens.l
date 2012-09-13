@@ -1,7 +1,7 @@
 %{
 	
 //
-//  $Id$
+//  $Id: SPEditorTokens.l 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPEditorTokens.l
 //  sequel-pro

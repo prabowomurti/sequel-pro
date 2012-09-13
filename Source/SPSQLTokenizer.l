@@ -1,7 +1,7 @@
 %{
 
 //
-//  $Id$
+//  $Id: SPSQLTokenizer.l 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPSQLTokenizer.l
 //  sequel-pro

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKQueryUpdateParameter.h 3717 2012-07-09 09:27:48Z stuart02 $
 //
 //  QKQueryUpdateParameter.h
 //  QueryKit

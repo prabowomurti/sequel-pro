@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPConnectionControllerInitializer.m 3755 2012-08-01 00:17:54Z rowanb@gmail.com $
 //
 //  SPConnectionControllerInitializer.m
 //  sequel-pro
@@ -202,6 +202,16 @@ static NSString *SPConnectionViewNibName = @"ConnectionView";
 	
 	[self addObserver:self 
 		   forKeyPath:SPFavoritePortKey 
+			  options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) 
+			  context:NULL];
+	
+	[self addObserver:self 
+		   forKeyPath:SPFavoriteUseHTTPTunnelKey 
+			  options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) 
+			  context:NULL];
+	
+	[self addObserver:self 
+		   forKeyPath:SPFavoriteHTTPTunnelURLKey
 			  options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) 
 			  context:NULL];
 	

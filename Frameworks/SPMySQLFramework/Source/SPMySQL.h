@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQL.h 3551 2012-03-27 21:02:15Z sqlprodev@gmail.com $
 //
 //  SPMySQL.h
 //  SPMySQLFramework

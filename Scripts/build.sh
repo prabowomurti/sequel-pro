@@ -1,7 +1,7 @@
 #! /bin/ksh
 
 #
-#  $Id$
+#  $Id: build.sh 3763 2012-08-03 00:51:11Z rowanb@gmail.com $
 #
 #  build.sh
 #  sequel-pro

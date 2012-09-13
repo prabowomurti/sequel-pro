@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLKeepAliveTimer.m 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  SPMySQLKeepAliveTimer.m
 //  SPMySQLFramework

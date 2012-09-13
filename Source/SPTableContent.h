@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPTableContent.h 3777 2012-08-15 10:47:43Z stuart02 $
 //
 //  SPTableContent.h
 //  sequel-pro

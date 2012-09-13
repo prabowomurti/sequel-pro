@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: Server Info.m 3631 2012-05-08 01:03:31Z rowanb@gmail.com $
 //
 //  Server Info.m
 //  SPMySQLFramework
@@ -140,12 +140,21 @@
 	// Ensure per-thread variables are set up
 	[self _validateThreadSetup];
 
-	// Get the process list
-	MYSQL_RES *mysqlResult = mysql_list_processes(mySQLConnection);
-	lastConnectionUsedTime = mach_absolute_time();
-
-	// Convert to SPMySQLResult
-	SPMySQLResult *theResult = [[SPMySQLResult alloc] initWithMySQLResult:mysqlResult stringEncoding:stringEncoding];
+	SPMySQLResult *theResult = nil;
+	
+	if (useHTTPTunnel)
+	{
+		theResult = [[self queryString:@"SHOW FULL PROCESSLIST"] retain];
+	}
+	else
+	{
+		// Get the process list
+		MYSQL_RES *mysqlResult = mysql_list_processes(mySQLConnection);
+		lastConnectionUsedTime = mach_absolute_time();
+		
+		// Convert to SPMySQLResult
+		theResult = [[SPMySQLResult alloc] initWithMySQLResult:mysqlResult stringEncoding:stringEncoding];
+	}
 
 	// Unlock and return
 	[self _unlockConnection];

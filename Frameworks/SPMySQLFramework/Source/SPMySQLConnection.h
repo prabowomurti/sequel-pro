@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLConnection.h 3779 2012-08-18 14:18:29Z rowanb@gmail.com $
 //
 //  SPMySQLConnection.h
 //  SPMySQLFramework
@@ -48,6 +48,13 @@
 	BOOL useSocket;
 	NSString *socketPath;
 
+	// HTTPTunnel details
+	BOOL isCheckingHTTPTunnelConnection;
+	BOOL useHTTPTunnel;
+	NSString *httpTunnelURL;
+	NSMutableDictionary *persistentQueries;
+	BOOL enablePersistentQueries;
+	
 	// SSL connection details
 	BOOL useSSL;
 	NSString *sslKeyFilePath;
@@ -139,6 +146,9 @@
 @property (readwrite, assign) BOOL useSocket;
 @property (readwrite, retain) NSString *socketPath;
 
+@property (readonly, assign) BOOL useHTTPTunnel;
+@property (readonly, copy) NSString *httpTunnelURL;
+
 @property (readwrite, assign) BOOL useSSL;
 @property (readwrite, retain) NSString *sslKeyFilePath;
 @property (readwrite, retain) NSString *sslCertificatePath;
@@ -154,6 +164,8 @@
 @property (readwrite, assign) BOOL delegateQueryLogging;
 
 @property (readwrite, assign) BOOL lastQueryWasCancelled;
+
+- (id)initUsingHTTPTunnelURL:(NSString *)url;
 
 #pragma mark -
 #pragma mark Connection and disconnection

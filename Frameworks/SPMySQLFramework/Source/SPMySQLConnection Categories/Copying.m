@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: Copying.m 3511 2012-03-17 15:32:00Z rowanb@gmail.com $
 //
 //  Copying.m
 //  SPMySQLFramework
@@ -44,7 +44,16 @@
  */
 - (id)copyWithZone:(NSZone *)zone
 {
-	SPMySQLConnection *copy = [[[self class] allocWithZone:zone] init];
+	SPMySQLConnection *copy = nil;
+	
+	if (useHTTPTunnel)
+	{
+		copy = [[[self class] allocWithZone:zone] initUsingHTTPTunnelURL:httpTunnelURL];
+	}
+	else
+	{
+		copy = [[[self class] allocWithZone:zone] init];
+	}
 
 	// Synthesized details
 	[copy setDelegate:delegate];

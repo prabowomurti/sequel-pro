@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPExporter.m 3745 2012-07-25 10:18:02Z stuart02 $
 //
 //  SPExporter.m
 //  sequel-pro

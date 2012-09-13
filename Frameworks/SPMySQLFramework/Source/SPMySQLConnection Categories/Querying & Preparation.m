@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: Querying & Preparation.m 3779 2012-08-18 14:18:29Z rowanb@gmail.com $
 //
 //  Querying & Preparation.m
 //  SPMySQLFramework
@@ -33,6 +33,7 @@
 
 #import "SPMySQLConnection.h"
 #import "SPMySQL Private APIs.h"
+#import "SPMySQLHTTPTunnelResponseData.h"
 
 @implementation SPMySQLConnection (Querying_and_Preparation)
 
@@ -78,7 +79,12 @@
 
 	// Ensure per-thread variables are set up
 	[self _validateThreadSetup];
-
+	
+	if (useHTTPTunnel && !mySQLConnection)
+	{
+		mySQLConnection = mysql_init(NULL);
+	}
+	
 	// Perform a lossy conversion to bytes, using NSData to do the hard work.  Preserves
 	// nul characters correctly.
 	NSData *cData = [theString dataUsingEncoding:stringEncoding allowLossyConversion:YES];
@@ -224,7 +230,7 @@
 
 	// Check the connection state - if no connection is available, log an
 	// error and return.
-	if (state == SPMySQLDisconnected || state == SPMySQLConnecting) {
+	if ((state == SPMySQLDisconnected || state == SPMySQLConnecting) && (!useHTTPTunnel || !isCheckingHTTPTunnelConnection)) {
 		if ([delegate respondsToSelector:@selector(queryGaveError:connection:)]) {
 			[delegate queryGaveError:@"No connection available!" connection:self];
 		}
@@ -250,35 +256,187 @@
 		[delegate willQueryString:theQueryString connection:self];
 	}
 
-	// Retrieve a C-style query string from the supplied NSString
-	NSUInteger cQueryStringLength;
-	const char *cQueryString = _cStringForStringWithEncoding(theQueryString, theEncoding, &cQueryStringLength);
-
-	// Check the query length against the current maximum query length.  If it is
-	// larger, the query would error (and probably cause a disconnect), so if
-	// the maximum size is editable, increase it and reconnect.
-	if (cQueryStringLength > maxQuerySize) {
-		queryActionShouldRestoreMaxQuerySize = maxQuerySize;
-		if (![self _attemptMaxQuerySizeIncreaseTo:(cQueryStringLength + 1024)]) {
-			queryActionShouldRestoreMaxQuerySize = NSNotFound;
-			return nil;
-		}
-	}
-
 	// Prepare to enter a loop to run the query, allowing reattempts if appropriate
 	NSUInteger queryAttemptsAllowed = 1;
 	if (retryQueriesOnConnectionFailure) queryAttemptsAllowed++;
 	int queryStatus;
+	NSUInteger cQueryStringLength;
+	const char *cQueryString;
+	id theResult = nil;
+	unsigned long long theAffectedRowCount;
+	
+	if (!useHTTPTunnel)
+	{
+		// Retrieve a C-style query string from the supplied NSString
+		cQueryString = _cStringForStringWithEncoding(theQueryString, theEncoding, &cQueryStringLength);
+			
+		// Check the query length against the current maximum query length.  If it is
+		// larger, the query would error (and probably cause a disconnect), so if
+		// the maximum size is editable, increase it and reconnect.
+		if (cQueryStringLength > maxQuerySize) {
+			queryActionShouldRestoreMaxQuerySize = maxQuerySize;
+			if (![self _attemptMaxQuerySizeIncreaseTo:(cQueryStringLength + 1024)]) {
+				queryActionShouldRestoreMaxQuerySize = NSNotFound;
+				return nil;
+			}
+		}
+	}
 
 	// Lock the connection while it's actively in use
 	[self _lockConnection];
 
 	while (queryAttemptsAllowed > 0) {
-
-		// While recording the overall execution time (including network lag!), run
-		// the raw query
 		uint64_t queryStartTime = mach_absolute_time();
-		queryStatus = mysql_real_query(mySQLConnection, cQueryString, cQueryStringLength);
+		
+		queryStatus = 0;
+		
+		if (useHTTPTunnel)
+		{
+			NSString *action = nil;
+			
+			if (isCheckingHTTPTunnelConnection)
+			{
+				action = @"i";
+			}
+			else
+			{
+				action = @"q";
+			}
+			
+			NSString *thePassword = nil;
+			
+			if (password) {
+				thePassword = password;
+			} else if ([delegate respondsToSelector:@selector(keychainPasswordForConnection:)]) {
+				thePassword = [delegate keychainPasswordForConnection:self];
+			}
+			
+			NSMutableString *urlString = [NSMutableString stringWithFormat:@"%@?h=%@&po=%lu&u=%@&p=%@&a=%@",
+										  httpTunnelURL, 
+										  [host stringByEscapingForURLQuery],
+										  port,
+										  [username stringByEscapingForURLQuery], 
+										  [thePassword stringByEscapingForURLQuery],
+										  [action stringByEscapingForURLQuery]];
+			
+			if (database)
+			{
+				[urlString appendFormat:@"&d=%@", [database stringByEscapingForURLQuery]];
+			}
+			
+			[urlString appendFormat:@"&q=%@", [theQueryString stringByEscapingForURLQuery]];
+			
+			
+			if (enablePersistentQueries)
+			{
+				NSMutableString *persistentQueriesString = [NSMutableString string];
+				NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@";"];
+				
+				for (id key in persistentQueries)
+				{
+					NSString *query = [persistentQueries objectForKey:key];
+					query = [[query stringByTrimmingCharactersInSet:charSet] stringByAppendingFormat:@";"];
+					
+					[persistentQueriesString appendString:query];
+				}
+				
+				[urlString appendFormat:@"&pq=%@", [persistentQueriesString stringByEscapingForURLQuery]];
+			}
+			
+			//NSLog(@"URL: %@", urlString);
+			
+			NSURL *url = [NSURL URLWithString:urlString];
+			NSMutableURLRequest *urlRequest = [[[NSMutableURLRequest alloc] initWithURL:url] autorelease];
+			[urlRequest setValue:@"text/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+			[urlRequest setHTTPMethod:@"GET"];
+			
+			NSHTTPURLResponse *response = nil;
+			NSError *error = nil;
+			NSData *responseData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
+			
+			if (error)
+			{
+				theErrorID = 10000;
+				theErrorMessage = [NSString stringWithFormat:@"Can't connect to HTTPTunnel script! Error: (%li) %@", [error code], [error description]];
+				
+				queryStatus = 1;
+			}
+			
+			if (!queryStatus)
+			{
+				SPMySQLHTTPTunnelResponseData *data = [[[SPMySQLHTTPTunnelResponseData alloc] initWithData:responseData] autorelease];
+				
+				UInt32 signature = [data readLong];
+				
+				if (signature != 12345)
+				{
+					theErrorID = 10000;
+					theErrorMessage = [NSString stringWithFormat:@"Invalid HTTPTunnel script!"];// Response: %@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]];
+					//NSLog(@"Invalid HTTPTunnel script! Response: %@", theErrorMessage);
+					
+					queryStatus = 1;
+				}
+				
+				if (!queryStatus)
+				{
+					UInt32 mysqlError = [data readLong];
+					
+					if (mysqlError > 0)
+					{
+						theErrorID = mysqlError;
+						theErrorMessage = [data readBlockAsString];
+						
+						queryStatus = 1;
+					}
+					
+					if (!queryStatus)
+					{
+						if (isCheckingHTTPTunnelConnection)
+						{
+							serverVersionString = [[data readBlockAsString] retain];
+						}
+						else
+						{
+							mysqlError = [data readLong];
+							
+							if (mysqlError > 0)
+							{
+								theErrorID = mysqlError;
+								theErrorMessage = [data readBlockAsString];
+								
+								queryStatus = 1;
+							}
+							else
+							{
+								theAffectedRowCount = [data readLong];
+								lastQueryInsertID = [data readLong];
+								
+								theResult = [[[SPMySQLResult alloc] initWithMySQLHTTPTunnelResponseData:data stringEncoding:theEncoding] autorelease];
+								
+								switch (theReturnType) {
+									case SPMySQLResultAsResult:
+										[theResult setDefaultRowReturnType:SPMySQLResultRowAsDictionary];
+										
+										break;
+									case SPMySQLResultAsLowMemStreamingResult:
+									case SPMySQLResultAsFastStreamingResult:
+										[theResult setDefaultRowReturnType:SPMySQLResultRowAsArray];
+										
+										break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			// While recording the overall execution time (including network lag!), run
+			// the raw query
+			queryStatus = mysql_real_query(mySQLConnection, cQueryString, cQueryStringLength);
+		}
+		
 		queryExecutionTime = _elapsedSecondsSinceAbsoluteTime(queryStartTime);
 		lastConnectionUsedTime = mach_absolute_time();
 
@@ -290,14 +448,18 @@
 
 		// If the query failed, determine whether to reattempt the query
 		} else {
+			
+			if (!useHTTPTunnel)
+			{
+				
+				// Store the error state
+				theErrorMessage = [self _stringForCString:mysql_error(mySQLConnection)];
+				theErrorID = mysql_errno(mySQLConnection);
 
-			// Store the error state
-			theErrorMessage = [self _stringForCString:mysql_error(mySQLConnection)];
-			theErrorID = mysql_errno(mySQLConnection);
-
-			// Prevent retries if the query was cancelled or not a connection error
-			if (lastQueryWasCancelled || ![SPMySQLConnection isErrorIDConnectionError:mysql_errno(mySQLConnection)]) {
-				break;
+				// Prevent retries if the query was cancelled or not a connection error
+				if (lastQueryWasCancelled || ![SPMySQLConnection isErrorIDConnectionError:mysql_errno(mySQLConnection)]) {
+					break;
+				}
 			}
 		}
 
@@ -311,43 +473,45 @@
 		queryAttemptsAllowed--;
 	}
 
-	unsigned long long theAffectedRowCount = mysql_affected_rows(mySQLConnection);
-	id theResult = nil;
+	if (!useHTTPTunnel)
+	{
+		theAffectedRowCount = mysql_affected_rows(mySQLConnection);
 
-	// On success, if there is a query result, retrieve the result data type
-	if (!queryStatus && mysql_field_count(mySQLConnection)) {
-		MYSQL_RES *mysqlResult;
+		// On success, if there is a query result, retrieve the result data type
+		if (!queryStatus && mysql_field_count(mySQLConnection)) {
+			MYSQL_RES *mysqlResult;
 
-		switch (theReturnType) {
+			switch (theReturnType) {
 
-			// For standard result sets, retrieve all the results now, and afterwards
-			// update the affected row count.
-			case SPMySQLResultAsResult:
-				mysqlResult = mysql_store_result(mySQLConnection);
-				theResult = [[SPMySQLResult alloc] initWithMySQLResult:mysqlResult stringEncoding:theEncoding];
-				theAffectedRowCount = mysql_affected_rows(mySQLConnection);
-				break;
+				// For standard result sets, retrieve all the results now, and afterwards
+				// update the affected row count.
+				case SPMySQLResultAsResult:
+					mysqlResult = mysql_store_result(mySQLConnection);
+					theResult = [[[SPMySQLResult alloc] initWithMySQLResult:mysqlResult stringEncoding:theEncoding] autorelease];
+					theAffectedRowCount = mysql_affected_rows(mySQLConnection);
+					break;
 
-			// For fast streaming and low memory streaming result sets, set up the result
-			case SPMySQLResultAsLowMemStreamingResult:
-				mysqlResult = mysql_use_result(mySQLConnection);
-				theResult = [[SPMySQLStreamingResult alloc] initWithMySQLResult:mysqlResult stringEncoding:theEncoding connection:self];
-				break;
+				// For fast streaming and low memory streaming result sets, set up the result
+				case SPMySQLResultAsLowMemStreamingResult:
+					mysqlResult = mysql_use_result(mySQLConnection);
+					theResult = [[[SPMySQLStreamingResult alloc] initWithMySQLResult:mysqlResult stringEncoding:theEncoding connection:self] autorelease];
+					break;
 
-			case SPMySQLResultAsFastStreamingResult:
-				mysqlResult = mysql_use_result(mySQLConnection);
-				theResult = [[SPMySQLFastStreamingResult alloc] initWithMySQLResult:mysqlResult stringEncoding:theEncoding connection:self];
-				break;
+				case SPMySQLResultAsFastStreamingResult:
+					mysqlResult = mysql_use_result(mySQLConnection);
+					theResult = [[[SPMySQLFastStreamingResult alloc] initWithMySQLResult:mysqlResult stringEncoding:theEncoding connection:self] autorelease];
+					break;
+			}
+
+			// Update the error message, if appropriate, to reflect result store errors or overall success
+			theErrorMessage = [self _stringForCString:mysql_error(mySQLConnection)];
+			theErrorID = mysql_errno(mySQLConnection);
 		}
 
-		// Update the error message, if appropriate, to reflect result store errors or overall success
-		theErrorMessage = [self _stringForCString:mysql_error(mySQLConnection)];
-		theErrorID = mysql_errno(mySQLConnection);
-	}
-
-	// Update the connection's stored insert ID if available
-	if (mySQLConnection->insert_id) {
-		lastQueryInsertID = mySQLConnection->insert_id;
+		// Update the connection's stored insert ID if available
+		if (mySQLConnection->insert_id) {
+			lastQueryInsertID = mySQLConnection->insert_id;
+		}
 	}
 
 	// If the query was cancelled, override the error state
@@ -381,8 +545,22 @@
 
 	// Store the result time on the response object
 	[theResult _setQueryExecutionTime:queryExecutionTime];
-
-	return [theResult autorelease];
+	
+	if (useHTTPTunnel && isCheckingHTTPTunnelConnection)
+	{
+		if (!queryStatus)
+		{
+			return [NSNumber numberWithBool:YES];
+		}
+		else
+		{
+			return nil;
+		}
+	}
+	else
+	{
+		return theResult;
+	}
 }
 
 #pragma mark -

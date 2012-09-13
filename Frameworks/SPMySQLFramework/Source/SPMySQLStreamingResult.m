@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPMySQLStreamingResult.m 3578 2012-04-09 16:37:31Z rowanb@gmail.com $
 //
 //  SPMySQLStreamingResult.m
 //  SPMySQLFramework

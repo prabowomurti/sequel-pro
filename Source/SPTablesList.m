@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPTablesList.m 3789 2012-08-30 00:28:56Z rowanb@gmail.com $
 //
 //  SPTablesList.m
 //  sequel-pro

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPTableStructureDelegate.m 3773 2012-08-13 11:21:27Z stuart02 $
 //
 //  SPConnectionDelegate.m
 //  sequel-pro

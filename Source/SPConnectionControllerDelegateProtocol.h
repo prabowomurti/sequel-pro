@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPConnectionControllerDelegateProtocol.h 3785 2012-08-27 06:58:20Z stuart02 $
 //
 //  SPConnectionControllerDelegateProtocol.h
 //  sequel-pro

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKUpdateQueryTests.m 3736 2012-07-21 05:39:14Z stuart02 $
 //
 //  QKUpdateQueryTests.m
 //  QueryKit

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresConnectionQueryExecution.m 3794 2012-09-03 10:53:23Z stuart02 $
 //
 //  FLXPostgresConnectionQueryExecution.h
 //  PostgresKit
@@ -21,7 +21,7 @@
 //  the License.
 
 #import "FLXPostgresConnectionQueryExecution.h"
-#import "FLXPostgresKitPrivateAPI.h"
+#import "FLXPostgresConnectionPrivateAPI.h"
 #import "FLXPostgresConnectionTypeHandling.h"
 #import "FLXPostgresConnectionDelegate.h"
 #import "FLXPostgresTypeHandlerProtocol.h"
@@ -121,7 +121,7 @@ FLXQueryParamData;
 	
 	// Notify the delegate
 	if (_delegate && _delegateSupportsWillExecute) {
-		[_delegate connection:self willExecute:query withValues:values];
+		[_delegate connection:self willExecute:query values:values];
 	}
 
 	FLXQueryParamData *paramData = [self _createParameterDataStructureWithCount:values ? (int)[values count] : 0];
@@ -132,7 +132,9 @@ FLXQueryParamData;
 	for (int i = 0; i < paramData->paramNum; i++) 
 	{
 		id nativeObject = [values objectAtIndex:i];
-				
+		
+		NSParameterAssert(nativeObject);
+		
 		// Deterime if bound value is an NSNull
 		if ([nativeObject isKindOfClass:[NSNull class]]) {
 			paramData->paramValues[i] = NULL;
@@ -153,9 +155,9 @@ FLXQueryParamData;
 			[FLXPostgresException raise:FLXPostgresConnectionErrorDomain reason:[NSString stringWithFormat:@"Parameter $%u unsupported class %@", (i + 1), NSStringFromClass([nativeObject class])]];
 			return nil;
 		}
-
-		NSData *data = nil; // Sending parameters as binary is not implemented yet
+		
 		FLXPostgresOid type = 0;
+		NSData *data = [typeHandler remoteDataFromObject:nativeObject type:&type];
 		
 		if (!data) {
 			[self _destroyParamDataStructure:paramData];
@@ -223,6 +225,11 @@ FLXQueryParamData;
 								(const int *)paramData->paramLengths, 
 								(const int *)paramData->paramFormats, 
 								FLXPostgresResultsAsBinary);		
+	} 
+	else {
+		// TODO: get rid of exceptions
+		[FLXPostgresException raise:FLXPostgresConnectionErrorDomain reason:[NSString stringWithFormat:@"Trying to execute a query that is not of type NSString or FLXPostgresStatement"]];			
+		return nil;
 	}
 	
 	[self _destroyParamDataStructure:paramData];

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPDataCellFormatter.h 3768 2012-08-06 01:06:27Z rowanb@gmail.com $
 //
 //  SPDataCellFormatter.h
 //  sequel-pro

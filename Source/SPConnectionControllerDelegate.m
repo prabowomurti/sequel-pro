@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPConnectionControllerDelegate.m 3769 2012-08-06 09:19:58Z stuart02 $
 //
 //  SPConnectionControllerDelegate.m
 //  sequel-pro

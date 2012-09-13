@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresResult.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresResult.h
 //  PostgresKit
@@ -20,15 +20,10 @@
 //  License for the specific language governing permissions and limitations under
 //  the License.
 
-@class FLXPostgresConnection;
+#import "libpq-fe.h"
+#import "FLXConstants.h"
 
-// Result set row types
-typedef enum 
-{
-	FLXPostgresResultRowAsArray = 1,
-	FLXPostgresResultRowAsDictionary = 2
-} 
-FLXPostgresResultRowType;
+@class FLXPostgresConnection;
 
 @interface FLXPostgresResult : NSObject 
 {
@@ -36,9 +31,8 @@ FLXPostgresResultRowType;
 	void **_typeHandlers;
 	
 	unsigned long long _row;
+	unsigned int _numberOfFields;
 	unsigned long long _numberOfRows;
-	
-	NSUInteger _numberOfFields;
 	
 	NSString **_fields;
 	
@@ -50,7 +44,7 @@ FLXPostgresResultRowType;
 /**
  * @property numberOfFields The number of fields this result has.
  */
-@property (readonly) NSUInteger numberOfFields;
+@property (readonly) unsigned int numberOfFields;
 
 /**
  * @property numberOfRows The number or rows this result has.
@@ -62,9 +56,9 @@ FLXPostgresResultRowType;
  */
 @property (readonly) NSStringEncoding stringEncoding;
 
-- (id)initWithResult:(void *)result connection:(FLXPostgresConnection *)connection;
+- (id)initWithResult:(PGresult *)result connection:(FLXPostgresConnection *)connection;
 
-- (NSUInteger)numberOfFields;
+- (unsigned int)numberOfFields;
 
 - (void)seekToRow:(unsigned long long)row;
 

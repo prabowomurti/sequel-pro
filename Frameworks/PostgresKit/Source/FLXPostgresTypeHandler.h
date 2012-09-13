@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: FLXPostgresTypeHandler.h 3793 2012-09-03 10:22:17Z stuart02 $
 //
 //  FLXPostgresTypeHandler.h
 //  PostgresKit
@@ -23,7 +23,7 @@
 
 @class FLXPostgresConnection;
 
-@interface FLXPostgresTypeHandler : NSObject
+@interface FLXPostgresTypeHandler : NSObject 
 {
 	FLXPostgresConnection *_connection;
 }

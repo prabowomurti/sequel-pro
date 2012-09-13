@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPTableContent.m 3784 2012-08-23 22:49:31Z rowanb@gmail.com $
 //
 //  SPTableContent.m
 //  sequel-pro

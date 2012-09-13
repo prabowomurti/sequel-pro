@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: QKQueryStringAdditions.h 3722 2012-07-14 10:26:44Z stuart02 $
 //
 //  QKQueryStringAdditions.h
 //  QueryKit

@@ -1,5 +1,5 @@
 //
-//  $Id$
+//  $Id: SPConnectionController.h 3763 2012-08-03 00:51:11Z rowanb@gmail.com $
 //
 //  SPConnectionHandler.h
 //  sequel-pro
@@ -76,6 +76,10 @@
 	NSString *socket;
 	NSString *port;
 	
+	// HTTPTunnel details
+	NSInteger useHTTPTunnel;
+	NSString *httpTunnelURL;
+	
 	// SSL details
 	NSInteger useSSL;
 	NSInteger sslKeyFileLocationEnabled;
@@ -113,6 +117,7 @@
 	IBOutlet NSView *connectionResizeContainer;
 	IBOutlet NSView *standardConnectionFormContainer;
 	IBOutlet NSView *standardConnectionSSLDetailsContainer;
+	IBOutlet NSView *standardConnectionHTTPTunnelDetailsContainer;
 	IBOutlet NSView *socketConnectionFormContainer;
 	IBOutlet NSView *socketConnectionSSLDetailsContainer;
 	IBOutlet NSView *sshConnectionFormContainer;
@@ -175,6 +180,8 @@
 @property (readwrite, retain) NSString *database;
 @property (readwrite, retain) NSString *socket;
 @property (readwrite, retain) NSString *port;
+@property (readwrite, assign) NSInteger useHTTPTunnel;
+@property (readwrite, retain) NSString *httpTunnelURL;
 @property (readwrite, assign) NSInteger useSSL;
 @property (readwrite, assign) NSInteger sslKeyFileLocationEnabled;
 @property (readwrite, retain) NSString *sslKeyFileLocation;

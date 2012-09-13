@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 
 #
-#  $Id$
+#  $Id: build-version.pl 3758 2012-08-01 09:46:03Z stuart02 $
 #
 #  build-version.pl
 #  sequel-pro
